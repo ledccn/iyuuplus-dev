@@ -4,6 +4,7 @@ namespace app\model;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Iyuu\BittorrentClient\ClientEnums;
 use plugin\admin\app\model\Base;
 
 /**
@@ -40,6 +41,15 @@ class Client extends Base
      * @var string
      */
     protected $primaryKey = 'id';
+
+    /**
+     * 获取下载器品牌枚举类
+     * @return ClientEnums
+     */
+    public function getClientEnums(): ClientEnums
+    {
+        return ClientEnums::from($this->getAttribute('brand'));
+    }
 
     /**
      * 获取默认下载器

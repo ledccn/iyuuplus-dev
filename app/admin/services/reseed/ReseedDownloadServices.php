@@ -3,11 +3,15 @@
 namespace app\admin\services\reseed;
 
 use app\admin\services\client\ClientServices;
+use app\model\Client;
 use app\model\enums\ReseedStatusEnums;
 use app\model\Reseed;
 use app\model\Site;
 use Error;
 use Exception;
+use Iyuu\BittorrentClient\ClientEnums;
+use Iyuu\BittorrentClient\Clients;
+use Iyuu\BittorrentClient\Contracts\Torrent as TorrentContract;
 use Iyuu\SiteManager\Config;
 use Iyuu\SiteManager\Contracts\Torrent;
 use Iyuu\SiteManager\Spider\Helper;
@@ -79,7 +83,11 @@ class ReseedDownloadServices
     private static function handleLimited(Site $site, int $limitCount, int $limitSleep): void
     {
         // 24小时内辅种数
-        $total24h = Reseed::where('sid', '=', $site->id)->where('dispatch_time', '>', time() - 86400)->whereIn('status', [ReseedStatusEnums::Success->value, ReseedStatusEnums::Fail->value])->count();
+        $total24h = Reseed::where('sid', '=', $site->id)
+            ->where('dispatch_time', '>', time() - 86400)
+            ->whereIn('status', [ReseedStatusEnums::Success->value, ReseedStatusEnums::Fail->value])
+            ->count();
+
         if ($total24h < $limitCount) {
             Reseed::getStatusEqDefault($site->sid)->chunkById($limitCount - $total24h, function ($records) use ($limitSleep) {
                 /** @var Reseed $reseed */
@@ -116,12 +124,20 @@ class ReseedDownloadServices
             Event::dispatch('reseed.torrent.download.after', [$response, $reseed]);
 
             $clientModel = ClientServices::getClient($reseed->client_id);
-            $result = ClientServices::sendClientDownloader($response, $clientModel);
+            $bittorrentClients = ClientServices::createBittorrent($clientModel);
+            $contractsTorrent = new TorrentContract($response->payload, $response->metadata);
+            self::sendBefore($contractsTorrent, $bittorrentClients, $clientModel);
+
+            // 调度事件：把种子发送给下载器之前
+            Event::dispatch('reseed.torrent.send.before', [$contractsTorrent, $bittorrentClients, $reseed]);
+
+            $result = $bittorrentClients->addTorrent($contractsTorrent);
+
             // 调度事件：把种子发送给下载器之后
-            Event::dispatch('reseed.torrent.send.after', [$result, $clientModel, $reseed]);
+            Event::dispatch('reseed.torrent.send.after', [$result, $bittorrentClients, $reseed]);
 
             // 更新模型数据
-            $reseed->message = is_string($result) ? $result : json_encode($result);
+            $reseed->message = is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE);
             $reseed->status = ReseedStatusEnums::Success->value;
             $reseed->save();
 
@@ -137,5 +153,26 @@ class ReseedDownloadServices
         }
 
         return true;
+    }
+
+    /**
+     * 把种子发送给下载器前，做一些操作
+     * @param TorrentContract $contractsTorrent
+     * @param Clients $bittorrentClients
+     * @param Client $clientModel
+     * @return void
+     */
+    private static function sendBefore(TorrentContract $contractsTorrent, Clients $bittorrentClients, Client $clientModel): void
+    {
+        switch ($clientModel->getClientEnums()) {
+            case ClientEnums::transmission:
+                $contractsTorrent->parameters['paused'] = true;     // 添加任务校验后是否暂停
+                break;
+            case ClientEnums::qBittorrent;
+                $contractsTorrent->parameters['autoTMM'] = 'false'; // 关闭自动种子管理
+                $contractsTorrent->parameters['paused'] = 'true';   // 添加任务校验后是否暂停
+                $contractsTorrent->parameters['root_folder'] = $clientModel->root_folder ? 'true' : 'false';    // 是否创建根目录
+                break;
+        }
     }
 }
