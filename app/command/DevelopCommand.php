@@ -8,9 +8,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * 【开发工具】导出备份
+ * 【开发工具】
  */
-class DevelopExportCommand extends Command
+class DevelopCommand extends Command
 {
     /**
      * 命令

@@ -90,7 +90,7 @@ class ReseedDownloadServices
                         return false;
                     }
                 }
-                return true;
+                return false;
             });
         }
     }
