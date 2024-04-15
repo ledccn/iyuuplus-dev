@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增标签</title>
+    <link rel="stylesheet" href="/app/admin/component/layui/css/layui.css" />
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
+</head>
+<body>
+<style>
+    .layui-textarea {
+        height: 10em;
+    }
+    .layui-tab .layui-table-cell {
+        overflow:visible !important;
+    }
+    .layui-table-body ,.layui-table-box{
+        overflow:visible !important;
+    }
+    .layui-tab .layui-form-select dl {
+        max-height: 190px;
+    }
+    .layui-table-body .layui-table-col-special:last-child {
+        width: 100% !important;
+        border-right: 1px solid #eee !important;
+    }
+    xm-select {
+        min-height: 38px;
+        line-height: 38px;
+    }
+    xm-select .xm-body .xm-option .xm-option-icon {
+        font-size: 18px !important;
+    }
+</style>
+
+<form class="layui-form" action="" lay-filter="create-tag-form">
+
+    <div class="mainBox">
+        <div class="main-container mr-5">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">标签名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" required  lay-verify="required" placeholder="标签名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">厂商标签ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="template_id" required  lay-verify="required" placeholder="云厂商里设置的短信标签ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">厂商签名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sign" required  lay-verify="required" placeholder="云厂商里设置的短信签名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                    lay-filter="save">
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-md">
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+
+<script src="/app/admin/component/layui/layui.js"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+
+<script>
+
+    const INSERT_API = "/app/sms/admin/setting/insertTag";
+
+    layui.use(["form", "popup"], function () {
+
+        //提交事件
+        layui.form.on("submit(save)", function () {
+            let data = layui.form.val("create-tag-form");
+            data.gateway = layui.url().search.gateway;
+            layui.$.ajax({
+                url: INSERT_API,
+                type: "POST",
+                dateType: "json",
+                data: data,
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return layui.popup.success("操作成功", function () {
+                        parent.refreshTable();
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    });
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+
+</body>
+</html>

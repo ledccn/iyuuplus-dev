@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<title>控制后台</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
+		<link rel="stylesheet" href="/app/admin/demos/css/console1.css" />
+	</head>
+	<body class="pear-container">
+		<div>
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">辅种数量</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value1">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+									<i class="layui-icon layui-icon-note layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">下载器</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value2">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+									<i class="layui-icon layui-icon-download-circle layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">开启站点</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value3">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+									<i class="layui-icon layui-icon-play layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">支持站点</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value4">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+									<i class="layui-icon layui-icon-release layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">总做种数</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value5">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+									<i class="layui-icon layui-icon-upload layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">计划任务</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value6">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+									<i class="layui-icon layui-icon-date layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">任务运行次数</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value7">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4  top-panel-tips">
+									<i class="layui-icon layui-icon-at layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-md3">
+					<div class="layui-card top-panel">
+						<div class="layui-card-header">备用</div>
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space5">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value8">
+									0
+								</div>
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+									<i class="layui-icon layui-icon-at layui-font-blue"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md9">
+					<div class="layui-card" style="min-height:450px;">
+						<div class="layui-card-body">
+							<div class="layui-tab custom-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+								<div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-card" style="min-height:450px;">
+						<div class="layui-card-header">系统信息</div>
+						<div class="layui-card-body">
+							<table class="layui-table">
+								<colgroup>
+									<col>
+									<col style="width: 120px">
+								</colgroup>
+								<thead>
+								<tr>
+									<th>组件</th>
+									<th>版本</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>Workerman版本</td>
+									<td><?=$workerman_version?></td>
+								</tr>
+								<tr>
+									<td>Webman版本</td>
+									<td><?=$webman_version?></td>
+								</tr>
+								<tr>
+									<td>WebmanAdmin版本</td>
+									<td><?=$admin_version?></td>
+								</tr>
+								<tr>
+									<td>PHP版本</td>
+									<td><?=$php_version?></td>
+								</tr>
+								<tr>
+									<td>MYSQL版本</td>
+									<td><?=$mysql_version?></td>
+								</tr>
+								<tr>
+									<td>操作系统</td>
+									<td><?=$os?></td>
+								</tr>
+								<tr>
+									<td>Layui</td>
+									<td>v2.8.12</td>
+								</tr>
+								<tr>
+									<td>CommitID</td>
+									<td title="<?=$app_filemtime?>"><?=$app_version?></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--</div>-->
+		<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
+		<script src="/app/admin/component/pear/pear.js"></script>
+		<script>
+			layui.use(['layer', 'echarts', 'element', 'count'], function() {
+				const $ = layui.jquery,
+						layer = layui.layer,
+						element = layui.element,
+						count = layui.count,
+						echarts = layui.echarts;
+
+				count.up("value1", {
+					time: 4000,
+					num: <?=$count_value1?>,
+					bit: 0,
+					regulator: 50
+				})
+
+				count.up("value2", {
+					time: 4000,
+					num: <?=$count_value2?>,
+					bit: 0,
+					regulator: 50
+				})
+
+				count.up("value3", {
+					time: 4000,
+					num: <?=$count_value3?>,
+					bit: 0,
+					regulator: 50
+				})
+
+				count.up("value4", {
+					time: 4000,
+					bit: 0,
+					num: <?=$count_value4?>,
+					regulator: 50
+				})
+
+				var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+
+				const colorList = ["#9E87FF", '#73DDFF', '#fe9a8b', '#F56948', '#9E87FF']
+				var option = {
+					backgroundColor: '#fff',
+					tooltip: {
+						show: false
+					},
+					grid: {
+						top: '10%',
+						bottom: '6%',
+						left: '6%',
+						right: '6%',
+						containLabel: true
+					},
+					xAxis: [{
+						type: 'category',
+						boundaryGap: false,
+						axisLine: {
+							show: false
+						},
+						axisTick: {
+							show: false
+						},
+						axisLabel: {
+							margin: 10,
+							//textStyle: {
+								fontSize: 14,
+								color: 'rgba(#999)'
+							//}
+						},
+						splitLine: {
+							show: true,
+							lineStyle: {
+								color: '#939ab6',
+								opacity: .15
+							}
+						},
+						data: <?=json_encode(array_keys($day7_detail))?>
+					}, ],
+					yAxis: [{
+						type: 'value',
+						offset: 15,
+						max: 100,
+						min: 0,
+						axisTick: {
+							show: false
+						},
+						axisLine: {
+							show: false
+						},
+						axisLabel: {
+							margin: 10,
+							//textStyle: {
+								fontSize: 14,
+								color: '#999'
+							//}
+						},
+						splitLine: {
+							show: false
+						}
+					}],
+					series: [{
+						name: '2',
+						type: 'line',
+						z: 3,
+						showSymbol: false,
+						smoothMonotone: 'x',
+						lineStyle: {
+							width: 3,
+							color: {
+								type: 'linear',
+								x: 0,
+								y: 0,
+								x2: 0,
+								y2: 1,
+								colorStops: [{
+									offset: 0,
+									color: 'rgba(59,102,246)' // 0% 处的颜色
+								}, {
+									offset: 1,
+									color: 'rgba(118,237,252)' // 100% 处的颜色
+								}]
+							},
+							shadowBlur: 4,
+							shadowColor: 'rgba(69,126,247,.2)',
+							shadowOffsetY: 4
+						},
+						areaStyle: {
+							//normal: {
+								color: {
+									type: 'linear',
+									x: 0,
+									y: 0,
+									x2: 0,
+									y2: 1,
+									colorStops: [{
+										offset: 0,
+										color: 'rgba(227,233,250,.9)' // 0% 处的颜色
+									}, {
+										offset: 1,
+										color: 'rgba(248,251,252,.3)' // 100% 处的颜色
+									}]
+								}
+							//}
+						},
+						smooth: true,
+						data: <?=json_encode(array_values($day7_detail))?>
+					},]
+
+				};
+				echartsRecords.setOption(option);
+
+				window.onresize = function() {
+					echartsRecords.resize();
+				}
+
+			});
+		</script>
+	</body>
+</html>

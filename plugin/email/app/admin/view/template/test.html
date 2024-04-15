@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增模版</title>
+    <link rel="stylesheet" href="/app/admin/component/layui/css/layui.css" />
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
+</head>
+<body>
+<style>
+    .layui-textarea {
+        height: 10em;
+    }
+    .layui-tab .layui-table-cell {
+        overflow:visible !important;
+    }
+    .layui-table-body ,.layui-table-box{
+        overflow:visible !important;
+    }
+    .layui-tab .layui-form-select dl {
+        max-height: 190px;
+    }
+    .layui-table-body .layui-table-col-special:last-child {
+        width: 100% !important;
+        border-right: 1px solid #eee !important;
+    }
+    xm-select {
+        min-height: 38px;
+        line-height: 38px;
+    }
+    xm-select .xm-body .xm-option .xm-option-icon {
+        font-size: 18px !important;
+    }
+</style>
+
+<form class="layui-form" action="" lay-filter="test-template-form">
+
+    <div class="mainBox">
+        <div class="main-container mr-5">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">模版名</label>
+                <div class="layui-input-block">
+                    <select name="name" lay-verify="required" lay-search lay-filter="name">
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">收件人</label>
+                <div class="layui-input-block">
+                    <input type="text" name="to" required  lay-verify="required" placeholder="收件人" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">邮件内容</label>
+                <div class="layui-input-block">
+                    <textarea disabled name="content" class="layui-textarea layui-disabled"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">模版数据</label>
+                <div class="layui-input-block">
+                    <input type="text" name="data" placeholder='json结构，例如 {"code":"6666"}' autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                    lay-filter="save">
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-md">
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+
+<script src="/app/admin/component/layui/layui.js"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+
+<script>
+
+    const TEST_TEMPLATE_API = "/app/email/admin/setting/testTemplate";
+
+    layui.use(["form", "popup"], function () {
+        let $ = layui.$;
+        $.ajax({
+            url: "/app/email/admin/setting/selectTemplate",
+            success: function (res) {
+                if (res.code) {
+                    return layui.popup.failure(res.msg);
+                }
+                let options = '', map = {};
+                $.each(res.data, function (k, template) {
+                    options += '<option value="'+template.name+'">'+template.name+'</option>';
+                    map[template.name] = template.content;
+                });
+                $('select[name="name"]').append(options);
+                let name = layui.url().search.name;
+
+                let createData = function (content) {
+                    let ret, data = {}, reg=/\{(.*?)\}/g;
+                    let tmp = content.match(reg);
+                    tmp && $.each(tmp, function (k, v) {
+                        v = v.substr(1, v.length -2);
+                        data[v] = 'xxx';
+                    });
+                    return JSON.stringify(data);
+                };
+                layui.form.val("test-template-form", {name: name, content: map[name], data: createData(map[name])});
+                layui.form.on("select(name)", function (data) {
+                    let name = data.value;
+                    layui.form.val("test-template-form", {content: map[name], data: createData(map[name])});
+                });
+            }
+        });
+
+        //提交事件
+        layui.form.on("submit(save)", function () {
+            let data = layui.form.val("test-template-form");
+            $.ajax({
+                url: TEST_TEMPLATE_API,
+                type: "POST",
+                dateType: "json",
+                data: data,
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return layui.popup.success("操作成功", function () {
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    });
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+
+</body>
+</html>

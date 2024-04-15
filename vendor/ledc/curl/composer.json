@@ -1,0 +1,28 @@
+{
+    "name": "ledc/curl",
+    "description": "基于Curl的请求类库",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "david",
+            "email": "367013672@qq.com"
+        }
+    ],
+    "support": {
+        "email": "367013672@qq.com",
+        "issues": "https://github.com/ledccn/curl/issues",
+        "forum": "https://www.iyuu.cn",
+        "wiki": "https://www.iyuu.cn",
+        "source": "https://github.com/ledccn/curl"
+    },
+    "require": {
+        "php": ">=8.1",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ledc\\Curl\\": "src/"
+        }
+    }
+}

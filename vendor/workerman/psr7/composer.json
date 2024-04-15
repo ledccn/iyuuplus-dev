@@ -1,0 +1,34 @@
+{
+    "name": "workerman/psr7",
+    "type": "library",
+    "description": "PSR-7 message implementation that also provides common utility methods",
+    "keywords": ["request", "response", "message", "stream", "http", "uri", "url"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Dowling",
+            "email": "mtdowling@gmail.com",
+            "homepage": "https://github.com/mtdowling"
+        },
+        {
+            "name": "Tobias Schultze",
+            "homepage": "https://github.com/Tobion"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "psr/http-message": "~2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    },
+    "provide": {
+        "psr/http-message-implementation": "1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Workerman\\Psr7\\": "src/"
+        },
+        "files": ["src/functions_include.php"]
+    }
+}

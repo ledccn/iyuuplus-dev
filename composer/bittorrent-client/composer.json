@@ -1,0 +1,22 @@
+{
+  "name": "iyuu/bittorrent-client",
+  "type": "library",
+  "license": "MIT",
+  "description": "下载器客户端iyuu/bittorrent-client",
+  "require": {
+    "php": ">=8.2",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-simplexml": "*",
+    "ext-libxml": "*",
+    "ledc/container": "^8.0",
+    "ledc/curl": "^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Iyuu\\BittorrentClient\\": "src"
+    }
+  }
+}

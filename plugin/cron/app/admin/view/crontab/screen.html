@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>计划任务输出</title>
+    <link rel="stylesheet" href="/app/cron/layui-v2.9.7/css/layui.css"/>
+</head>
+<body>
+<pre class="layui-code" id="shell_output"></pre>
+</body>
+<script src="/app/cron/layui-v2.9.7/layui.js"></script>
+<script src="/plugin/webman/push/push.js"></script>
+<script type="text/javascript">
+    const PRIMARY_KEY = "crontab_id";
+    const crontab_id = layui.url().search[PRIMARY_KEY] || '';
+    const task_type = layui.url().search['task_type'] || '';
+    // 终端输出
+    let output = [];
+    let total = 0;
+    <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
+    //接口地址
+    const PUSH_API = {
+        url: (location.protocol === 'http:' ? 'ws://' : 'wss://') + location.hostname + (location.port ? ':<?=$websocket_port?>' : ''),
+        app_key: '<?=$app_key?>',
+        auth: '/plugin/webman/push/auth'
+    };
+
+    layui.use(["jquery", "form", "layer", "code"], function () {
+        let $ = layui.$,
+            form = layui.form,
+            layer = layui.layer;
+
+        let codeInst = layui.code({
+            elem: '#shell_output',
+            theme: 'dark',
+            ln: false,
+            code: ''
+        });
+
+        let connection = new Push(PUSH_API);
+        let channel = connection.subscribe('private-webman-admin');
+        // shell输出消息
+        channel.on('shell_output', function (data) {
+            const type = data.type || '';
+            const msg = data.msg || '';
+            if ('crontab_id:' + crontab_id === type) {
+                total++;
+                document.title = '计划任务输出 ' + String(total);
+                output.push(String(msg));
+                if (50 < output.length) {
+                    output.shift();
+                }
+                codeInst.reloadCode({
+                    code: output.join("\r\n"),
+                });
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+    });
+</script>
+</html>

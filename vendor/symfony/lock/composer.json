@@ -1,0 +1,37 @@
+{
+    "name": "symfony/lock",
+    "type": "library",
+    "description": "Creates and manages locks, a mechanism to provide exclusive access to a shared resource",
+    "keywords": ["locking", "redlock", "mutex", "semaphore", "flock", "cas"],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jérémy Derussé",
+            "email": "jeremy@derusse.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "psr/log": "^1|^2|^3"
+    },
+    "require-dev": {
+        "doctrine/dbal": "^3.6|^4",
+        "predis/predis": "^1.1|^2.0"
+    },
+    "conflict": {
+        "doctrine/dbal": "<3.6",
+        "symfony/cache": "<6.4"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Component\\Lock\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev"
+}

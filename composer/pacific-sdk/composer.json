@@ -1,0 +1,17 @@
+{
+  "name": "iyuu/pacific-sdk",
+  "type": "library",
+  "license": "MIT",
+  "description": "Webman plugin iyuu/pacific-sdk",
+  "require": {
+    "php": ">=8.2",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ledc/curl": "^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Iyuu\\PacificSdk\\": "src"
+    }
+  }
+}

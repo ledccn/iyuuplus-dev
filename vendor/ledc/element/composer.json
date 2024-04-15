@@ -1,0 +1,29 @@
+{
+  "name": "ledc/element",
+  "type": "library",
+  "license": "MIT",
+  "description": "HTML和JavaScript生成器接口",
+  "authors": [
+    {
+      "name": "david",
+      "email": "367013672@qq.com",
+      "homepage": "https://www.iyuu.cn",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "367013672@qq.com",
+    "issues": "https://github.com/ledccn/ledc-element/issues",
+    "releases": "https://github.com/ledccn/ledc-element/releases",
+    "wiki": "https://github.com/ledccn/ledc-element/wiki",
+    "source": "https://github.com/ledccn/ledc-element"
+  },
+  "require": {
+    "php": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ledc\\Element\\": "src"
+    }
+  }
+}

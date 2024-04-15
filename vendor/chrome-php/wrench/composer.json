@@ -1,0 +1,48 @@
+{
+    "name": "chrome-php/wrench",
+    "description": "A simple PHP WebSocket implementation",
+    "keywords": ["websocket", "websockets", "hybi"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Graham Campbell",
+            "email": "hello@gjcampbell.co.uk",
+            "homepage": "https://github.com/GrahamCampbell"
+        }
+    ],
+    "require": {
+        "php": "^7.4.15 || ^8.0.2",
+        "ext-sockets": "*",
+        "psr/log": "^1.1 || ^2.0 || ^3.0",
+        "symfony/polyfill-php80": "^1.26"
+    },
+    "require-dev": {
+        "bamarni/composer-bin-plugin": "^1.8.2",
+        "phpunit/phpunit": "^9.6.3 || ^10.0.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wrench\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wrench\\": "tests/"
+        }
+    },
+    "conflict": {
+        "wrench/wrench": "*"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": false
+        }
+    }
+}

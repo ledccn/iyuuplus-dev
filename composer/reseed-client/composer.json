@@ -1,0 +1,22 @@
+{
+  "name": "iyuu/reseed-client",
+  "type": "library",
+  "license": "MIT",
+  "description": "辅种API客户端iyuu/reseed-client",
+  "require": {
+    "php": ">=8.2",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-simplexml": "*",
+    "ext-libxml": "*",
+    "ledc/container": "^8.0",
+    "ledc/curl": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Iyuu\\ReseedClient\\": "src"
+    }
+  }
+}

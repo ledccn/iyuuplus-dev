@@ -1,0 +1,8 @@
+/.idea
+/.vscode
+/*.log
+.DS_Store
+*.DS_Store
+._.DS_Store
+/vendor
+/composer.lock

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>保存任务</title>
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/app/admin/component/jsoneditor/css/jsoneditor.css"/>
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
+</head>
+<body>
+
+<form class="layui-form" action=""  lay-filter="crontab-filter">
+
+    <div class="mainBox">
+        <div class="main-container mr-5">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">任务类型</label>
+                <div class="layui-input-block">
+                    <div name="task_type" id="task_type" value="0"></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">任务标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" value="" required lay-verify="required" placeholder=""
+                           class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">执行周期</label>
+                <div class="layui-inline">
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="crontab[where]" lay-filter="where" lay-verify="required" lay-reqtext="执行周期不能为空" value="day" id="where">
+                            <option value="day" selected>每天</option>
+                            <option value="day_n">N天</option>
+                            <option value="hour">每小时</option>
+                            <option value="hour_n">N小时</option>
+                            <option value="minute_n">N分钟</option>
+                            <option value="week">每星期</option>
+                            <option value="month">每月</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: inline-block" id="crontab_where_view"></div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">执行表达式</label>
+                <div class="layui-input-block">
+                    <input type="text" name="rule" value=""
+                           placeholder="请输入任务执行表达式" class="layui-input" disabled>
+                </div>
+            </div>
+
+            <!-- 枚举配置的模板 开始 -->
+            <?=$html?>
+            <!-- 枚举配置的模板 结束 -->
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序</label>
+                <div class="layui-input-block">
+                    <input type="number" name="sort" value="0" placeholder="请输入排序，值越大越前" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">启用</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" id="enabled" lay-filter="enabled" lay-skin="switch" lay-text="开启|关闭"/>
+                    <input type="text" style="display:none" name="enabled" value="1"/>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                    lay-filter="save">
+                提交
+            </button>
+        </div>
+    </div>
+
+</form>
+
+<!-- 执行周期模板 开始 -->
+<script type="text/html" id="crontab_where_tpl">
+    {{# if (d.weeks) { }}
+    <div class="layui-inline" id="weeks">
+        <div class="layui-input-inline" style="width: 100px;">
+            <select name="crontab[weeks]" lay-filter="weeks" lay-verify="required">
+                <option value="1" selected>周一</option>
+                <option value="2">周二</option>
+                <option value="3">周三</option>
+                <option value="4">周四</option>
+                <option value="5">周五</option>
+                <option value="6">周六</option>
+                <option value="0">周日</option>
+            </select>
+        </div>
+    </div>
+    {{# } }}
+    {{# if (d.day) { }}
+    <div class="layui-inline" id="day">
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" name="crontab[day]" lay-verify="required" lay-reqtext="间隔天数不能为空" placeholder="间隔天数" class="layui-input">
+        </div>
+        <div class="layui-form-mid">天</div>
+    </div>
+    {{# } }}
+    {{# if (d.date) { }}
+    <div class="layui-inline" id="date">
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" name="crontab[date]" lay-verify="required" lay-reqtext="每月第几日不能为空" placeholder="每月第几日" class="layui-input">
+        </div>
+        <div class="layui-form-mid">日</div>
+    </div>
+    {{# } }}
+    {{# if (d.hour) { }}
+    <div class="layui-inline" id="hour">
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" name="crontab[hour]" lay-verify="required" lay-reqtext="小时不能为空" placeholder="请输入小时" class="layui-input">
+        </div>
+        <div class="layui-form-mid">小时</div>
+    </div>
+    {{# } }}
+    {{# if (d.minute) { }}
+    <div class="layui-inline" id="minute">
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" name="crontab[minute]" lay-verify="required" lay-reqtext="分钟不能为空" placeholder="请输入分钟" class="layui-input">
+        </div>
+        <div class="layui-form-mid">分钟</div>
+    </div>
+    {{# } }}
+</script>
+<!-- 执行周期模板 结束 -->
+
+<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+<script src="/app/admin/component/jsoneditor/jsoneditor.js"></script>
+<script src="/app/admin/admin/js/permission.js"></script>
+<script src="/app/cron/vue/3.4.21/vue.global.prod.js"></script>
+<script>
+    const {createApp, ref, onUpdated} = Vue
+
+    // 相关接口
+    const PRIMARY_KEY = "crontab_id";
+    const INSERT_API = "/app/cron/admin/crontab/insert";
+    const UPDATE_API = "/app/cron/admin/crontab/update";
+    const FIND_API = "/app/cron/admin/crontab/find" + location.search;
+    const crontab_id = layui.url().search[PRIMARY_KEY] || '';
+    const task_type = layui.url().search['task_type'] || '';
+    if (task_type) {
+        layui.$("#task_type").attr("value", task_type);
+    }
+    // 更新时的回调函数
+    let update_render_callable = [];
+    // 当前计划任务数据
+    let crontab_data = null;
+
+    // 字段 任务类型 task_type
+    layui.use(["form", "jquery", "xmSelect", "popup", "laytpl"], function () {
+        let $ = layui.$,
+            form = layui.form,
+            laytpl = layui.laytpl;
+        let getTpl = document.getElementById('crontab_where_tpl').innerHTML,
+            view = document.getElementById('crontab_where_view');
+
+        // 模板JS代码 开始
+        <?=$js?>
+        // 模板JS代码 结束
+
+        /**
+         * 初始化元素的属性值
+         * @param {string} selector
+         * @param {string|int} value
+         */
+        function init_element_attr_value(selector, value) {
+            let obj = $(selector);
+            if (typeof obj[0] === "undefined" || !obj[0].nodeName) return;
+
+            console.log('初始化' + obj[0].nodeName.toLowerCase() + '属性值', selector, value)
+            if (obj[0].nodeName.toLowerCase() === "textarea") {
+                obj.val(value);
+            } else {
+                obj.attr("value", value);
+                obj[0].value = value;
+                if ('checkbox' === obj.attr('type')) {
+                    obj.attr('checked', true);
+                } else if (obj[0].nodeName.toLowerCase() === "select") {
+                    obj.find('option[value="' + value + '"]').attr('selected', true);
+                }
+            }
+        }
+
+        /**
+         * 渲染：执行周期
+         * @param {string} where
+         */
+        function render_crontab_select(where = '') {
+            let val = where || $('*[name="crontab[where]"]').val();
+            const data = {
+                where: val,
+                weeks: val === 'week',
+                day: val === 'day_n',
+                date: val === 'month',
+                hour: $.inArray(val, ['hour', 'minute_n']) < 0,
+                minute: Boolean(val)
+            };
+            view.innerHTML = '';
+            if (val === '') {
+                return;
+            }
+            laytpl(getTpl).render(data, function (html) {
+                view.innerHTML = html;
+            });
+            form.render();
+        }
+
+        /**
+         * 渲染其他公共字段
+         */
+        function render_field() {
+            // 字段 启用 enabled
+            layui.$("#enabled").attr("checked", layui.$('input[name="enabled"]').val() != 0);
+            layui.form.render();
+            layui.form.on("switch(enabled)", function (data) {
+                layui.$('input[name="enabled"]').val(this.checked ? 1 : 0);
+            });
+
+            /**
+             * 计划任务类型
+             */
+            layui.$.ajax({
+                url: "/app/cron/index/taskType",
+                dataType: "json",
+                success: function (res) {
+                    let value = layui.$("#task_type").attr("value");
+                    let initValue = value ? value.split(",") : [];
+                    layui.xmSelect.render({
+                        el: "#task_type",
+                        name: "task_type",
+                        initValue: initValue,
+                        filterable: true,
+                        data: res.data,
+                        value: "0",
+                        model: {"icon": "hidden", "label": {"type": "text"}},
+                        clickClose: true,
+                        radio: true,
+                        disabled: Boolean(task_type),
+                    });
+                    if (res.code) {
+                        layui.popup.failure(res.msg);
+                    }
+
+                    //监听选择：执行周期where
+                    form.on('select(where)', function (data) {
+                        render_crontab_select(data.value);
+                    });
+                },
+                complete: function () {
+                    // 更新时的回调函数
+                    update_render_callable.forEach((fn) => {
+                        try {
+                            if (typeof fn === 'function') {
+                                fn();
+                            }
+                        } catch (error) {
+                            return false;
+                        }
+                    });
+                }
+            });
+        }
+
+        if (crontab_id) {
+            // 更新（给表单初始化数据）
+            $.ajax({
+                url: FIND_API,
+                dataType: "json",
+                success: function (res) {
+                    // 当前计划任务数据
+                    crontab_data = res.data;
+                    // 给表单初始化数据
+                    layui.each(res.data, function (key, value) {
+                        if ('crontab' === key) {
+                            render_crontab_select(value['where']);
+                            layui.each(value, function (kk, vv) {
+                                // 基础类型(输入框、选择框、单选框)
+                                init_element_attr_value('*[name="crontab[' + kk + ']"]', vv)
+                            });
+                        } else {
+                            init_element_attr_value('*[name="' + key + '"]', value)
+                        }
+                    });
+                    render_field();
+                }
+            });
+        } else {
+            // 创建
+            render_crontab_select('day');
+            render_field();
+        }
+    });
+
+    //提交事件
+    layui.use(["form", "popup"], function () {
+        // 字段验证允许为空
+        layui.form.verify({
+            phone: [/(^$)|^1\d{10}$/, "请输入正确的手机号"],
+            email: [/(^$)|^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/, "邮箱格式不正确"],
+            url: [/(^$)|(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, "链接格式不正确"],
+            number: [/(^$)|^\d+$/, '只能填写数字'],
+            date: [/(^$)|^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/, "日期格式不正确"],
+            identity: [/(^$)|(^\d{15}$)|(^\d{17}(x|X|\d)$)/, "请输入正确的身份证号"]
+        });
+        // 提交表单
+        layui.form.on("submit(save)", function (data) {
+            if (crontab_id) {
+                data.field[PRIMARY_KEY] = crontab_id;
+            }
+
+            layui.$.ajax({
+                url: (crontab_id ? UPDATE_API : INSERT_API),
+                type: "POST",
+                dateType: "json",
+                data: data.field,
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return layui.popup.success("操作成功", function () {
+                        parent.refreshTable();
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    });
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+
+</body>
+</html>

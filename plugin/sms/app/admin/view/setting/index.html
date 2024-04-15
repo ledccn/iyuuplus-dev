@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>短信设置</title>
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
+</head>
+<body class="pear-container">
+
+
+<div class="layui-card">
+    <div class="layui-card-body">
+
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <?php
+                    $i = 0;
+                    foreach($defaultConfig['gateways'] as $gatewayName => $gateway){
+                ?>
+                <li<?=$i++==0?' class="layui-this"':''?>><?=$gateway['name']?></li>
+                <?php } ?>
+            </ul>
+            <div class="layui-tab-content">
+
+                <?php
+                $i = 0;
+                foreach($defaultConfig['gateways'] as $gatewayName => $gateway){ ?>
+                <div class="layui-tab-item<?=$i++==0?' layui-show':''?>">
+
+                    <div class="layui-tab">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">标签管理</li>
+                            <li>账户设置</li>
+                        </ul>
+                        <div class="layui-tab-content">
+
+                            <!-- 标签管理 -->
+                            <div class="layui-tab-item layui-show">
+                                <!-- 数据表格 -->
+                                <div class="layui-card">
+                                    <div class="layui-card-body">
+                                        <table id="data-table-<?=$gatewayName?>" lay-filter="data-table-<?=$gatewayName?>"></table>
+                                    </div>
+                                </div>
+
+                                <!-- 表格顶部工具栏 -->
+                                <script type="text/html" id="table-toolbar">
+                                    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.sms.admin.setting.insertTag">
+                                        <i class="layui-icon layui-icon-add-1"></i>新增标签
+                                    </button>
+                                    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="app.sms.admin.setting.deleteTag">
+                                        <i class="layui-icon layui-icon-delete"></i>删除标签
+                                    </button>
+                                </script>
+
+                                <!-- 表格行工具栏 -->
+                                <script type="text/html" id="table-bar">
+                                    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.sms.admin.setting.updateTag">编辑</button>
+                                    <button class="pear-btn pear-btn-xs tool-btn" lay-event="test" permission="app.sms.admin.setting.testTag">测试</button>
+                                    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.sms.admin.setting.deleteTag">删除</button>
+                                </script>
+                            </div>
+
+                            <!-- 账户管理 -->
+                            <div class="layui-tab-item">
+                                <form class="layui-form" action="" onsubmit="return false" lay-filter="<?=$gatewayName?>">
+
+                                    <input type="hidden" name="gateway" value="<?=$gatewayName?>">
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">状态</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="enable" lay-skin="switch" lay-text="开启|关闭">
+                                        </div>
+                                    </div>
+
+                                    <?php
+                            foreach($gateway as $field => $value){
+                                    if ($field === 'name') continue;
+                                    ?>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label"><?=$field?></label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="<?=$field?>" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="<?=$field=='sign_name'?'默认签名':''?>">
+                                        </div>
+                                    </div>
+                                    <?php } ?>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit="" lay-filter="save<?=$gatewayName?>">
+                                                保存
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <?php } ?>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="/app/admin/component/layui/layui.js"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+<script src="/app/admin/admin/js/permission.js"></script>
+<script src="/app/admin/admin/js/common.js"></script>
+
+
+<!-- 标签设置 -->
+<script>
+
+    const defaultConfig = <?=json_encode($defaultConfig, JSON_UNESCAPED_UNICODE)?>;
+
+    // 相关接口
+    const SELECT_API = "/app/sms/admin/setting/selectTag";
+    const UPDATE_API = "/app/sms/admin/setting/updateTag";
+    const DELETE_API = "/app/sms/admin/setting/deleteTag";
+    const INSERT_URL = "/app/sms/admin/setting/insertTag";
+    const UPDATE_URL = "/app/sms/admin/setting/updateTag";
+    const TEST_URL = "/app/sms/admin/setting/TestTag";
+
+    // 表格渲染
+    layui.use(["table", "form", "common", "popup"], function() {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.$;
+        let common = layui.common;
+
+        // 表头参数
+        let cols = [
+            {
+                type: "checkbox"
+            },{
+                title: "标签名称",
+                field: "name",
+                width: 200,
+            },{
+                title: "厂商标签ID",
+                field: "template_id",
+            },{
+                title: "厂商签名",
+                field: "sign",
+            },{
+                title: "操作",
+                toolbar: "#table-bar",
+                align: "center",
+                width: 180,
+                fixed: "right",
+            }
+        ];
+
+
+        $.ajax({
+            url: "/app/sms/admin/setting/get",
+            success: function (res) {
+                if (res.code) {
+                    return layui.popup.failure(res.msg);
+                }
+                $.each(defaultConfig.gateways, function(gateway, config){
+                    if (res.data && res.data.gateways &&res.data.gateways[gateway]) {
+                        config = res.data.gateways[gateway];
+                    }
+                    render(gateway, config);
+                });
+            }
+        });
+
+        function render(gateway, config)
+        {
+            form.val(gateway, config);
+            let data = [];
+            $.each(config.tags||[], function (tagName, tag) {
+                tag.name = tagName;
+                data.push(tag);
+            });
+            let tableName = "data-table-" + gateway;
+            table.render({
+                elem: "#" + tableName,
+                data: data,
+                page: true,
+                cols: [cols],
+                skin: "line",
+                size: "lg",
+                toolbar: "#table-toolbar",
+                autoSort: false,
+                defaultToolbar: []
+            });
+
+            // 编辑或删除行事件
+            table.on("tool("+tableName+")", function(obj) {
+                switch (obj.event) {
+                    case "remove":
+                        return remove(obj);
+                    case "edit":
+                        return edit(obj);
+                    case "test":
+                        return test(obj);
+                }
+            });
+
+            // 表格顶部工具栏事件
+            table.on("toolbar("+tableName+")", function(obj) {
+                if (obj.event === "add") {
+                    add();
+                } else if (obj.event === "refresh") {
+                    refreshTable();
+                } else if (obj.event === "batchRemove") {
+                    batchRemove(obj);
+                }
+            });
+
+            // 表格排序事件
+            table.on("sort("+tableName+")", function(obj){
+                table.reload(tableName, {
+                    initSort: obj,
+                    scrollPos: "fixed",
+                    where: {
+                        field: obj.field,
+                        order: obj.type
+                    }
+                });
+            });
+
+            // 表格新增数据
+            let add = function() {
+                layer.open({
+                    type: 2,
+                    title: "新增标签",
+                    shade: 0.1,
+                    area: [common.isModile()?"100%":"500px", common.isModile()?"100%":"450px"],
+                    content: INSERT_URL + '?gateway=' + gateway
+                });
+            }
+
+            // 表格测试数据
+            let test = function(obj) {
+                let value = obj.data["name"];
+                layer.open({
+                    type: 2,
+                    title: "修改",
+                    shade: 0.1,
+                    area: [common.isModile()?"100%":"500px", common.isModile()?"100%":"450px"],
+                    content: TEST_URL + "?gateway="+gateway+"&name=" + value
+                });
+            }
+
+            // 表格编辑数据
+            let edit = function(obj) {
+                let value = obj.data["name"];
+                layer.open({
+                    type: 2,
+                    title: "修改",
+                    shade: 0.1,
+                    area: [common.isModile()?"100%":"500px", common.isModile()?"100%":"450px"],
+                    content: UPDATE_URL + "?gateway="+gateway+"&name=" + value
+                });
+            }
+
+            // 删除一行
+            let remove = function(obj) {
+                return doRemove(obj.data["name"]);
+            }
+
+            // 删除多行
+            let batchRemove = function(obj) {
+                let checkIds = common.checkField(obj, "name");
+                if (checkIds === "") {
+                    layui.popup.warning("未选中数据");
+                    return false;
+                }
+                doRemove(checkIds.split(","));
+            }
+
+            // 执行删除
+            let doRemove = function (ids) {
+                let data = {
+                    gateway: gateway,
+                    name: ids
+                };
+                layer.confirm("确定删除?", {
+                    icon: 3,
+                    title: "提示"
+                }, function(index) {
+                    layer.close(index);
+                    let loading = layer.load();
+                    $.ajax({
+                        url: DELETE_API,
+                        data: data,
+                        dataType: "json",
+                        type: "post",
+                        success: function(res) {
+                            layer.close(loading);
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success("操作成功", refreshTable);
+                        }
+                    })
+                });
+            }
+
+        }
+
+        // 刷新表格数据
+        window.refreshTable = function() {
+            $.ajax({
+                url: "/app/sms/admin/setting/get",
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    if (res.data && res.data.gateways) {
+                        $.each(res.data.gateways, function (gateway, config) {
+                            let data = [];
+                            $.each(config.tags || [], function (tagName, tag) {
+                                tag.name = tagName;
+                                data.push(tag);
+                            });
+                            table.reloadData("data-table-" + gateway, {data: data, scrollPos: "fixed"});
+                        });
+                    }
+                }
+            });
+        }
+
+
+    })
+
+
+</script>
+
+<script>
+    layui.use(["form", "popup"], function(){
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        // 提交表单
+        <?php foreach($defaultConfig['gateways'] as $gatewayName => $gateway){ ?>
+
+            form.on("submit(save<?=$gatewayName?>)", function(data){
+                $.ajax({
+                    url: "/app/sms/admin/setting/save",
+                    dataType: "json",
+                    type: "POST",
+                    data: data.field,
+                    success: function (res) {
+                        if (res.code) {
+                            return layui.popup.failure(res.msg);
+                        }
+                        form.val("<?=$gatewayName?>", data.field);
+                        return layui.popup.success("操作成功");
+                    }
+                });
+                return false;
+            });
+
+            <?php } ?>
+
+    });
+
+</script>
+
+<style>
+
+    .layui-input-block {
+        margin-left: 150px;
+    }
+
+    .layui-form-label {
+        width:120px;
+    }
+
+    form {
+        width: 520px;
+    }
+
+</style>
+</body>
+</html>
+

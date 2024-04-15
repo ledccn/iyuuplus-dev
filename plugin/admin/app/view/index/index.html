@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>主页</title>
+    <!-- 依 赖 样 式 -->
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
+    <!-- 加 载 样 式 -->
+    <link rel="stylesheet" href="/app/admin/admin/css/loader.css"/>
+    <!-- 布 局 样 式 -->
+    <link rel="stylesheet" href="/app/admin/admin/css/admin.css"/>
+    <!-- 重置样式 -->
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
+</head>
+<!-- 结 构 代 码 -->
+<body class="layui-layout-body pear-admin">
+<!-- 布 局 框 架 -->
+<div class="layui-layout layui-layout-admin">
+    <!-- 顶 部 样 式 -->
+    <div class="layui-header">
+        <!-- 菜 单 顶 部 -->
+        <div class="layui-logo">
+            <!-- 图 标 -->
+            <img class="logo">
+            <!-- 标 题 -->
+            <span class="title"></span>
+        </div>
+        <!-- 顶 部 左 侧 功 能 -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="collapse layui-nav-item"><a href="#" class="layui-icon layui-icon-shrink-right"></a></li>
+            <li class="refresh layui-nav-item"><a href="#" class="layui-icon layui-icon-refresh-1" loading=600></a></li>
+        </ul>
+        <!-- 多 系 统 菜 单 -->
+        <div id="control" class="layui-layout-control"></div>
+        <!-- 顶 部 右 侧 菜 单 -->
+        <ul class="layui-nav layui-layout-right">
+            <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
+            <li class="layui-nav-item layui-hide-xs"><a href="/" class="layui-icon layui-icon-wifi"
+                                                        style="color: #ff5722;" id="websocket_state"
+                                                        target="_blank"></a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="#" class="menuSearch layui-icon layui-icon-search"></a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs"><a href="#"
+                                                        class="fullScreen layui-icon layui-icon-screen-full"></a></li>
+            <li class="layui-nav-item layui-hide-xs message"></li>
+            <li class="layui-nav-item user">
+                <!-- 头 像 -->
+                <a class="layui-icon layui-icon-username" href="javascript:;"></a>
+                <!-- 功 能 菜 单 -->
+                <dl class="layui-nav-child">
+                    <dd><a user-menu-url="/app/admin/account/index" user-menu-id="10"
+                           user-menu-title="基本资料">基本资料</a></dd>
+                    <dd><a href="javascript:void(0);" class="logout">注销登录</a></dd>
+                </dl>
+            </li>
+            <!-- 主 题 配 置 -->
+            <li class="layui-nav-item setting"><a href="#" class="layui-icon layui-icon-more-vertical"></a></li>
+        </ul>
+    </div>
+    <!-- 侧 边 区 域 -->
+    <div class="layui-side layui-bg-black">
+        <!-- 菜 单 顶 部 -->
+        <div class="layui-logo">
+            <!-- 图 标 -->
+            <img class="logo">
+            <!-- 标 题 -->
+            <a href="/"><span class="title"></span></a>
+        </div>
+        <!-- 菜 单 内 容 -->
+        <div class="layui-side-scroll">
+            <div id="sideMenu"></div>
+        </div>
+    </div>
+    <!-- 视 图 页 面 -->
+    <div class="layui-body">
+        <!-- 内 容 页 面 -->
+        <div id="content"></div>
+    </div>
+    <!-- 页脚 -->
+    <div class="layui-footer layui-text">
+                <span class="left">
+                    Released under the MIT license.
+                </span>
+        <span class="center"></span>
+    </div>
+    <!-- 遮 盖 层 -->
+    <div class="pear-cover"></div>
+    <!-- 加 载 动 画 -->
+    <div class="loader-main">
+        <!-- 动 画 对 象 -->
+        <div class="loader"></div>
+    </div>
+</div>
+<!-- 移 动 端 便 捷 操 作 -->
+<div class="pear-collapsed-pe collapse">
+    <a href="#" class="layui-icon layui-icon-shrink-right"></a>
+</div>
+<!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
+<!-- 进度条 -->
+<div id="progress-layer-wrapper" style="display: none;">
+    <div class="layui-card">
+        <div class="layui-card-header">执行数：<span class="layui-badge-rim"
+                                                    id="progress-layer-count">0</span> / 总数：<span
+                class="layui-badge-rim" id="progress-layer-total">0</span></div>
+        <div class="layui-card-body">
+            <div class="layui-progress layui-progress-big" lay-filter="filter-progress">
+                <div class="layui-progress-bar" lay-percent="0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 依 赖 脚 本 -->
+<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+<!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
+<script src="/push.js"></script>
+<!-- 框 架 初 始 化 -->
+<script>
+    /**
+     * 屏幕宽度小于指定值
+     * @param px
+     * @returns {boolean}
+     */
+    function isWidthLessThan(px = 1650) {
+        console.info(location.pathname, '屏幕宽度：', layui.$(window).width());
+        return layui.$(window).width() <= px;
+    }
+
+    const hostname = location.hostname;
+    console.log(location);
+    <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
+    //接口地址
+    const API = {
+        push: {
+            url: (location.protocol === 'http:' ? 'ws://' : 'wss://') + hostname + (location.port ? ':<?=$websocket_port?>' : ''),
+            app_key: '<?=$app_key?>',
+            auth: '/plugin/webman/push/auth'
+        },
+    };
+
+    /**
+     * 帮助
+     * @type {{qq_qun: string}}
+     */
+    window.IYUU_HELP = {
+        qq_qun: '859882209、41477250、924099912',
+    };
+    localStorage.setItem('IYUU_HELP', JSON.stringify(window.IYUU_HELP));
+
+    // Admin
+    window.Admin = {
+        Account: {}
+    };
+
+    layui.use(["admin", "jquery", "popup", "drawer", "notice", "element", 'pusher'], function () {
+        var $ = layui.$;
+        var admin = layui.admin;
+        var popup = layui.popup;
+        let notice = layui.notice;
+        let pusher = layui.pusher;
+        let element = layui.element;
+
+        pusher.connect({
+            url: '<?=$services_url?>',
+            token: '<?=$services_token?>'
+        });
+
+        isWidthLessThan();
+        // 渲染进度条组件
+        element.render('progress', 'filter-progress');
+
+        admin.setConfigType("json");
+        admin.setConfigPath("/app/admin/config/get");
+
+        admin.render();
+
+        // 登出逻辑
+        admin.logout(function () {
+            $.ajax({
+                url: "/app/admin/account/logout",
+                dataType: "json",
+                success: function (res) {
+                    if (res.code) {
+                        return popup.error(res.msg);
+                    }
+                    popup.success("注销成功", function () {
+                        location.reload();
+                    })
+                }
+            });
+            return false;
+        })
+
+        $.ajax({
+            url: "/app/admin/account/info",
+            dataType: 'json',
+            success: function (res) {
+                window.Admin.Account = res.data;
+            }
+        });
+
+        // 消息点击回调
+        //admin.message(function(id, title, context, form) {});
+
+        let connection = new Push(API.push);
+        console.info(API);
+
+        /**
+         * 显示websocket连接的状态
+         */
+        function show_websocket_state() {
+            if (connection.connection.state === 'connected') {
+                document.getElementById('websocket_state').style.color = '#16b777';
+                sessionStorage.setItem('websocket_state', '1');
+            } else {
+                document.getElementById('websocket_state').style.color = '#ff5722';
+                sessionStorage.setItem('websocket_state', '0');
+                notice.error('长链接断线');
+            }
+        }
+
+        setInterval(() => {
+            show_websocket_state();
+        }, 2000);
+
+        let channel = connection.subscribe('private-webman-admin');
+        // 普通消息
+        channel.on('message', function (data) {
+            console.info(data)
+        });
+        // 进度条
+        channel.on('progress', function (data) {
+            const type = data.type;
+            const count = data.success + data.fail;
+            const total = data.total;
+            const percent = count + ' / ' + total;
+            // 设置进度值
+            element.progress('filter-progress', percent);
+            document.getElementById('progress-layer-count').innerText = count;
+            document.getElementById('progress-layer-total').innerText = total;
+            // 捕获页面元素，弹出进度条
+            layer.open({
+                type: 1,
+                id: 'progress-layer' + type,
+                title: '任务进度条',
+                area: '520px',
+                shade: false, // 不显示遮罩
+                content: $('#progress-layer-wrapper'), // 捕获的元素
+                success: function (layero, index, that) {
+                    // 弹层的最外层元素的 jQuery 对象
+                    console.log(layero);
+                    // 弹层的索引值
+                    console.log(index);
+                    // 弹层内部原型链中的 this --- 2.8+
+                    console.log(that);
+                },
+                end: function () {
+                    // layer.msg('关闭后的回调', {icon:6});
+                }
+            });
+        });
+        //通知
+        channel.on('notify', function (data) {
+            switch (data.type) {
+                case 'success':
+                    notice.success(data.msg);
+                    break;
+                case 'error':
+                    notice.error(data.msg);
+                    break;
+                case 'warning':
+                    notice.warning(data.msg);
+                    break;
+                case 'info':
+                    notice.info(data.msg);
+                    break;
+                default:
+                    notice.clear();
+                    break;
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

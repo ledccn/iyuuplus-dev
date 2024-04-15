@@ -1,0 +1,21 @@
+{
+  "name": "ledc/pipeline",
+  "type": "library",
+  "license": "MIT",
+  "description": "管道模式 ledc/pipeline",
+  "authors": [
+    {
+      "name": "david",
+      "email": "367013672@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "psr/container": ">=2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ledc\\Pipeline\\": "src"
+    }
+  }
+}

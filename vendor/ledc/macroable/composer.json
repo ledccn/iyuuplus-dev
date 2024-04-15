@@ -1,0 +1,20 @@
+{
+    "name": "ledc/macroable",
+    "description": "向类动态添加方法的trait特性",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Ledc\\Macroable\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "david",
+            "email": "367013672@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    }
+}

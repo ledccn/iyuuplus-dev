@@ -1,0 +1,69 @@
+<?php
+
+namespace app;
+
+use app\admin\services\client\ClientServices;
+use app\admin\services\download\DownloaderServices;
+use app\admin\services\reseed\CrontabObserver;
+use app\admin\services\reseed\ReseedTemplate;
+use app\model\Client;
+use app\model\ClientObserver;
+use app\model\Reseed;
+use app\model\ReseedObserver;
+use app\model\Site;
+use app\model\SiteObserver;
+use plugin\cron\api\CrontabExtend;
+use plugin\cron\app\model\Crontab;
+use Workerman\Worker;
+
+/**
+ * 进程启动时onWorkerStart时运行的回调配置
+ * @link https://learnku.com/articles/6657/model-events-and-observer-in-laravel
+ */
+class Bootstrap implements \Webman\Bootstrap
+{
+    /**
+     * @param Worker|null $worker
+     * @return void
+     */
+    public static function start(?Worker $worker): void
+    {
+        self::initObserver();
+        self::initCrontabExtend();
+
+        ClientServices::bootstrap();
+        DownloaderServices::bootstrap();
+    }
+
+    /**
+     * 初始化模型观察者
+     * @return void
+     */
+    protected static function initObserver(): void
+    {
+        //【新增】依次触发的顺序是：
+        //saving -> creating -> created -> saved
+
+        //【更新】依次触发的顺序是:
+        //saving -> updating -> updated -> saved
+
+        // updating 和 updated 会在数据库中的真值修改前后触发。
+        // saving 和 saved 则会在 Eloquent 实例的 original 数组真值更改前后触发
+        Client::observe(ClientObserver::class);
+        Crontab::observe(CrontabObserver::class);
+        Reseed::observe(ReseedObserver::class);
+        Site::observe(SiteObserver::class);
+    }
+
+    /**
+     * 扩展支持新的计划任务类型
+     * @return void
+     */
+    protected static function initCrontabExtend(): void
+    {
+        $reseedTemplate = new ReseedTemplate();
+        CrontabExtend::getInstance()->registerEnumsProvider($reseedTemplate)
+            ->registerTemplateProvider($reseedTemplate)
+            ->registerSchedulerProvider($reseedTemplate);
+    }
+}

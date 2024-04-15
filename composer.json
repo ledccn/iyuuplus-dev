@@ -1,0 +1,95 @@
+{
+  "name": "iyuuplus/iyuuplus",
+  "type": "project",
+  "keywords": [
+    "high performance",
+    "http service"
+  ],
+  "homepage": "https://www.iyuu.cn",
+  "license": "MIT",
+  "description": "IYUUPlus开发版.",
+  "authors": [
+    {
+      "name": "david",
+      "email": "367013672@qq.com",
+      "homepage": "https://www.iyuu.cn",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "367013672@qq.com",
+    "issues": "https://github.com/ledccn/iyuuplus/issues",
+    "forum": "https://www.iyuu.cn",
+    "wiki": "https://www.iyuu.cn",
+    "source": "https://github.com/ledccn/iyuuplus"
+  },
+  "require": {
+    "php": ">=8.3",
+    "workerman/webman-framework": "^1.5.0",
+    "workerman/http-client": "^2.1",
+    "monolog/monolog": "^2.0",
+    "workerman/crontab": "^1.0",
+    "vlucas/phpdotenv": "^5.6",
+    "webman/console": "^1.3",
+    "webman/event": "^1.0",
+    "webman/push": "^1.0",
+    "ledc/curl": "^8.0",
+    "ledc/element": "^8.0",
+    "ledc/pipeline": "^8.0",
+    "ledc/macroable": "^8.0",
+    "ledc/container": "^8.1",
+    "rhilip/bencode": "^2.4",
+    "illuminate/database": "^10.48",
+    "illuminate/pagination": "^10.48",
+    "illuminate/events": "^10.48",
+    "symfony/var-dumper": "^7.0",
+    "symfony/process": "^7.0",
+    "symfony/cache": "^7.0",
+    "symfony/lock": "^7.0",
+    "psr/container": "^2.0",
+    "topthink/think-container": "^2.0",
+    "topthink/think-validate": "^2.0",
+    "topthink/think-helper": "^3.1",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-curl": "*",
+    "ext-pdo": "*",
+    "ext-dom": "*",
+    "ext-simplexml": "*",
+    "ext-libxml": "*",
+    "webman/admin": "^0.6.24",
+    "phpmailer/phpmailer": "^6.9",
+    "overtrue/easy-sms": "^2.5",
+    "symfony/dom-crawler": "^7.0",
+    "symfony/css-selector": "^7.0",
+    "symfony/filesystem": "^7.0",
+    "chrome-php/chrome": "^1.11"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "./",
+      "app\\": "./app",
+      "Iyuu\\BittorrentClient\\": "composer/bittorrent-client/src",
+      "Iyuu\\PacificSdk\\": "composer/pacific-sdk/src",
+      "Iyuu\\ReseedClient\\": "composer/reseed-client/src",
+      "Iyuu\\SiteManager\\": "composer/site-manager/src"
+    },
+    "files": [
+      "./support/helpers.php"
+    ]
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ],
+    "post-package-install": [
+      "support\\Plugin::install"
+    ],
+    "post-package-update": [
+      "support\\Plugin::install"
+    ],
+    "pre-package-uninstall": [
+      "support\\Plugin::uninstall"
+    ]
+  }
+}
