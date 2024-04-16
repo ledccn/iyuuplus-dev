@@ -2,6 +2,7 @@
 
 namespace plugin\cron\api;
 
+use plugin\cron\app\interfaces\CrontabAbstract;
 use plugin\cron\app\interfaces\CrontabLayuiTemplateInterface;
 use plugin\cron\app\interfaces\CrontabSchedulerInterface;
 use plugin\cron\app\interfaces\CrontabTaskTypeEnumsInterface;
@@ -34,6 +35,19 @@ class CrontabExtend
     public static function getInstance(): static
     {
         return Container::get(static::class);
+    }
+
+    /**
+     * 注册一个计划任务类型
+     * @param CrontabAbstract $extend
+     * @return $this
+     */
+    public function register(CrontabAbstract $extend): static
+    {
+        $this->typeEnums[] = $extend;
+        $this->templates[] = $extend;
+        $this->schedulers[] = $extend;
+        return $this;
     }
 
     /**

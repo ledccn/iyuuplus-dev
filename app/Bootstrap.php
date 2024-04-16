@@ -6,6 +6,8 @@ use app\admin\services\client\ClientServices;
 use app\admin\services\download\DownloaderServices;
 use app\admin\services\reseed\CrontabObserver;
 use app\admin\services\reseed\ReseedTemplate;
+use app\admin\services\transfer\CrontabObserver as TransferCrontabObserver;
+use app\admin\services\transfer\TransferTemplate;
 use app\model\Client;
 use app\model\ClientObserver;
 use app\model\Reseed;
@@ -51,6 +53,7 @@ class Bootstrap implements \Webman\Bootstrap
         // saving 和 saved 则会在 Eloquent 实例的 original 数组真值更改前后触发
         Client::observe(ClientObserver::class);
         Crontab::observe(CrontabObserver::class);
+        Crontab::observe(TransferCrontabObserver::class);
         Reseed::observe(ReseedObserver::class);
         Site::observe(SiteObserver::class);
     }
@@ -61,9 +64,8 @@ class Bootstrap implements \Webman\Bootstrap
      */
     protected static function initCrontabExtend(): void
     {
-        $reseedTemplate = new ReseedTemplate();
-        CrontabExtend::getInstance()->registerEnumsProvider($reseedTemplate)
-            ->registerTemplateProvider($reseedTemplate)
-            ->registerSchedulerProvider($reseedTemplate);
+        CrontabExtend::getInstance()
+            ->register(new ReseedTemplate())
+            ->register(new TransferTemplate());
     }
 }
