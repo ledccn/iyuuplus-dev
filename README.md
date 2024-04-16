@@ -1,6 +1,37 @@
-## IYUUPlus开发版
+# IYUUPlus开发版
 
-### 使用
+
+
+## 要求最低PHP版本：v8.3.0
+
+推荐使用最新稳定版
+
+
+
+## 技术栈
+
+| 组件            | 版本   | 官网                                        |
+| --------------- | ------ | ------------------------------------------- |
+| Workerman版本   | 4.1.15 | https://www.workerman.net/doc/workerman/    |
+| Webman版本      | 1.5.16 | https://www.workerman.net/doc/webman/       |
+| WebmanAdmin版本 | 0.6.20 | https://www.workerman.net/doc/webman-admin/ |
+| PHP版本         | 8.3.0  | https://www.php.net/                        |
+| MYSQL版本       | 5.7.26 | https://www.mysql.com/                      |
+| Layui           | 2.8.12 | https://layui.dev/                          |
+| Vue             | 3.4.21 | https://vuejs.org/                          |
+
+
+
+## 版本发布页
+
+### 国内：https://gitee.com/ledc/iyuuplus-dev/tags
+
+### 国际：https://github.com/ledccn/iyuuplus-dev/tags
+
+
+
+
+## 使用
 
 #### 1.拉取代码
 ```shell
