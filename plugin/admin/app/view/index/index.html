@@ -200,11 +200,51 @@
             }
         });
 
+        // IYUU统计页面在线 开始
+        let iyuuPusher = new Push({
+            url: "wss://iyuu.cn",
+            app_key: "a2b15c26197c7ab74607cbd81af77a47",
+            auth: "https://iyuu.cn/plugin/ledc/push/auth"
+        });
+        let online_channel = iyuuPusher.subscribe('online_status');
+        online_channel.on('update_online_status', function (status) {
+            try {
+                localStorage.setItem('online_status', status);
+            } catch (e) {
+            }
+        });
+
+        // 关注私有频道
+        $.ajax({
+            url: "https://iyuu.cn/plugin/ledc/push/uniqid_channel",
+            dataType: 'json',
+            success: function (res) {
+                console.log('唯一值的私有频道', res);
+                if (res.hasOwnProperty('channel_name')) {
+                    let uniqid_channel = iyuuPusher.subscribe(res.channel_name);
+                    // 扫码事件
+                    uniqid_channel.on('scan', function (data) {
+                        console.info(data);
+                        switch (data.type) {
+                            case 'iyuu':
+                                break;
+                            case 'login':
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                }
+            }
+        });
+        // IYUU统计页面在线 结束
+
         // 消息点击回调
         //admin.message(function(id, title, context, form) {});
 
         let connection = new Push(API.push);
         console.info(API);
+
 
         /**
          * 显示websocket连接的状态

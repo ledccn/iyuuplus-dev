@@ -111,7 +111,7 @@
 									0
 								</div>
 								<div class="layui-col-xs4 layui-col-md4  top-panel-tips">
-									<i class="layui-icon layui-icon-at layui-font-blue"></i>
+									<i class="layui-icon layui-icon-log layui-font-blue"></i>
 								</div>
 							</div>
 						</div>
@@ -119,14 +119,14 @@
 				</div>
 				<div class="layui-col-xs6 layui-col-md3">
 					<div class="layui-card top-panel">
-						<div class="layui-card-header">备用</div>
+						<div class="layui-card-header">在线人数</div>
 						<div class="layui-card-body">
 							<div class="layui-row layui-col-space5">
-								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value8">
+								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="online">
 									0
 								</div>
 								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
-									<i class="layui-icon layui-icon-at layui-font-blue"></i>
+									<i class="layui-icon layui-icon-user layui-font-blue"></i>
 								</div>
 							</div>
 						</div>
@@ -258,12 +258,21 @@
 					regulator: 50
 				});
 
-				count.up("value8", {
-					time: 4000,
-					bit: 0,
-					num: <?=$count_value8?>,
-					regulator: 50
-				});
+				// IYUU在线人数
+				setInterval(() => {
+					let online = document.getElementById('online');
+					if (online) {
+						try {
+							let s = localStorage.getItem('online_status');
+							if (s !== null && s !== 'null') {
+								online.innerText = s;
+							}
+						} catch (e) {
+							online.innerText = '0';
+						}
+					}
+				}, 1000);
+
 
 				var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
 
