@@ -8,12 +8,16 @@ use app\model\Site;
 use plugin\admin\app\common\Util;
 use plugin\admin\app\model\Option;
 use plugin\admin\app\model\User;
+use plugin\cron\app\model\Crontab;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
 use Throwable;
 use Workerman\Worker;
 
+/**
+ * 默认后台控制器
+ */
 class IndexController
 {
 
@@ -90,6 +94,10 @@ class IndexController
             'count_value2' => Client::count(),
             'count_value3' => Site::where('disabled', '=', 0)->count(),
             'count_value4' => Site::count(),
+            'count_value5' => 'NaN',
+            'count_value6' => Crontab::count(),
+            'count_value7' => Crontab::sum('running_count'),
+            'count_value8' => 'NaN',
             'php_version' => PHP_VERSION,
             'workerman_version' => Worker::VERSION,
             'webman_version' => Util::getPackageVersion('workerman/webman-framework'),

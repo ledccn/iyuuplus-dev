@@ -27,7 +27,7 @@ function iyuu_token(): string
  */
 function iyuu_version(): string
 {
-    return '8.0.0';
+    return '8.0.1';
 }
 
 /**
