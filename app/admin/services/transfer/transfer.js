@@ -44,7 +44,7 @@ update_render_callable.push(
                             let isAdd = data.isAdd;
                             if (isAdd) {
                                 fromClientId = change.shift();
-                                xmFromSelect.update({disabled: true});
+                                //xmFromSelect.update({disabled: true});
                                 result.forEach((item, index) => {
                                     item.disabled = fromClientId.value === item.value;
                                 });
