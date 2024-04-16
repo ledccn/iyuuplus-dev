@@ -21,7 +21,7 @@ class OptionsLimit extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label required">辅种数量</label>
                 <div class="layui-input-group">
-                    <input type="text" name="options[limit][count]" value="20" required lay-verify="required" placeholder="每次运行辅种总数量" class="layui-input">
+                    <input type="text" name="options[limit][count]" value="20" required lay-verify="required" placeholder="每天辅种的总数量" class="layui-input">
                     <div class="layui-input-suffix">个</div>
                 </div>
             </div>
