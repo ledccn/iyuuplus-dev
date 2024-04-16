@@ -143,6 +143,7 @@ class ReseedServices
         }
         if (empty($result)) {
             echo '-----没有查询到可辅种数据' . PHP_EOL . PHP_EOL;
+            return;
         }
 
         $this->currentReseed($hashDict, $result);
@@ -159,10 +160,13 @@ class ReseedServices
         // 第二层循环：接口返回的可辅种结果
         foreach ($result as $infohash => $reseed) {
             $downloadDir = $hashDict[$infohash];   // 辅种目录
-            // // 第三层循环：单种子infohash可辅种数据
+            // 第三层循环：单种子infohash可辅种数据
             foreach ($reseed['torrent'] as $id => $value) {
                 $this->notifyData->reseedCount++;
                 $sid = $value['sid'];   // 站点id
+                $torrent_id = $value['torrent_id'];  // 种子id
+                $reseed_infohash = $value['info_hash'];  // 种子infohash
+
                 $siteModel = $this->getSiteModel($sid);
                 if (!$siteModel) {
                     $this->notifyData->reseedSkip++;
@@ -171,8 +175,6 @@ class ReseedServices
                 }
 
                 $site = $siteModel->site;
-                $torrent_id = $value['torrent_id'];  // 种子id
-                $reseed_infohash = $value['info_hash'];  // 种子infohash
 
                 // 判断是否禁用
                 if ($siteModel->disabled) {
