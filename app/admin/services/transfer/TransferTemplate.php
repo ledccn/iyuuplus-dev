@@ -112,7 +112,12 @@ class TransferTemplate extends CrontabAbstract
 .layui-input-block {
     margin-left: 120px;
 }
+.layui-input-wrap {
+    width: 50px !important;
+    line-height: 20px !important;
+}
 </style>
+
 <div class="layui-form-item layui-hide">
     <label class="layui-form-label required">命令名称</label>
     <div class="layui-input-block">
@@ -120,6 +125,7 @@ class TransferTemplate extends CrontabAbstract
     </div>
 </div>
 <div name="parameter" id="parameter" value="" class="layui-hide"></div>
+
 <div class="layui-form-item">
     <label class="layui-form-label required" title="当前正常做种的下载器">来源下载器</label>
     <div class="layui-input-block">
@@ -147,10 +153,9 @@ class TransferTemplate extends CrontabAbstract
 <div class="layui-form-item">
     <label class="layui-form-label" title="用于相对路径与绝对路径之间互相转换，实现种子对应资源目录，是客户端之间转移做种的重要步骤">路径转换类型</label>
     <div class="layui-input-block">
-        <input type="radio" name="parameter[path_convert_type]" value="empty" title="无需转换" checked>
-        <input type="radio" name="parameter[path_convert_type]" value="2" title="相等">
-        <input type="radio" name="parameter[path_convert_type]" value="3" title="减">
-        <input type="radio" name="parameter[path_convert_type]" value="3" title="加">
+        <input type="radio" name="parameter[path_convert_type]" value="0" title="相等" checked>
+        <input type="radio" name="parameter[path_convert_type]" value="1" title="减">
+        <input type="radio" name="parameter[path_convert_type]" value="2" title="加">
         <input type="radio" name="parameter[path_convert_type]" value="3" title="替换">
     </div>
 </div>
@@ -160,24 +165,26 @@ class TransferTemplate extends CrontabAbstract
         <textarea name="parameter[path_convert_rule]" placeholder="请输入路径转换规则，每一行代表一条规则；" class="layui-textarea"></textarea>
     </div>
 </div>
-<label class="layui-form-label">跳校验</label>
-<div class="layui-input-block"> 
-    <input type="checkbox" name="parameter[skip_check]" lay-skin="switch" lay-text="YES|NO" lay-filter="skip_check" id="skip_check">
-    <tip class="layui-text-em">转移时，跳过校验（此功能需要下载器支持）</tip> 
+<div class="layui-form-item">
+    <label class="layui-form-label">跳校验</label>
+    <div class="layui-input-inline layui-input-wrap">
+        <input type="checkbox" name="parameter[skip_check]" lay-skin="switch" lay-text="YES|NO" lay-filter="skip_check" id="skip_check">
+    </div>
+    <div class="layui-form-mid layui-text-em">转移时，跳过校验（此功能需要下载器支持）</div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label">暂停</label>
-    <div class="layui-input-block">
+    <div class="layui-input-inline layui-input-wrap">
         <input type="checkbox" name="parameter[paused]" lay-skin="switch" lay-text="YES|NO" lay-filter="paused" id="paused">
-        <tip class="layui-text-em">转移后，不要自动开始。</tip>
     </div>
+    <div class="layui-form-mid layui-text-em">转移后，不要自动开始</div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label">删除源做种</label>
-    <div class="layui-input-block">
+    <div class="layui-input-inline layui-input-wrap">
         <input type="checkbox" name="parameter[delete_torrent]" lay-skin="switch" lay-text="YES|NO" lay-filter="delete_torrent" id="delete_torrent">
-        <tip class="layui-text-em">转移后，删除来源下载器内的种子<span class="layui-badge">风险提示：第一次转移时请不要勾选，万一路径配置错误，将会删除客户端正常做种的种子。非必要，请勿勾选！！！</span></tip>
     </div>
+    <div class="layui-form-mid layui-text-em">转移后，删除来源下载器内的种子<span class="layui-badge">风险提示：第一次转移时请不要勾选，万一路径配置错误，将会删除客户端正常做种的种子。非必要，请勿勾选！！！</span></div>
 </div>
 EOF;
     }
