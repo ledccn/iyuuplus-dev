@@ -5,6 +5,8 @@ namespace app\model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Iyuu\BittorrentClient\ClientEnums;
+use Iyuu\SiteManager\Contracts\RecoveryInterface;
+use plugin\admin\app\common\Util;
 use plugin\admin\app\model\Base;
 
 /**
@@ -26,7 +28,7 @@ use plugin\admin\app\model\Base;
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
  */
-class Client extends Base
+class Client extends Base implements RecoveryInterface
 {
     /**
      * The table associated with the model.
@@ -41,6 +43,27 @@ class Client extends Base
      * @var string
      */
     protected $primaryKey = 'id';
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array<string>|bool
+     */
+    protected $guarded = [];
+
+    /**
+     * 数据恢复
+     * @param array $list
+     * @return bool
+     */
+    public function recoveryHandle(array $list): bool
+    {
+        foreach ($list as $data) {
+            unset($data[$this->getKeyName()]);
+            Util::db()->table($this->getTable())->insert($data);
+        }
+        return true;
+    }
 
     /**
      * 获取下载器品牌枚举类
