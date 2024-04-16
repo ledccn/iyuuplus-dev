@@ -13,6 +13,8 @@ update_render_callable.push(
                         return;
                     }
 
+                    const original = JSON.stringify(res.data);
+                    const result = res.data;
                     let value = layui.$("#parameter").attr("value");
                     let parameter = value ? JSON.parse(value) : [];
                     let initFormValue = parameter && parameter['from_clients'] ? [parameter['from_clients']] : [];
@@ -29,11 +31,11 @@ update_render_callable.push(
                         layReqText: '来源下载器必填',
                         initValue: initFormValue,
                         filterable: true,
-                        data: res.data,
+                        data: JSON.parse(original),
                         model: {"icon": "hidden", "label": {"type": "text"}},
                         clickClose: true,
                         radio: true,
-                        on: function(data){
+                        on: function (data) {
                             //arr:  当前多选已选中的数据
                             let arr = data.arr;
                             //change, 此次选择变化的数据,数组
@@ -43,6 +45,9 @@ update_render_callable.push(
                             if (isAdd) {
                                 fromClientId = change.shift();
                                 xmFromSelect.update({disabled: true});
+                                result.forEach((item, index) => {
+                                    item.disabled = fromClientId.value === item.value;
+                                });
                                 xmToSelect.update({disabled: false});
                             }
                             xmToSelect.setValue([]);
@@ -59,12 +64,12 @@ update_render_callable.push(
                         layReqText: '目标下载器必填',
                         initValue: initToValue,
                         filterable: true,
-                        data: res.data,
+                        data: result,
                         model: {"icon": "hidden", "label": {"type": "text"}},
                         clickClose: true,
                         radio: true,
                         disabled: true,
-                        on: function(data){
+                        on: function (data) {
                             //arr:  当前多选已选中的数据
                             let arr = data.arr;
                             //change, 此次选择变化的数据,数组
@@ -73,7 +78,7 @@ update_render_callable.push(
                             let isAdd = data.isAdd;
                             if (isAdd) {
                                 toClientId = change.shift();
-                                if (fromClientId === toClientId) {
+                                if (fromClientId.value.toString() === toClientId.value.toString()) {
                                     layer.msg('来源下载器与目标下载器，不能相同');
                                     return [];
                                 }
