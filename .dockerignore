@@ -1,0 +1,16 @@
+/.idea
+/.vscode
+*.log
+/.env
+/._.DS_Store
+.DS_Store
+*.DS_Store
+.php_cs.cache
+/config/crontab.php
+/config/sites.php
+/plugin/admin/config/database.php
+/plugin/admin/config/thinkorm.php
+/cookie.sh
+/rss.sh
+/vendor
+/plugin/*.zip
