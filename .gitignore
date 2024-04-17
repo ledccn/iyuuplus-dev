@@ -12,3 +12,6 @@
 /plugin/admin/config/thinkorm.php
 /cookie.sh
 /rss.sh
+/public/mobile/
+/public/h5/
+
