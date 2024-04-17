@@ -129,13 +129,13 @@ class TransferTemplate extends CrontabAbstract
 <div class="layui-form-item">
     <label class="layui-form-label required" title="当前正常做种的下载器">来源下载器</label>
     <div class="layui-input-block">
-        <div id="from_clients" value=""></div>
+        <div name="parameter[from_clients]" id="from_clients" value=""></div>
     </div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label required" title="即将转移到的下载器">目标下载器</label>
     <div class="layui-input-block">
-        <div id="to_clients" value=""></div>
+        <div name="parameter[to_clients]" id="to_clients" value=""></div>
     </div>
 </div>
 <div class="layui-form-item">

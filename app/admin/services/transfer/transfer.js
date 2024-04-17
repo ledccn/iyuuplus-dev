@@ -2,6 +2,35 @@
 update_render_callable.push(
     function () {
         layui.use(["jquery", "xmSelect", "popup", "laytpl"], function () {
+            /**
+             * 初始化元素的属性值
+             * @param {string} selector
+             * @param {string|int} value
+             */
+            function init_attr_value(selector, value) {
+                let obj = $(selector);
+                if (typeof obj[0] === "undefined" || !obj[0].nodeName) return;
+
+                console.log('初始化' + obj[0].nodeName.toLowerCase() + '属性值', selector, value)
+                if (obj[0].nodeName.toLowerCase() === "textarea") {
+                    obj.val(value);
+                } else {
+                    if (1 === obj.length) {
+                        obj.attr("value", value);
+                        obj[0].value = value;
+                    }
+                    if ('checkbox' === obj.attr('type')) {
+                        obj.attr('checked', true);
+                    } else if ('radio' === obj.attr('type')) {
+                        obj.each(function () {
+                            $(this).prop('checked', $(this).val() === value);
+                        });
+                    } else if (obj[0].nodeName.toLowerCase() === "select") {
+                        obj.find('option[value="' + value + '"]').attr('selected', true);
+                    }
+                }
+            }
+
             //let laytpl = layui.laytpl;
             // 设置来源下载器 目标下载器
             layui.$.ajax({
@@ -17,6 +46,13 @@ update_render_callable.push(
                     const result = res.data;
                     let value = layui.$("#parameter").attr("value");
                     let parameter = value ? JSON.parse(value) : [];
+                    if (parameter) {
+                        layui.each(parameter, function (kk, vv) {
+                            // 基础类型(输入框、选择框、单选框)
+                            init_attr_value('*[name="parameter[' + kk + ']"]', vv)
+                        });
+                        layui.form.render();
+                    }
                     let initFormValue = parameter && parameter['from_clients'] ? [parameter['from_clients']] : [];
                     let initToValue = parameter && parameter['to_clients'] ? [parameter['to_clients']] : [];
                     let fromClientId = null, toClientId = null;
