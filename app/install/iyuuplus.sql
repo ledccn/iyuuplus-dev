@@ -19,6 +19,14 @@ CREATE TABLE `cn_client` (
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端';
 
+CREATE TABLE `cn_folder` (
+  `folder_id` int(10) UNSIGNED NOT NULL COMMENT '主键',
+  `folder_alias` varchar(100) NOT NULL COMMENT '目录别名',
+  `folder_value` varchar(300) NOT NULL COMMENT '数据目录',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='数据目录';
+
 CREATE TABLE `cn_reseed` (
   `reseed_id` int(10) UNSIGNED NOT NULL COMMENT '主键',
   `client_id` int(10) UNSIGNED NOT NULL COMMENT '客户端ID',
@@ -60,6 +68,10 @@ ALTER TABLE `cn_client`
   ADD UNIQUE KEY `hostname` (`hostname`,`endpoint`),
   ADD KEY `brand` (`brand`);
 
+ALTER TABLE `cn_folder`
+  ADD PRIMARY KEY (`folder_id`),
+  ADD UNIQUE KEY `folder_alias` (`folder_alias`);
+
 ALTER TABLE `cn_reseed`
   ADD PRIMARY KEY (`reseed_id`),
   ADD KEY `reseed_client_id` (`client_id`),
@@ -77,6 +89,9 @@ ALTER TABLE `cn_sites`
 
 ALTER TABLE `cn_client`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
+
+ALTER TABLE `cn_folder`
+  MODIFY `folder_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
 
 ALTER TABLE `cn_reseed`
   MODIFY `reseed_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
