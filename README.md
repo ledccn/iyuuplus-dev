@@ -4,6 +4,23 @@
 
 推荐使用最新稳定版
 
+### 必须开启的扩展
+```config
+extension=curl
+extension=fileinfo
+extension=gd
+extension=mbstring
+extension=exif
+extension=mysqli
+extension=openssl
+extension=pdo_mysql
+extension=pdo_sqlite
+extension=sockets
+extension=sodium
+extension=sqlite3
+extension=zip
+```
+
 ## 技术栈
 
 | 组件            | 版本     | 官网                                          |
