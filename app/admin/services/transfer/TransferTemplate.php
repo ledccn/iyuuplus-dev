@@ -104,6 +104,10 @@ class TransferTemplate extends CrontabAbstract
     public function html(): string
     {
         $command = TransferCommand::COMMAND_NAME;
+        $eq = PathConvertTypeEnums::Eq->value;
+        $sub = PathConvertTypeEnums::Sub->value;
+        $add = PathConvertTypeEnums::Add->value;
+        $replace = PathConvertTypeEnums::Replace->value;
         return PHP_EOL . <<<EOF
 <style>
 .layui-form-label {
@@ -153,10 +157,10 @@ class TransferTemplate extends CrontabAbstract
 <div class="layui-form-item">
     <label class="layui-form-label" title="用于相对路径与绝对路径之间互相转换，实现种子对应资源目录，是客户端之间转移做种的重要步骤">路径转换类型</label>
     <div class="layui-input-block">
-        <input type="radio" name="parameter[path_convert_type]" value="eq" title="相等" checked>
-        <input type="radio" name="parameter[path_convert_type]" value="sub" title="减">
-        <input type="radio" name="parameter[path_convert_type]" value="add" title="加">
-        <input type="radio" name="parameter[path_convert_type]" value="replace" title="替换">
+        <input type="radio" name="parameter[path_convert_type]" value="$eq" title="相等" checked>
+        <input type="radio" name="parameter[path_convert_type]" value="$sub" title="减">
+        <input type="radio" name="parameter[path_convert_type]" value="$add" title="加">
+        <input type="radio" name="parameter[path_convert_type]" value="$replace" title="替换">
     </div>
 </div>
 <div class="layui-form-item">

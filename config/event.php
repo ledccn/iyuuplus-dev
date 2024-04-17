@@ -10,4 +10,9 @@ return [
     'reseed.torrent.send.before' => [],
     // 自动辅种：把种子发送给下载器之后
     'reseed.torrent.send.after' => [],
+
+    // 自动转移做种客户端：转移前
+    'transfer.action.before' => [],
+    // 自动转移做种客户端：转移后
+    'transfer.action.after' => [],
 ];

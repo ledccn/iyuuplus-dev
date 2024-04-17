@@ -75,6 +75,10 @@ class CrontabObserver
             if (empty($parameter['to_clients'])) {
                 throw new InvalidArgumentException('目标下载器必填');
             }
+            // 不允许相等
+            if ((int)$parameter['from_clients'] === (int)$parameter['to_clients']) {
+                throw new InvalidArgumentException('来源下载器和目标下载器不能相等');
+            }
         }
     }
 

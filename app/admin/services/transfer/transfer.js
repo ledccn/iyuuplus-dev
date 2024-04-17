@@ -36,6 +36,7 @@ update_render_callable.push(
             let value = layui.$("#parameter").attr("value");
             let parameter = value ? JSON.parse(value) : [];
             if (parameter) {
+                //console.log('自动转移做种调用参数', parameter)
                 layui.each(parameter, function (kk, vv) {
                     // 基础类型(输入框、选择框、单选框)
                     init_attr_value('*[name="parameter[' + kk + ']"]', vv)
