@@ -66,4 +66,27 @@ class FolderController extends Crud
         }
         return view('folder/save');
     }
+
+    /**
+     * 格式化下拉列表
+     * @param $items
+     * @return Response
+     */
+    protected function formatSelect($items): Response
+    {
+        $value = \request()->input('value', 'folder_id');
+        if (!in_array($value, ['folder_id', 'folder_value'], true)) {
+            return $this->fail('非法value参数');
+        }
+
+        $formatted_items = [];
+        /** @var Folder $item */
+        foreach ($items as $item) {
+            $formatted_items[] = [
+                'name' => $item->folder_alias,
+                'value' => $item->{$value}
+            ];
+        }
+        return $this->success('ok', $formatted_items);
+    }
 }

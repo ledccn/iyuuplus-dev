@@ -2,6 +2,8 @@
 update_render_callable.push(
     function () {
         layui.use(["jquery", "xmSelect", "popup", "laytpl"], function () {
+            let laytpl = layui.laytpl;
+
             /**
              * 初始化元素的属性值
              * @param {string} selector
@@ -31,8 +33,19 @@ update_render_callable.push(
                 }
             }
 
-            //let laytpl = layui.laytpl;
-            // 设置来源下载器 目标下载器
+            let value = layui.$("#parameter").attr("value");
+            let parameter = value ? JSON.parse(value) : [];
+            if (parameter) {
+                layui.each(parameter, function (kk, vv) {
+                    // 基础类型(输入框、选择框、单选框)
+                    init_attr_value('*[name="parameter[' + kk + ']"]', vv)
+                });
+                layui.form.render();
+            }
+
+            /**
+             * 设置来源下载器 目标下载器
+             */
             layui.$.ajax({
                 url: "/admin/client/select?format=select&enabled=1&limit=1000",
                 dataType: "json",
@@ -44,15 +57,6 @@ update_render_callable.push(
 
                     const original = JSON.stringify(res.data);
                     const result = res.data;
-                    let value = layui.$("#parameter").attr("value");
-                    let parameter = value ? JSON.parse(value) : [];
-                    if (parameter) {
-                        layui.each(parameter, function (kk, vv) {
-                            // 基础类型(输入框、选择框、单选框)
-                            init_attr_value('*[name="parameter[' + kk + ']"]', vv)
-                        });
-                        layui.form.render();
-                    }
                     let initFormValue = parameter && parameter['from_clients'] ? [parameter['from_clients']] : [];
                     let initToValue = parameter && parameter['to_clients'] ? [parameter['to_clients']] : [];
                     let fromClientId = null, toClientId = null;
@@ -68,7 +72,7 @@ update_render_callable.push(
                         initValue: initFormValue,
                         filterable: true,
                         data: JSON.parse(original),
-                        model: {"icon": "hidden", "label": {"type": "text"}},
+                        //model: {"icon": "hidden", "label": {"type": "text"}},
                         clickClose: true,
                         radio: true,
                         on: function (data) {
@@ -101,7 +105,7 @@ update_render_callable.push(
                         initValue: initToValue,
                         filterable: true,
                         data: result,
-                        model: {"icon": "hidden", "label": {"type": "text"}},
+                        //model: {"icon": "hidden", "label": {"type": "text"}},
                         clickClose: true,
                         radio: true,
                         disabled: true,
@@ -123,6 +127,44 @@ update_render_callable.push(
                         },
                     });
                 }
+            });
+
+            /**
+             * 路径过滤器 路径选择器
+             */
+            layui.use(["jquery", "xmSelect", "popup"], function () {
+                layui.$.ajax({
+                    url: "/admin/folder/select?format=select&limit=1000",
+                    dataType: "json",
+                    success: function (res) {
+                        // 路径过滤器
+                        let path_filter = layui.$("#path_filter").attr("value");
+                        let initPathFilterValue = path_filter ? path_filter.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#path_filter",
+                            name: "parameter[path_filter]",
+                            initValue: initPathFilterValue,
+                            filterable: true,
+                            data: res.data,
+                            //model: {"icon": "hidden", "label": {"type": "text"}},
+                        });
+
+                        // 路径选择器
+                        let path_selector = layui.$("#path_selector").attr("value");
+                        let initPathSelectorValue = path_selector ? path_selector.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#path_selector",
+                            name: "parameter[path_selector]",
+                            initValue: initPathSelectorValue,
+                            filterable: true,
+                            data: res.data,
+                            //model: {"icon": "hidden", "label": {"type": "text"}},
+                        });
+                        if (res.code) {
+                            layui.popup.failure(res.msg);
+                        }
+                    }
+                });
             });
         });
     }
