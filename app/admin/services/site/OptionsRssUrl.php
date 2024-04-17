@@ -21,7 +21,7 @@ class OptionsRssUrl extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label">RSS链接</label>
                 <div class="layui-input-block">
-                    <input type="text" name="options[rss_url]" value="" placeholder="请输入RSS链接" class="layui-input">
+                    <input type="text" name="options[rss_url]" value="" placeholder="请输入RSS链接" class="layui-input" lay-affix="eye">
                 </div>
             </div>
 

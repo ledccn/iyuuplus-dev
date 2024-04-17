@@ -21,7 +21,7 @@ class OptionsRsskey extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label required">Rss密钥</label>
                 <div class="layui-input-block">
-                    <input type="text" name="options[rsskey]" value="" required lay-verify="required" placeholder="请输入Rss密钥" class="layui-input">
+                    <input type="text" name="options[rsskey]" value="" required lay-verify="required" placeholder="请输入Rss密钥" class="layui-input" lay-affix="eye">
                 </div>
             </div>
 

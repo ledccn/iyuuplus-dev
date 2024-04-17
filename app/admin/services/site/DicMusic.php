@@ -20,14 +20,14 @@ class DicMusic extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label required">torrent_pass</label>
                 <div class="layui-input-block">
-                    <input type="text" name="options[torrent_pass]" value="" required lay-verify="required" placeholder="请输入torrent_pass" class="layui-input">
+                    <input type="text" name="options[torrent_pass]" value="" required lay-verify="required" placeholder="请输入torrent_pass" lay-affix="eye" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label required">authkey</label>
                 <div class="layui-input-block">
-                    <input type="text" name="options[authkey]" value="" required lay-verify="required" placeholder="请输入authkey" class="layui-input">
+                    <input type="text" name="options[authkey]" value="" required lay-verify="required" placeholder="请输入authkey" lay-affix="eye" class="layui-input">
                 </div>
             </div>
 

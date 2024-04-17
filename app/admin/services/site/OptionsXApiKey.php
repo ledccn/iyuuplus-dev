@@ -21,7 +21,7 @@ class OptionsXApiKey extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label required">存取令牌<i class="layui-icon layui-icon-help" lay-on="help_x_api_key"></i></label>
                 <div class="layui-input-block">
-                    <input type="text" name="options[x_api_key]" value="" required lay-verify="required" placeholder="请输入存取令牌" class="layui-input">
+                    <input type="text" name="options[x_api_key]" value="" required lay-verify="required" placeholder="请输入存取令牌" class="layui-input" lay-affix="eye">
                 </div>
             </div>
 

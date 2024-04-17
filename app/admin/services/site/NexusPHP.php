@@ -20,7 +20,7 @@ class NexusPHP extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label required">Passkey</label>
                 <div class="layui-input-block">
-                    <input type="text" name="options[passkey]" value="" required lay-verify="required" placeholder="请输入密钥passkey" class="layui-input">
+                    <input type="text" name="options[passkey]" value="" required lay-verify="required" placeholder="请输入密钥passkey" class="layui-input" lay-affix="eye">
                 </div>
             </div>
 
