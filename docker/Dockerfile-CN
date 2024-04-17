@@ -1,4 +1,4 @@
-FROM php:8.3-zts-alpine
+FROM php:8.3-nts-alpine
 
 COPY . /iyuu
 WORKDIR /iyuu
