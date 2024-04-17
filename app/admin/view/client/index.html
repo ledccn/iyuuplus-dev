@@ -108,6 +108,16 @@
         let common = layui.common;
         let util = layui.util;
 
+        /**
+         * 屏幕宽度小于指定值
+         * @param px
+         * @returns {boolean}
+         */
+        function isWidthLessThan(px = 1650) {
+            console.info(location.pathname, '屏幕宽度：', layui.$(window).width());
+            return layui.$(window).width() <= px;
+        }
+
         // 表头参数
         let cols = [
             {
@@ -141,6 +151,7 @@
                 title: "接入点",
                 field: "endpoint",
                 width: 150,
+                hide: isWidthLessThan(),
             }, {
                 title: "用户名", align: "center",
                 field: "username",
@@ -165,6 +176,7 @@
                 title: "种子目录", align: "center",
                 field: "torrent_path",
                 minWidth: 150,
+                hide: isWidthLessThan(),
             }, {
                 title: "创建多文件子目录", align: "center",
                 field: "root_folder",
