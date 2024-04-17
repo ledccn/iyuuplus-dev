@@ -188,10 +188,16 @@
             if (obj[0].nodeName.toLowerCase() === "textarea") {
                 obj.val(value);
             } else {
-                obj.attr("value", value);
-                obj[0].value = value;
+                if (1 === obj.length) {
+                    obj.attr("value", value);
+                    obj[0].value = value;
+                }
                 if ('checkbox' === obj.attr('type')) {
                     obj.attr('checked', true);
+                } else if ('radio' === obj.attr('type')) {
+                    obj.each(function () {
+                        $(this).prop('checked', $(this).val() == value);
+                    });
                 } else if (obj[0].nodeName.toLowerCase() === "select") {
                     obj.find('option[value="' + value + '"]').attr('selected', true);
                 }
