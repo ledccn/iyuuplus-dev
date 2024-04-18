@@ -688,8 +688,8 @@ class Client extends Clients
         $hashArray['sha1'] = $sha1;
         // 变换数组：hashString键名、目录为键值
         $hashArray['hashString'] = array_column($res, "save_path", 'hash');
-        // 暂未使用
-        //$hashArray['lists'] = array_column($res, null, 'hash');
+        // 转移做种使用
+        $hashArray[static::TORRENT_LIST] = array_column($res, null, 'hash');
         return $hashArray;
     }
 

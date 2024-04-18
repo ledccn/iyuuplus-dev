@@ -11,6 +11,10 @@ use Ledc\Curl\Curl;
 abstract class Clients implements ClientsInterface
 {
     /**
+     * 种子列表key
+     */
+    public const string TORRENT_LIST = 'lists';
+    /**
      * 配置
      * @var Config
      */
