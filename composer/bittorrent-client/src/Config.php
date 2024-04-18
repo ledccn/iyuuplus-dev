@@ -38,6 +38,7 @@ class Config implements ArrayAccess
     public function __construct(array $config)
     {
         $this->config = $config;
+        $this->getClientEnums();
     }
 
     /**
@@ -72,6 +73,15 @@ class Config implements ArrayAccess
     public function getClientUrl(): string
     {
         return rtrim($this->get('hostname', ''), '/') . $this->get('endpoint', '');
+    }
+
+    /**
+     * 获取下载器品牌枚举类
+     * @return ClientEnums
+     */
+    public function getClientEnums(): ClientEnums
+    {
+        return ClientEnums::from($this->get('brand'));
     }
 
     /**
