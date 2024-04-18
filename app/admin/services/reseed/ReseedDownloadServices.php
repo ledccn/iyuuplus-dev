@@ -126,6 +126,7 @@ class ReseedDownloadServices
             $clientModel = ClientServices::getClient($reseed->client_id);
             $bittorrentClients = ClientServices::createBittorrent($clientModel);
             $contractsTorrent = new TorrentContract($response->payload, $response->metadata);
+            $contractsTorrent->savePath = $reseed->directory;
             self::sendBefore($contractsTorrent, $bittorrentClients, $clientModel);
 
             // 调度事件：把种子发送给下载器之前
