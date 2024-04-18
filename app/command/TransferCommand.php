@@ -16,7 +16,7 @@ class TransferCommand extends Command
     /**
      * 命令名称
      */
-    public const COMMAND_NAME = 'iyuu:transfer';
+    public const string COMMAND_NAME = 'iyuu:transfer';
     /**
      * 命令名称
      * @var string

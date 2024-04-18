@@ -23,7 +23,7 @@ class BackupCommand extends Command
     /**
      * 需要备份的模型
      */
-    public const BACKUP = [
+    public const array BACKUP = [
         Site::class,
         Client::class,
         Crontab::class,

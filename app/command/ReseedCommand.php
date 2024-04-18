@@ -16,7 +16,7 @@ class ReseedCommand extends Command
     /**
      * 命令名称
      */
-    public const COMMAND_NAME = 'iyuu:reseed';
+    public const string COMMAND_NAME = 'iyuu:reseed';
 
     /**
      * 命令名称
