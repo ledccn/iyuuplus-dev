@@ -104,6 +104,114 @@ class TransferServices
         $hashDict = $torrentList['hashString'];   // 哈希目录字典
         //$total = count($hashDict);
         Event::dispatch('transfer.action.before', [$hashDict, $toBittorrentClient, $this->from_clients]);
+        foreach ($hashDict as $infohash => $downloadDir) {
+            if ($this->pathFilter($downloadDir)) {
+                continue;
+            }
+
+            // 做种实际路径与相对路径之间互转
+            echo '转换前：' . $downloadDir . PHP_EOL;
+            $downloadDir = $this->pathReplace($downloadDir);
+            echo '转换后：' . $downloadDir . PHP_EOL;
+            if (empty($downloadDir)) {
+                echo '路径转换参数配置错误，请重新配置！！！' . PHP_EOL;
+                return;
+            }
+
+
+        }
+    }
+
+    /**
+     * 处理转移种子时所设置的过滤器、选择器
+     * @param string $path
+     * @return bool   true 过滤 | false 不过滤
+     */
+    private function pathFilter(string $path): bool
+    {
+        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
+        // 转移过滤器、选择器 David/2020年7月11日
+        $path_filter = $this->path_filter;
+        $path_selector = $this->path_selector;
+        if (empty($path_filter) && empty($path_selector)) {
+            return false;
+        }
+
+        if (empty($path_filter)) {
+            //选择器
+            foreach ($path_selector as $pathName) {
+                if (str_starts_with($path, $pathName)) {      // 没用$path == $key判断，是为了提高兼容性
+                    return false;
+                }
+            }
+            echo '已跳过！转移选择器未匹配到：' . $path . PHP_EOL;
+            return true;
+        } elseif (empty($path_selector)) {
+            //过滤器
+            foreach ($path_filter as $pathName) {
+                if (str_starts_with($path, $pathName)) {      // 没用$path == $key判断，是为了提高兼容性
+                    echo '已跳过！转移过滤器匹配到：' . $path . PHP_EOL;
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            //同时设置过滤器、选择器
+            //先过滤器
+            foreach ($path_filter as $pathName) {
+                if (str_starts_with($path, $pathName)) {
+                    echo '已跳过！转移过滤器匹配到：' . $path . PHP_EOL;
+                    return true;
+                }
+            }
+            //后选择器
+            foreach ($path_selector as $pathName) {
+                if (str_starts_with($path, $pathName)) {
+                    return false;
+                }
+            }
+            echo '已跳过！转移选择器未匹配到：' . $path . PHP_EOL;
+
+            return true;
+        }
+    }
+
+    /**
+     * 实际路径与相对路径之间互相转换
+     * @param string $path
+     * @return string | null        string转换成功
+     */
+    private function pathReplace(string $path): ?string
+    {
+        $pathArray = $this->path_convert_rule;
+        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
+        switch ($this->path_convert_type->value) {
+            case PathConvertTypeEnums::Sub->value:          // 减
+                foreach ($pathArray as $key => $val) {
+                    if (str_starts_with($path, $key)) {
+                        return substr($path, strlen($key));
+                    }
+                }
+                break;
+            case PathConvertTypeEnums::Add->value:          // 加
+                foreach ($pathArray as $key => $val) {
+                    if (str_starts_with($path, $key)) {     // 没用$path == $key判断，是为了提高兼容性
+                        return $val . $path;
+                    }
+                }
+                break;
+            case PathConvertTypeEnums::Replace->value:      // 替换
+                foreach ($pathArray as $key => $val) {
+                    if (str_starts_with($path, $key)) {     // 没用$path == $key判断，是为了提高兼容性
+                        return $val . substr($path, strlen($key));
+                    }
+                }
+                break;
+            default:        // 不变
+                return $path;
+        }
+
+        return null;
     }
 
     /**
