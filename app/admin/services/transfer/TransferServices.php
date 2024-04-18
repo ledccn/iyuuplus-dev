@@ -25,7 +25,7 @@ class TransferServices
     /**
      * 路径分隔符
      */
-    public const string Delimiter = '{**}';
+    public const string Delimiter = '{#**#}';
     /**
      * 计划任务：数据模型
      * @var Crontab
