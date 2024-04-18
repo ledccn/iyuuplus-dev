@@ -126,6 +126,7 @@ class TransferServices
 
         //$total = count($hashDict);
         Event::dispatch('transfer.action.before', [$hashDict, $toBittorrentClient, $this->from_clients]);
+        // 第一层循环：哈希目录字典
         foreach ($hashDict as $infohash => $downloadDir) {
             if ($this->pathFilter($downloadDir)) {
                 continue;
@@ -147,9 +148,13 @@ class TransferServices
             $needPatchTorrent = $qBittorrent_version_lg_4_4;
             // 待删除种子
             $torrentDelete = '';
+            // 附加参数
+            $extra_options = [];
             // 获取种子文件的实际路径
             switch ($this->from_clients->getClientEnums()) {
                 case ClientEnums::transmission:
+                    $extra_options['paused'] = $this->paused;
+
                     // 优先使用API提供的种子路径
                     $torrentPath = $move[$infohash]['torrentFile'];
                     $torrentDelete = $move[$infohash]['id'];
@@ -165,7 +170,12 @@ class TransferServices
                         return;
                     }
                     break;
-                case 'qBittorrent':
+                case ClientEnums::qBittorrent:
+                    $extra_options['paused'] = $this->paused ? 'true' : 'false';
+                    if ($this->skip_check) {
+                        $extra_options['skip_checking'] = "true";    //转移成功，跳校验
+                    }
+
                     if (empty($path)) {
                         echo $help_msg;
                         echo "{$this->from_clients->title} 的 IYUUPlus内下载器未设置种子目录，无法完成转移！" . PHP_EOL;
@@ -246,24 +256,15 @@ class TransferServices
                 }
                 $torrent = Bencode::encode($parsed_torrent);
             }
-            // 正式开始转移
-            echo "种子已推送给下载器，正在转移做种..." . PHP_EOL;
 
-            // 目标下载器类型
-            $extra_options = array();
-            // 转移后，是否开始？
-            $extra_options['paused'] = $this->paused;
-            if ($this->to_client->getClientEnums() === ClientEnums::qBittorrent) {
-                if ($this->skip_check) {
-                    $extra_options['skip_checking'] = "true";    //转移成功，跳校验
-                }
-            }
-
-            // 添加转移任务：成功返回：true
+            // 构造种子对象
             $contractsTorrent = new TorrentContract($torrent, true);
             $contractsTorrent->savePath = $downloadDir;
             $contractsTorrent->parameters = $extra_options;
+            // 正式开始转移
+            echo "将把种子文件推送给下载器，正在转移做种客户端..." . PHP_EOL;
             $ret = $toBittorrentClient->addTorrent($contractsTorrent);
+
             /**
              * 转移成功的种子写日志
              */
