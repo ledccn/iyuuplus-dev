@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>浏览页面</title>
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
+</head>
+<body class="pear-container">
+
+<!-- 顶部查询表单 -->
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form top-search-from">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">来源</label>
+                <div class="layui-input-block">
+                    <div name="from_client_id" id="from_client_id" value=""></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">目标</label>
+                <div class="layui-input-block">
+                    <div name="to_client_id" id="to_client_id" value=""></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" title="种子infohash">种子哈希</label>
+                <div class="layui-input-block">
+                    <input type="text" name="info_hash" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <div name="state" id="state" value=""></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label"></label>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="table-query">
+                    <i class="layui-icon layui-icon-search"></i>查询
+                </button>
+                <button type="reset" class="pear-btn pear-btn-md" lay-submit lay-filter="table-reset">
+                    <i class="layui-icon layui-icon-refresh"></i>重置
+                </button>
+            </div>
+            <div class="toggle-btn">
+                <a class="layui-hide">展开<i class="layui-icon layui-icon-down"></i></a>
+                <a class="layui-hide">收起<i class="layui-icon layui-icon-up"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 数据表格 -->
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="data-table" lay-filter="data-table"></table>
+    </div>
+</div>
+
+<!-- 表格顶部工具栏 -->
+<script type="text/html" id="table-toolbar">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="admin.transfer.insert">
+        <i class="layui-icon layui-icon-add-1"></i>新增
+    </button>
+    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.transfer.delete">
+        <i class="layui-icon layui-icon-delete"></i>删除
+    </button>
+</script>
+
+<!-- 表格行工具栏 -->
+<script type="text/html" id="table-bar">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="admin.transfer.update">编辑</button>
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="admin.transfer.delete">删除</button>
+</script>
+
+<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+<script src="/app/admin/admin/js/permission.js"></script>
+<script src="/app/admin/admin/js/common.js"></script>
+
+<script>
+
+    // 相关常量
+    const PRIMARY_KEY = "transfer_id";
+    const SELECT_API = "/admin/transfer/select";
+    const UPDATE_API = "/admin/transfer/update";
+    const DELETE_API = "/admin/transfer/delete";
+    const INSERT_URL = "/admin/transfer/insert";
+    const UPDATE_URL = "/admin/transfer/update";
+
+    // 字段 来源 from_client_id
+    layui.use(["jquery", "xmSelect", "popup"], function () {
+        layui.$.ajax({
+            url: "/admin/client/select?format=select&limit=1000",
+            dataType: "json",
+            success: function (res) {
+                let value = layui.$("#from_client_id").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#from_client_id",
+                    name: "from_client_id",
+                    initValue: initValue,
+                    filterable: true,
+                    data: res.data,
+                    model: {"icon": "hidden", "label": {"type": "text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
+    });
+
+    // 字段 目标 to_client_id
+    layui.use(["jquery", "xmSelect", "popup"], function () {
+        layui.$.ajax({
+            url: "/admin/client/select?format=select&limit=1000",
+            dataType: "json",
+            success: function (res) {
+                let value = layui.$("#to_client_id").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#to_client_id",
+                    name: "to_client_id",
+                    initValue: initValue,
+                    filterable: true,
+                    data: res.data,
+                    model: {"icon": "hidden", "label": {"type": "text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
+    });
+
+    // 字段 状态 state
+    layui.use(["jquery", "xmSelect"], function () {
+        let value = layui.$("#state").attr("value");
+        let initValue = value ? value.split(",") : [];
+        layui.xmSelect.render({
+            el: "#state",
+            name: "state",
+            filterable: true,
+            initValue: initValue,
+            data: [{"value": "0", "name": "失败"}, {"value": "1", "name": "成功"}],
+            model: {"icon": "hidden", "label": {"type": "text"}},
+            clickClose: true,
+            radio: true,
+        })
+    });
+
+    // 表格渲染
+    layui.use(["table", "form", "common", "popup", "util"], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.$;
+        let common = layui.common;
+        let util = layui.util;
+
+        /**
+         * 屏幕宽度小于指定值
+         * @param px
+         * @returns {boolean}
+         */
+        function isWidthLessThan(px = 1650) {
+            console.info(location.pathname, '屏幕宽度：', layui.$(window).width());
+            return layui.$(window).width() <= px;
+        }
+
+        // 表头参数
+        let cols = [
+            {
+                type: "checkbox",
+                align: "center"
+            }, {
+                title: "主键", align: "center",
+                field: "transfer_id",
+                width: 80,
+            }, {
+                title: "来源", align: "center",
+                field: "from_client_id",
+                width: 140,
+                templet: function (d) {
+                    let field = "from_client_id";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
+            }, {
+                title: "目标", align: "center",
+                field: "to_client_id",
+                width: 140,
+                templet: function (d) {
+                    let field = "to_client_id";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
+            }, {
+                title: "种子infohash", align: "center",
+                field: "info_hash",
+                hide: isWidthLessThan(),
+                width: 300,
+            }, {
+                title: "转换前目录", align: "center",
+                field: "directory",
+                hide: isWidthLessThan(),
+            }, {
+                title: "转换后目录", align: "center",
+                field: "convert_directory",
+                hide: isWidthLessThan(),
+            }, {
+                title: "种子文件路径", align: "center",
+                field: "torrent_file",
+                hide: isWidthLessThan(),
+            }, {
+                title: "结果消息", align: "center",
+                field: "message",
+            }, {
+                title: "状态", align: "center",
+                field: "state",
+                width: 80,
+                templet: function (d) {
+                    let field = "state";
+                    if (typeof d[field] == "undefined") return "";
+                    let v = d[field];
+                    switch (v) {
+                        case 0:
+                            return '<span class="layui-badge layui-bg-orange">' + util.escape(apiResults[field][v] || v) + '</span>';
+                        case 1:
+                            return '<span class="layui-badge layui-bg-green">' + util.escape(apiResults[field][v] || v) + '</span>';
+                        default:
+                            return util.escape(apiResults[field][v] || v);
+                    }
+                }
+            }, {
+                title: "创建时间", align: "center",
+                field: "created_at",
+                width: 140,
+                hide: isWidthLessThan(),
+            }, {
+                title: "更新时间", align: "center",
+                field: "updated_at",
+                width: 140,
+                hide: isWidthLessThan(),
+            }, {
+                title: "操作",
+                toolbar: "#table-bar",
+                align: "center",
+                fixed: "right",
+                width: 120,
+            }
+        ];
+
+        // 渲染表格
+        function render() {
+            table.render({
+                elem: "#data-table",
+                url: SELECT_API,
+                page: true,
+                cols: [cols],
+                //skin: "line",
+                size: "sm",
+                toolbar: "#table-toolbar",
+                autoSort: false,
+                defaultToolbar: [{
+                    title: "刷新",
+                    layEvent: "refresh",
+                    icon: "layui-icon-refresh",
+                }, "filter", "print", "exports"],
+                done: function () {
+                    layer.photos({photos: 'div[lay-id="data-table"]', anim: 5});
+                }
+            });
+        }
+
+        // 获取表格中下拉或树形组件数据
+        let apis = [];
+        apis.push(["from_client_id", "/admin/client/select?format=select&limit=1000"]);
+        apis.push(["to_client_id", "/admin/client/select?format=select&limit=1000"]);
+        let apiResults = {};
+        apiResults["from_client_id"] = [];
+        apiResults["to_client_id"] = [];
+        apiResults["state"] = ["失败", "成功"];
+        let count = apis.length;
+        layui.each(apis, function (k, item) {
+            let [field, url] = item;
+            $.ajax({
+                url: url,
+                dateType: "json",
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+
+                    function travel(items) {
+                        for (let k in items) {
+                            let item = items[k];
+                            apiResults[field][item.value] = item.name;
+                            if (item.children) {
+                                travel(item.children);
+                            }
+                        }
+                    }
+
+                    travel(res.data);
+                },
+                complete: function () {
+                    if (--count === 0) {
+                        render();
+                    }
+                }
+            });
+        });
+        if (!count) {
+            render();
+        }
+
+        // 编辑或删除行事件
+        table.on("tool(data-table)", function (obj) {
+            if (obj.event === "remove") {
+                remove(obj);
+            } else if (obj.event === "edit") {
+                edit(obj);
+            }
+        });
+
+        // 表格顶部工具栏事件
+        table.on("toolbar(data-table)", function (obj) {
+            if (obj.event === "add") {
+                add();
+            } else if (obj.event === "refresh") {
+                refreshTable();
+            } else if (obj.event === "batchRemove") {
+                batchRemove(obj);
+            }
+        });
+
+        // 表格顶部搜索事件
+        form.on("submit(table-query)", function (data) {
+            table.reload("data-table", {
+                page: {
+                    curr: 1
+                },
+                where: data.field
+            })
+            return false;
+        });
+
+        // 表格顶部搜索重置事件
+        form.on("submit(table-reset)", function (data) {
+            table.reload("data-table", {
+                where: []
+            })
+        });
+
+        // 字段允许为空
+        form.verify({
+            phone: [/(^$)|^1\d{10}$/, "请输入正确的手机号"],
+            email: [/(^$)|^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/, "邮箱格式不正确"],
+            url: [/(^$)|(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, "链接格式不正确"],
+            number: [/(^$)|^\d+$/, '只能填写数字'],
+            date: [/(^$)|^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/, "日期格式不正确"],
+            identity: [/(^$)|(^\d{15}$)|(^\d{17}(x|X|\d)$)/, "请输入正确的身份证号"]
+        });
+
+        // 表格排序事件
+        table.on("sort(data-table)", function (obj) {
+            table.reload("data-table", {
+                initSort: obj,
+                scrollPos: "fixed",
+                where: {
+                    field: obj.field,
+                    order: obj.type
+                }
+            });
+        });
+
+        // 表格新增数据
+        let add = function () {
+            layer.open({
+                type: 2,
+                title: "新增",
+                shade: 0.1,
+                maxmin: true,
+                area: [common.isModile() ? "100%" : "500px", common.isModile() ? "100%" : "450px"],
+                content: INSERT_URL
+            });
+        }
+
+        // 表格编辑数据
+        let edit = function (obj) {
+            let value = obj.data[PRIMARY_KEY];
+            layer.open({
+                type: 2,
+                title: "修改",
+                shade: 0.1,
+                maxmin: true,
+                area: [common.isModile() ? "100%" : "500px", common.isModile() ? "100%" : "450px"],
+                content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
+            });
+        }
+
+        // 删除一行
+        let remove = function (obj) {
+            return doRemove(obj.data[PRIMARY_KEY]);
+        }
+
+        // 删除多行
+        let batchRemove = function (obj) {
+            let checkIds = common.checkField(obj, PRIMARY_KEY);
+            if (checkIds === "") {
+                layui.popup.warning("未选中数据");
+                return false;
+            }
+            doRemove(checkIds.split(","));
+        }
+
+        // 执行删除
+        let doRemove = function (ids) {
+            let data = {};
+            data[PRIMARY_KEY] = ids;
+            layer.confirm("确定删除?", {
+                icon: 3,
+                title: "提示"
+            }, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: DELETE_API,
+                    data: data,
+                    dataType: "json",
+                    type: "post",
+                    success: function (res) {
+                        layer.close(loading);
+                        if (res.code) {
+                            return layui.popup.failure(res.msg);
+                        }
+                        return layui.popup.success("操作成功", refreshTable);
+                    }
+                })
+            });
+        }
+
+        // 刷新表格数据
+        window.refreshTable = function (param) {
+            table.reloadData("data-table", {
+                scrollPos: "fixed"
+            });
+        }
+    })
+
+</script>
+</body>
+</html>

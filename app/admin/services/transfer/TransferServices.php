@@ -6,6 +6,7 @@ use app\admin\services\client\ClientServices;
 use app\model\Client;
 use app\model\Folder;
 use app\model\IyuuDocuments;
+use app\model\Transfer;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\ClientEnums;
 use Iyuu\BittorrentClient\Clients;
@@ -119,17 +120,31 @@ class TransferServices
         Event::dispatch('transfer.action.before', [$hashDict, $fromBittorrentClient, $toBittorrentClient]);
 
         // 第一层循环：哈希目录字典
-        foreach ($hashDict as $infohash => $downloadDir) {
-            if ($this->pathFilter($downloadDir)) {
+        foreach ($hashDict as $infohash => $downloadDirOriginal) {
+            $attributes = [
+                'from_client_id' => $this->from_clients->id,
+                'to_client_id' => $this->to_client->id,
+                'info_hash' => $infohash,
+            ];
+
+            if ($this->pathFilter($downloadDirOriginal)) {
                 continue;
             }
 
+            echo PHP_EOL;
             // 做种实际路径与相对路径之间互转
-            echo '转换前：' . $downloadDir . PHP_EOL;
-            $downloadDir = $this->pathConvert($downloadDir);
+            echo '转换前：' . $downloadDirOriginal . PHP_EOL;
+            $downloadDir = $this->pathConvert($downloadDirOriginal);
             echo '转换后：' . $downloadDir . PHP_EOL;
+
             if (empty($downloadDir)) {
-                echo '路径转换参数配置错误，请重新配置！' . PHP_EOL;
+                $msg = '路径转换参数配置错误，请重新配置！';
+                echo $msg . PHP_EOL;
+                Transfer::updateOrCreate($attributes, [
+                    'directory' => $downloadDirOriginal,
+                    'convert_directory' => $downloadDir,
+                    'message' => $msg
+                ]);
                 return;
             }
 
@@ -142,6 +157,11 @@ class TransferServices
                 };
             } catch (\Throwable $throwable) {
                 echo '【读取种子元信息】异常：' . $throwable->getMessage() . PHP_EOL;
+                Transfer::updateOrCreate($attributes, [
+                    'directory' => $downloadDirOriginal,
+                    'convert_directory' => $downloadDir,
+                    'message' => $throwable->getMessage()
+                ]);
                 continue;
             }
 
@@ -149,21 +169,27 @@ class TransferServices
 
             $contractsTorrent->savePath = $downloadDir;
 
-            echo "将把种子文件推送给下载器，正在转移做种客户端..." . PHP_EOL;
+            echo "将把种子文件推送给下载器，正在转移做种客户端..." . PHP_EOL . PHP_EOL;
             $ret = $toBittorrentClient->addTorrent($contractsTorrent);
 
-            /**
-             * 记录日志
-             */
-            //$log = $infohash . PHP_EOL . $torrentFile . PHP_EOL . $downloadDir . PHP_EOL . PHP_EOL;
             if ($ret) {
+                $state = 1;
                 //转移成功时，删除做种，不删资源
                 if ($this->delete_torrent) {
                     $fromBittorrentClient->delete($rocket->torrentDelete);
                 }
             } else {
                 // 失败的种子
+                $state = 0;
             }
+
+            Transfer::updateOrCreate($attributes, [
+                'directory' => $downloadDirOriginal,
+                'convert_directory' => $downloadDir,
+                'torrent_file' => $rocket->torrentFile,
+                'message' => is_string($ret) ? $ret : json_encode($ret, JSON_UNESCAPED_UNICODE),
+                'state' => $state,
+            ]);
         }
     }
 
@@ -218,9 +244,14 @@ class TransferServices
         $help_msg = implode(PHP_EOL, IyuuDocuments::get('transfer.help', [])) . PHP_EOL;
 
         $extra_options = [];
-        $extra_options['paused'] = $this->paused ? 'true' : 'false';
+        if ($this->paused) {
+            $extra_options['paused'] = 'true';
+        }
         if ($this->skip_check) {
             $extra_options['skip_checking'] = "true";    //转移成功，跳校验
+        }
+        if ($this->to_client->root_folder) {
+            $extra_options['skip_checking'] = "true";
         }
 
         if (empty($path)) {
@@ -310,6 +341,7 @@ class TransferServices
         if ($this->from_clients->getClientEnums() === ClientEnums::qBittorrent) {
             /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $fromBittorrentClient */
             $version = $fromBittorrentClient->appVersion();
+            echo '您的qBittorrent版本号：' . $version . PHP_EOL . PHP_EOL;
             return version_compare(ltrim($version, 'v'), '4.4.0', '>=');
         }
 
@@ -377,6 +409,10 @@ class TransferServices
      */
     private function pathConvert(string $path): ?string
     {
+        if ($this->path_convert_type === PathConvertTypeEnums::Eq) {
+            return $path;
+        }
+
         $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
         foreach ($this->path_convert_rule as $key => $val) {
             if (str_starts_with($path, $key)) {
@@ -388,7 +424,6 @@ class TransferServices
                 };
             }
         }
-
         return null;
     }
 
@@ -407,8 +442,6 @@ class TransferServices
         if (is_string($parameter)) {
             $parameter = json_decode($parameter, true);
         }
-
-
         return [$crontabModel, $parameter];
     }
 
@@ -449,13 +482,13 @@ class TransferServices
         }
 
         // 跳校验
-        $this->skip_check = Utils::booleanParse($this->getParameter('skip_check'));
+        $this->skip_check = Utils::booleanParse($this->getParameter('skip_check', false));
 
         // 暂停
-        $this->paused = Utils::booleanParse($this->getParameter('paused'));
+        $this->paused = Utils::booleanParse($this->getParameter('paused', false));
 
         // 删除源做种
-        $this->delete_torrent = Utils::booleanParse($this->getParameter('delete_torrent'));
+        $this->delete_torrent = Utils::booleanParse($this->getParameter('delete_torrent', false));
     }
 
     /**
@@ -493,7 +526,6 @@ class TransferServices
         return $str;
     }
 
-
     /**
      * 解析路径转换规则
      * @param string $path_convert_rule
@@ -528,7 +560,6 @@ class TransferServices
                 }
             }
         }
-
         return $rules;
     }
 }
