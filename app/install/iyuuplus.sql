@@ -34,7 +34,7 @@ CREATE TABLE `cn_reseed` (
   `sid` int(10) UNSIGNED NOT NULL COMMENT '站点ID',
   `torrent_id` int(10) UNSIGNED NOT NULL COMMENT '种子ID',
   `group_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '种子分组ID',
-  `info_hash` char(40) NOT NULL DEFAULT '' COMMENT '种子infohash',
+  `info_hash` varchar(80) NOT NULL DEFAULT '' COMMENT '种子infohash',
   `directory` varchar(900) NOT NULL DEFAULT '' COMMENT '目标文件夹',
   `dispatch_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '调度时间',
   `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '状态',
@@ -62,6 +62,21 @@ CREATE TABLE `cn_sites` (
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='站点配置';
 
+CREATE TABLE `cn_transfer` (
+  `transfer_id` int(10) UNSIGNED NOT NULL COMMENT '主键',
+  `from_client_id` int(10) UNSIGNED NOT NULL COMMENT '来源',
+  `to_client_id` int(10) UNSIGNED NOT NULL COMMENT '目标',
+  `info_hash` varchar(80) NOT NULL DEFAULT '' COMMENT '种子infohash',
+  `directory` varchar(900) NOT NULL DEFAULT '' COMMENT '转换前目录',
+  `convert_directory` varchar(900) NOT NULL DEFAULT '' COMMENT '转换后目录',
+  `torrent_file` varchar(900) NOT NULL DEFAULT '' COMMENT '种子文件路径',
+  `message` varchar(300) NOT NULL DEFAULT '' COMMENT '结果消息',
+  `state` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '状态',
+  `last_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最后操作',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='自动转移';
+
 
 ALTER TABLE `cn_client`
   ADD PRIMARY KEY (`id`),
@@ -86,6 +101,13 @@ ALTER TABLE `cn_sites`
   ADD UNIQUE KEY `site` (`site`),
   ADD UNIQUE KEY `sid` (`sid`);
 
+ALTER TABLE `cn_transfer`
+  ADD PRIMARY KEY (`transfer_id`),
+  ADD KEY `from_client_id` (`from_client_id`),
+  ADD KEY `to_client_id` (`to_client_id`),
+  ADD KEY `info_hash` (`info_hash`),
+  ADD KEY `state` (`state`);
+
 
 ALTER TABLE `cn_client`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
@@ -98,6 +120,9 @@ ALTER TABLE `cn_reseed`
 
 ALTER TABLE `cn_sites`
   MODIFY `id` mediumint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
+
+ALTER TABLE `cn_transfer`
+  MODIFY `transfer_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
 
 
 ALTER TABLE `cn_reseed`
