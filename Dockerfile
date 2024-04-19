@@ -5,9 +5,6 @@ ARG PHP_EXTENSION_INSTALL_VERSION=latest
 # https://hub.docker.com/r/composer/composer
 ARG COMPOSER_VERSION=latest
 
-LABEL Maintainer="david <367013672@qq.com>"
-LABEL Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux."
-
 # install-php-extensions
 FROM mlocati/php-extension-installer:$PHP_EXTENSION_INSTALL_VERSION AS php-extension-installer
 # composer
