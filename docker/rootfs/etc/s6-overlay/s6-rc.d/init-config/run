@@ -1,0 +1,17 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+cd /iyuu || exit
+
+## 更新一次IYUU
+if [[ ! -d .git ]]; then
+    echo "Clone IYUU script..."
+    rm -rf /iyuu/* 2>/dev/null
+    git clone "${IYUU_REPO_URL}" /iyuu
+else
+    echo "Update IYUU script..."
+    git remote set-url origin "${IYUU_REPO_URL}"
+    git fetch --all
+    git reset --hard origin/master
+    git pull
+fi

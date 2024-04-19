@@ -1,19 +1,7 @@
-# https://hub.docker.com/_/php
-ARG PHP_CLI_VERSION=8.3-cli-alpine
-# https://hub.docker.com/r/mlocati/php-extension-installer
-ARG PHP_EXTENSION_INSTALL_VERSION=latest
-# https://hub.docker.com/r/composer/composer
-ARG COMPOSER_VERSION=latest
 # 镜像（mirrors.aliyun.com ｜ mirrors.ustc.edu.cn）
 ARG CONTAINER_PACKAGE_URL=mirrors.aliyun.com
 
-# install-php-extensions
-FROM mlocati/php-extension-installer:$PHP_EXTENSION_INSTALL_VERSION AS php-extension-installer
-# composer
-FROM composer/composer:$COMPOSER_VERSION AS composer
-
-# 开始构建
-FROM php:$PHP_CLI_VERSION
+FROM alpine:3.19
 
 LABEL Maintainer="david <367013672@qq.com>"
 LABEL Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux."
@@ -22,45 +10,59 @@ LABEL Version="8.3"
 # 使用国内镜像
 RUN if [ $CONTAINER_PACKAGE_URL ] ; then sed -i "s/dl-cdn.alpinelinux.org/${CONTAINER_PACKAGE_URL}/g" /etc/apk/repositories ; fi
 
-# 安装系统依赖
-COPY --from=php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN apk add --no-cache supervisor unzip
+ENV PS1="\[\e[32m\][\[\e[m\]\[\e[36m\]\u \[\e[m\]\[\e[37m\]@ \[\e[m\]\[\e[34m\]\h\[\e[m\]\[\e[32m\]]\[\e[m\] \[\e[37;35m\]in\[\e[m\] \[\e[33m\]\w\[\e[m\] \[\e[32m\][\[\e[m\]\[\e[37m\]\d\[\e[m\] \[\e[m\]\[\e[37m\]\t\[\e[m\]\[\e[32m\]]\[\e[m\] \n\[\e[1;31m\]$ \[\e[0m\]" \
+    LANG="C.UTF-8" \
+    TZ="Asia/Shanghai" \
+    APP_ENV=prod \
+    IYUU_REPO_URL="https://gitee.com/ledc/iyuuplus-dev.git"
 
-# 安装PHP 扩展
-# https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions
-RUN install-php-extensions \
-    bcmath \
-    event \
-    gd \
-    mysqli \
-    pdo_mysql \
-    opcache \
-    pcntl \
-    sockets \
-    zip
+RUN set -ex && \
+    apk add --no-cache \
+        curl \
+        bash \
+        openssl \
+        wget \
+        zip \
+        unzip \
+        tzdata \
+        git \
+        libressl \
+        tar \
+        s6-overlay \
+        php83 \
+        php83-cli \
+        php83-bcmath \
+        php83-curl \
+        php83-dom \
+        php83-mbstring \
+        php83-openssl \
+        php83-opcache \
+        php83-pcntl \
+        php83-pdo \
+        php83-pdo_sqlite \
+        php83-phar \
+        php83-posix \
+        php83-simplexml \
+        php83-sockets \
+        php83-session \
+        php83-zip \
+        php83-gd \
+        php83-mysqli \
+        php83-pdo_mysql \
+        php83-pecl-event \
+        php83-xml && \
+    ln -sf /usr/bin/php83 /usr/bin/php && \
+    curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
+    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    echo -e "upload_max_filesize=100M\npost_max_size=108M\nmemory_limit=1024M\ndate.timezone=${TZ}\n" > /etc/php83/conf.d/99-overrides.ini && \
+    echo -e "[opcache]\nopcache.enable=1\nopcache.enable_cli=1" >> /etc/php83/conf.d/99-overrides.ini && \
+    git config --global pull.ff only && \
+    git config --global --add safe.directory /iyuu && \
+    git clone --depth 1 ${IYUU_REPO_URL} /iyuu && \
+    rm -rf /var/cache/apk/* /tmp/*
 
-# 清理缓存
-RUN rm -rf /var/cache/apk/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+COPY --chmod=755 ./docker/rootfs /
 
-# 设置配置文件
-# php
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-COPY docker/php.ini "$PHP_INI_DIR/conf.d/app.ini"
-# supervisor
-COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
+VOLUME [ "/iyuu" ]
 
-# 设置项目目录
-RUN mkdir -p /app
-WORKDIR /app
-
-# 暴露端口
-EXPOSE 8787
-EXPOSE 8788
-EXPOSE 3131
-
-# 文件系统
-VOLUME ["/app"]
-
-# 启动脚本
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+ENTRYPOINT ["/init"]
