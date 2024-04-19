@@ -1,3 +1,4 @@
+/.git
 /.idea
 /.vscode
 *.log
@@ -12,5 +13,4 @@
 /plugin/admin/config/thinkorm.php
 /cookie.sh
 /rss.sh
-/vendor
 /plugin/*.zip
