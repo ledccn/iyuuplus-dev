@@ -13,6 +13,10 @@ FROM composer/composer:$COMPOSER_VERSION AS composer
 # 开始构建
 FROM php:$PHP_CLI_VERSION
 
+LABEL Maintainer="david <367013672@qq.com>"
+LABEL Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux."
+LABEL Version="8.3"
+
 # 安装系统依赖
 COPY --from=php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 COPY --from=composer /usr/bin/composer /usr/bin/composer
