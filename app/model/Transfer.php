@@ -5,6 +5,7 @@ namespace app\model;
 use plugin\admin\app\model\Base;
 
 /**
+ * 自动转移
  * @property integer $transfer_id 主键(主键)
  * @property integer $from_client_id 来源
  * @property integer $to_client_id 目标
