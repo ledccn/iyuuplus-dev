@@ -1,14 +1,12 @@
-# 镜像（mirrors.aliyun.com ｜ mirrors.ustc.edu.cn）
-ARG CONTAINER_PACKAGE_URL=mirrors.aliyun.com
-
 FROM alpine:3.19
 
 LABEL Maintainer="david <367013672@qq.com>"
 LABEL Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux."
 LABEL Version="8.3"
 
-# 使用国内镜像
-RUN if [ $CONTAINER_PACKAGE_URL ] ; then sed -i "s/dl-cdn.alpinelinux.org/${CONTAINER_PACKAGE_URL}/g" /etc/apk/repositories ; fi
+# 使用国内镜像（mirrors.aliyun.com ｜ mirrors.ustc.edu.cn）
+ARG package_url=mirrors.ustc.edu.cn
+RUN if [ $package_url ] ; then sed -i "s/dl-cdn.alpinelinux.org/${package_url}/g" /etc/apk/repositories ; fi
 
 ENV PS1="\[\e[32m\][\[\e[m\]\[\e[36m\]\u \[\e[m\]\[\e[37m\]@ \[\e[m\]\[\e[34m\]\h\[\e[m\]\[\e[32m\]]\[\e[m\] \[\e[37;35m\]in\[\e[m\] \[\e[33m\]\w\[\e[m\] \[\e[32m\][\[\e[m\]\[\e[37m\]\d\[\e[m\] \[\e[m\]\[\e[37m\]\t\[\e[m\]\[\e[32m\]]\[\e[m\] \n\[\e[1;31m\]$ \[\e[0m\]" \
     LANG="C.UTF-8" \
@@ -17,6 +15,8 @@ ENV PS1="\[\e[32m\][\[\e[m\]\[\e[36m\]\u \[\e[m\]\[\e[37m\]@ \[\e[m\]\[\e[34m\]\
     IYUU_REPO_URL="https://gitee.com/ledc/iyuuplus-dev.git"
 
 RUN set -ex && \
+    #sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories && \
+    #sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories && \
     apk add --no-cache \
         curl \
         bash \
