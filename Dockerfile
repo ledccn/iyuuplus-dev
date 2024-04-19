@@ -25,12 +25,9 @@ RUN apk add --no-cache supervisor unzip
 # https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions
 RUN install-php-extensions \
     bcmath \
-    curl \
     event \
-    fileinfo \
     gd \
     mysqli \
-    mbstring \
     pdo_mysql \
     opcache \
     pcntl \
@@ -38,7 +35,7 @@ RUN install-php-extensions \
     zip
 
 # 清理缓存
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN rm -rf /var/cache/apk/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # 设置配置文件
 # php
