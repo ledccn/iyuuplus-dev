@@ -60,7 +60,12 @@ RUN set -ex && \
     rm -rf /var/cache/apk/* /tmp/*
 
 COPY --chmod=755 ./docker/rootfs /
+# 暴露端口
+EXPOSE 8787
+EXPOSE 8788
+EXPOSE 3131
 
+# 文件系统
 VOLUME [ "/iyuu" ]
 
 ENTRYPOINT ["/init"]
