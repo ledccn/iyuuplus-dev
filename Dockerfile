@@ -4,6 +4,8 @@ ARG PHP_CLI_VERSION=8.3-cli-alpine
 ARG PHP_EXTENSION_INSTALL_VERSION=latest
 # https://hub.docker.com/r/composer/composer
 ARG COMPOSER_VERSION=latest
+# 镜像（mirrors.aliyun.com ｜ mirrors.ustc.edu.cn）
+ARG CONTAINER_PACKAGE_URL=mirrors.aliyun.com
 
 # install-php-extensions
 FROM mlocati/php-extension-installer:$PHP_EXTENSION_INSTALL_VERSION AS php-extension-installer
@@ -17,11 +19,13 @@ LABEL Maintainer="david <367013672@qq.com>"
 LABEL Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux."
 LABEL Version="8.3"
 
+# 使用国内镜像
+RUN if [ $CONTAINER_PACKAGE_URL ] ; then sed -i "s/dl-cdn.alpinelinux.org/${CONTAINER_PACKAGE_URL}/g" /etc/apk/repositories ; fi
+
 # 安装系统依赖
 COPY --from=php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN sed -i 's/dl-cdn\.alpinelinux\.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && apk add --no-cache supervisor unzip
+RUN apk add --no-cache supervisor unzip
 
 # 安装PHP 扩展
 # https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions
