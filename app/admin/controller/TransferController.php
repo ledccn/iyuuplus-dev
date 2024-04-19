@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\HasDelete;
 use app\model\Transfer;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
@@ -13,6 +14,8 @@ use support\Response;
  */
 class TransferController extends Crud
 {
+    use HasDelete;
+
     /**
      * @var Transfer
      */

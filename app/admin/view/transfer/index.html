@@ -67,9 +67,9 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="admin.transfer.insert">
+    <!--<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="admin.transfer.insert">
         <i class="layui-icon layui-icon-add-1"></i>新增
-    </button>
+    </button>-->
     <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.transfer.delete">
         <i class="layui-icon layui-icon-delete"></i>删除
     </button>
@@ -190,7 +190,7 @@
                 field: "transfer_id",
                 width: 80,
             }, {
-                title: "来源", align: "center",
+                title: "来源下载器", align: "center",
                 field: "from_client_id",
                 width: 140,
                 templet: function (d) {
@@ -203,7 +203,7 @@
                     return util.escape(items.join(","));
                 }
             }, {
-                title: "目标", align: "center",
+                title: "目标下载器", align: "center",
                 field: "to_client_id",
                 width: 140,
                 templet: function (d) {
@@ -216,7 +216,7 @@
                     return util.escape(items.join(","));
                 }
             }, {
-                title: "种子infohash", align: "center",
+                title: "种子哈希", align: "center",
                 field: "info_hash",
                 hide: isWidthLessThan(),
                 width: 300,
@@ -277,6 +277,8 @@
                 elem: "#data-table",
                 url: SELECT_API,
                 page: true,
+                limit: 20,
+                limits: [10, 20, 50, 100, 200, 500, 1000],
                 cols: [cols],
                 //skin: "line",
                 size: "sm",

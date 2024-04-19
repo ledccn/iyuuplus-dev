@@ -6,15 +6,16 @@ use plugin\admin\app\model\Base;
 
 /**
  * 自动转移
- * @property integer $transfer_id 主键(主键)
- * @property integer $from_client_id 来源
- * @property integer $to_client_id 目标
+ * @property int $transfer_id 主键
+ * @property int $from_client_id 来源下载器
+ * @property int $to_client_id 目标下载器
  * @property string $info_hash 种子infohash
  * @property string $directory 转换前目录
  * @property string $convert_directory 转换后目录
  * @property string $torrent_file 种子文件路径
  * @property string $message 结果消息
- * @property integer $state 状态
+ * @property int|bool $state 状态
+ * @property int $last_time 最后操作时间
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
  */

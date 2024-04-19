@@ -143,7 +143,9 @@ class TransferServices
                 Transfer::updateOrCreate($attributes, [
                     'directory' => $downloadDirOriginal,
                     'convert_directory' => $downloadDir,
-                    'message' => $msg
+                    'message' => $msg,
+                    'state' => 0,
+                    'last_time' => time(),
                 ]);
                 return;
             }
@@ -160,7 +162,9 @@ class TransferServices
                 Transfer::updateOrCreate($attributes, [
                     'directory' => $downloadDirOriginal,
                     'convert_directory' => $downloadDir,
-                    'message' => $throwable->getMessage()
+                    'message' => $throwable->getMessage(),
+                    'state' => 0,
+                    'last_time' => time(),
                 ]);
                 continue;
             }
@@ -189,6 +193,7 @@ class TransferServices
                 'torrent_file' => $rocket->torrentFile,
                 'message' => is_string($ret) ? $ret : json_encode($ret, JSON_UNESCAPED_UNICODE),
                 'state' => $state,
+                'last_time' => time(),
             ]);
         }
     }
