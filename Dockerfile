@@ -28,10 +28,11 @@ RUN set -ex && \
         tar \
         s6-overlay \
         php83 \
-        php83-cli \
+        php83-bz2 \
         php83-bcmath \
         php83-curl \
         php83-dom \
+        php83-fileinfo \
         php83-mbstring \
         php83-openssl \
         php83-opcache \
@@ -43,6 +44,8 @@ RUN set -ex && \
         php83-simplexml \
         php83-sockets \
         php83-session \
+        php83-sodium \
+        php83-sqlite3 \
         php83-zip \
         php83-gd \
         php83-mysqli \
