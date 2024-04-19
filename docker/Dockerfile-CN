@@ -7,7 +7,7 @@ WORKDIR /iyuu
 RUN curl -sSLf \
         -o /usr/local/bin/install-php-extensions \
         https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions && \
-    chmod +x /usr/local/bin/install-php-extensions \
+    chmod +x /usr/local/bin/install-php-extensions
 
 RUN sed -i 's/dl-cdn\.alpinelinux\.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && install-php-extensions pcntl gd xdebug curl fileinfo mbstring mysqli openssl pdo_mysql pdo_sqlite sqlite3 sockets sodium pcntl zip \
