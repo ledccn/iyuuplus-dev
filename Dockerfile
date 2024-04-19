@@ -37,6 +37,9 @@ RUN install-php-extensions \
     sockets \
     zip
 
+# 清理缓存
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # 设置配置文件
 # php
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
