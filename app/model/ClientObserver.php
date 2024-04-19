@@ -122,6 +122,8 @@ class ClientObserver
             throw new InvalidArgumentException('禁止删除默认下载器');
         }
         Reseed::deleteByClientId($model->id);
+        Transfer::deleteByFromClientId($model->id);
+        Transfer::deleteByToClientId($model->id);
     }
 
     /**

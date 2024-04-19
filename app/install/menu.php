@@ -41,6 +41,14 @@ return [
                 'weight' => 0,
             ],
             [
+                'title' => '自动转移',
+                'icon' => 'layui-icon-circle-dot',
+                'key' => app\admin\controller\TransferController::class,
+                'href' => '/admin/transfer/index',
+                'type' => 1,
+                'weight' => 0,
+            ],
+            [
                 'title' => '数据目录',
                 'icon' => 'layui-icon-circle-dot',
                 'key' => app\admin\controller\FolderController::class,

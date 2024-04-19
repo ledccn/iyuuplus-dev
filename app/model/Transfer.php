@@ -40,4 +40,43 @@ class Transfer extends Base
      * @var array<string>|bool
      */
     protected $guarded = [];
+
+    /**
+     * 依据client_id批量删除数据
+     * @param int $from_client_id
+     * @return int
+     */
+    public static function deleteByFromClientId(int $from_client_id): int
+    {
+        return self::deleteByColumnValue('from_client_id', $from_client_id);
+    }
+
+    /**
+     * 依据client_id批量删除数据
+     * @param int $to_client_id
+     * @return int
+     */
+    public static function deleteByToClientId(int $to_client_id): int
+    {
+        return self::deleteByColumnValue('to_client_id', $to_client_id);
+    }
+
+    /**
+     * 私有方法，批量删除数据
+     * @param string $column
+     * @param string $value
+     * @return int
+     */
+    protected static function deleteByColumnValue(string $column, string $value): int
+    {
+        $count = 0;
+        Transfer::where($column, '=', $value)->chunkById(50, function ($reseeds) use (&$count) {
+            /** @var Reseed $reseed */
+            foreach ($reseeds as $reseed) {
+                $reseed->delete();
+                $count++;
+            }
+        });
+        return $count;
+    }
 }
