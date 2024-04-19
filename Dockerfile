@@ -42,7 +42,7 @@ RUN rm -rf /var/cache/apk/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY docker/php.ini "$PHP_INI_DIR/conf.d/app.ini"
 # supervisor
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
 
 # 设置项目目录
 RUN mkdir -p /app
@@ -57,4 +57,4 @@ EXPOSE 3131
 VOLUME ["/app"]
 
 # 启动脚本
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
