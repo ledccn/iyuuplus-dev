@@ -5,9 +5,8 @@ ARG PHP_EXTENSION_INSTALL_VERSION=latest
 # https://hub.docker.com/r/composer/composer
 ARG COMPOSER_VERSION=latest
 
-LABEL Maintainer="david <367013672@qq.com>" \
-      Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux." \
-      version="8.0"
+LABEL Maintainer="david <367013672@qq.com>"
+LABEL Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux."
 
 # install-php-extensions
 FROM mlocati/php-extension-installer:$PHP_EXTENSION_INSTALL_VERSION AS php-extension-installer
@@ -17,12 +16,12 @@ FROM composer/composer:$COMPOSER_VERSION AS composer
 # 开始构建
 FROM php:$PHP_CLI_VERSION
 
-# 系统依赖安装
+# 安装系统依赖
 COPY --from=php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN apk add --no-cache supervisor unzip
 
-# PHP 扩展安装
+# 安装PHP 扩展
 # https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions
 RUN install-php-extensions \
     bcmath \
@@ -51,6 +50,11 @@ WORKDIR /app
 
 # 暴露端口
 EXPOSE 8787
+EXPOSE 8788
+EXPOSE 3131
+
+# 文件系统
 VOLUME ["/app"]
+
 # 启动脚本
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
