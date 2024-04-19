@@ -20,12 +20,12 @@ LABEL Version="8.3"
 # 安装系统依赖
 COPY --from=php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN apk add --no-cache supervisor unzip
+RUN sed -i 's/dl-cdn\.alpinelinux\.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add --no-cache supervisor unzip
 
 # 安装PHP 扩展
 # https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions
-RUN sed -i 's/dl-cdn\.alpinelinux\.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && install-php-extensions \
+RUN install-php-extensions \
     bcmath \
     event \
     gd \
