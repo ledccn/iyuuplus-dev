@@ -15,8 +15,6 @@ ENV PS1="\[\e[32m\][\[\e[m\]\[\e[36m\]\u \[\e[m\]\[\e[37m\]@ \[\e[m\]\[\e[34m\]\
     IYUU_REPO_URL="https://gitee.com/ledc/iyuuplus-dev.git"
 
 RUN set -ex && \
-    #sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories && \
-    #sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories && \
     apk add --no-cache \
         curl \
         bash \
