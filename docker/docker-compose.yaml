@@ -1,0 +1,14 @@
+version: "3"
+services:
+  iyuuplus-dev:
+    stdin_open: true
+    tty: true
+    volumes:
+      - /root/iyuu:/iyuu
+      - /root/data:/data
+    ports:
+      - "8787:8787"
+      - "3131:3131"
+    container_name: IYUUPlus
+    restart: always
+    image: iyuucn/iyuuplus-dev:latest
