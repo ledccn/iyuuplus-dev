@@ -178,6 +178,30 @@ Windows系统双击`windows.bat`运行；
 Windows系统双击`windows.bat`运行；
 其他系统`php start.php restart -d`
 
+## nginx反向代理配置
+
+```conf
+location ^~ / {
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header Host $host;
+  proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_http_version 1.1;
+  proxy_set_header Connection "";
+  if (!-f $request_filename){
+    proxy_pass http://127.0.0.1:8787;
+  }
+}
+
+location /app/d9422b72cffad23098ad301eea0f8419
+{
+  proxy_pass http://127.0.0.1:3131;
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection "Upgrade";
+  proxy_set_header X-Real-IP $remote_addr;
+}
+```
+
 ## 感谢贡献者
 
 - https://github.com/hxsf
