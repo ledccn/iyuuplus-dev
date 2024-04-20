@@ -27,6 +27,7 @@ class Installation
      */
     public static function install(string $version = ''): void
     {
+        $first = false;
         try {
             Util::pauseFileMonitor();
             // 安装应用插件和数据库
@@ -35,6 +36,7 @@ class Installation
                 CrontabInstall::install();
                 EmailInstall::install();
                 SmsInstall::install();
+                $first = true;
             }
 
             // 安装菜单
@@ -45,6 +47,10 @@ class Installation
             echo $throwable->getMessage() . PHP_EOL;
         } finally {
             Util::resumeFileMonitor();
+        }
+
+        if ($first) {
+            safe_webman_stop();
         }
     }
 
