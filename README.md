@@ -4,7 +4,7 @@
 
 推荐使用最新稳定版
 
-### 必须开启的扩展
+**必须开启的扩展**
 
 ```config
 extension=curl
@@ -110,7 +110,41 @@ extension=zip
 
 ### 国际：https://github.com/ledccn/iyuuplus-dev/tags
 
-## 使用
+## docker使用
+
+### docker命令行启动
+
+```shell
+docker run -itd \
+    -v /root/iyuu:/iyuu \
+    -v /root/data:/data \
+    -p 8787:8787 \
+    -p 3131:3131 \
+    --name IYUUPlus \
+    --restart=always \
+    iyuucn/iyuuplus-dev:latest
+```
+
+### docker-compose.yaml启动
+
+```conf
+version: "3"
+services:
+    iyuuplus-dev:
+        stdin_open: true
+        tty: true
+        volumes:
+            - /root/iyuu:/iyuu
+            - /root/data:/data
+        ports:
+            - 8787:8787
+            - 3131:3131
+        container_name: IYUUPlus
+        restart: always
+        image: iyuucn/iyuuplus-dev:latest
+```
+
+## 源码使用
 
 #### 1.拉取代码
 
