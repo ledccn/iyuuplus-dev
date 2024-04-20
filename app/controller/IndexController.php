@@ -43,7 +43,8 @@ class IndexController
      */
     public function stop(Request $request): Response
     {
-        exec('php start.php stop');
+        $cmd = "php " . base_path('start.php') . " stop";
+        exec($cmd);
         sleep(3);
         return json(['code' => 0, 'msg' => 'ok']);
     }
