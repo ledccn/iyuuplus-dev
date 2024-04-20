@@ -46,10 +46,7 @@ function iyuu_project_name(): string
 function isDockerEnvironment(): bool
 {
     clearstatcache();
-    $rs1 = is_file('/etc/my.cnf.d/mariadb-server.cnf');
-    $rs2 = is_file('/etc/php83/conf.d/99-overrides.ini');
-    $rs3 = is_file('/etc/s6-overlay/s6-rc.d/svc-iyuu/run');
-    return $rs1 && $rs2 && $rs3;
+    return is_file('/etc/s6-overlay/s6-rc.d/svc-iyuu/run');
 }
 
 /**
