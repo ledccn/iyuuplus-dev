@@ -23,8 +23,8 @@ class SystemController
     public function action(Request $request): Response
     {
         $command = $request->post('command', 'restart');
-        if (!in_array($command, Params::TYPE_LIST, true)) {
-            return $this->fail('不受支持的命令，允许：' . implode('|', Params::TYPE_LIST));
+        if (!in_array($command, Params::ACTION_LIST, true)) {
+            return $this->fail('不受支持的命令，允许：' . implode('|', Params::ACTION_LIST));
         }
 
         $cmd = implode(' ', ['php', base_path('start.php'), $command]);
