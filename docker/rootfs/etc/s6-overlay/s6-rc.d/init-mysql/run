@@ -1,0 +1,44 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+if [ ! -d /data ]; then
+    mkdir /data
+fi
+
+chown mysql:mysql /data
+
+if [ ! -d /data/iyuu ]; then
+    mysql_install_db \
+        --user=mysql \
+        --group=mysql \
+        --datadir=/data
+
+    mysql_set_file=$(mktemp)
+
+    {
+        echo "flush privileges;"
+        echo "grant all privileges on *.* to 'root'@'%' identified by '123456' with grant option;"
+        echo "alter user 'root'@'%' IDENTIFIED BY '123456';"
+        echo "grant all privileges on *.* to 'iyuu'@'%' identified by 'iyuu' with grant option;"
+        echo "grant all privileges on *.* to 'iyuu'@'localhost' identified by 'iyuu' with grant option;"
+        echo "flush privileges;"
+        echo "select User, host from mysql.user;"
+        echo "create database iyuu;"
+        echo "show databases;"
+    } >> "$mysql_set_file"
+
+
+    umask 0640
+    /usr/bin/mysqld \
+        --user=mysql \
+        --bootstrap \
+        --verbose=0 \
+        --skip-networking=0 \
+        --datadir=/data \
+        < "$mysql_set_file"
+    umask 022
+
+    rm -rf "$mysql_set_file"
+fi
+
+chown -R mysql:mysql /data

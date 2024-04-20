@@ -11,6 +11,11 @@ RUN if [ $package_url ] ; then sed -i "s/dl-cdn.alpinelinux.org/${package_url}/g
 ENV PS1="\[\e[32m\][\[\e[m\]\[\e[36m\]\u \[\e[m\]\[\e[37m\]@ \[\e[m\]\[\e[34m\]\h\[\e[m\]\[\e[32m\]]\[\e[m\] \[\e[37;35m\]in\[\e[m\] \[\e[33m\]\w\[\e[m\] \[\e[32m\][\[\e[m\]\[\e[37m\]\d\[\e[m\] \[\e[m\]\[\e[37m\]\t\[\e[m\]\[\e[32m\]]\[\e[m\] \n\[\e[1;31m\]$ \[\e[0m\]" \
     LANG="C.UTF-8" \
     TZ="Asia/Shanghai" \
+    S6_SERVICES_GRACETIME=30000 \
+    S6_KILL_GRACETIME=60000 \
+    S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0 \
+    S6_SYNC_DISKS=1 \
+    COMPOSER_ALLOW_SUPERUSER=1 \
     APP_ENV=prod \
     IYUU_REPO_URL="https://gitee.com/ledc/iyuuplus-dev.git"
 
@@ -63,7 +68,15 @@ RUN set -ex && \
     git clone --depth 1 ${IYUU_REPO_URL} /iyuu && \
     rm -rf /var/cache/apk/* /tmp/*
 
+RUN set -ex && \
+    apk add --no-cache \
+        mysql \
+        mysql-client && \
+    sed -i "s/skip-networking/#skip-networking/g" /etc/my.cnf.d/mariadb-server.cnf && \
+    rm -rf /var/cache/apk/* /tmp/*
+
 COPY --chmod=755 ./rootfs /
+
 # 暴露端口
 EXPOSE 8787
 EXPOSE 8788
@@ -71,5 +84,6 @@ EXPOSE 3131
 
 # 文件系统
 VOLUME [ "/iyuu" ]
+VOLUME [ "/data" ]
 
 ENTRYPOINT ["/init"]
