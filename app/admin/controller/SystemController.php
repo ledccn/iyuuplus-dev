@@ -18,8 +18,8 @@ class SystemController
      */
     public function action(Request $request): Response
     {
-        $action = $request->post('action', 'restart');
-        $cmd = implode(' ', ['php', base_path('start.php'), $action]);
+        $command = $request->post('command', 'restart');
+        $cmd = implode(' ', ['php', base_path('start.php'), $command]);
         exec($cmd);
         sleep(3);
         return json(['code' => 0, 'msg' => 'ok']);
