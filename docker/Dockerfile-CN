@@ -11,9 +11,7 @@ RUN curl -sSLf \
 
 RUN sed -i 's/dl-cdn\.alpinelinux\.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && install-php-extensions bcmath event gd mysqli pdo_mysql opcache pcntl sockets zip xdebug \
-    && wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
-    && composer install
+    && wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/usr/local/bin --filename=composer
 
 # 设置配置文件
 # php

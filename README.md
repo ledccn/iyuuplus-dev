@@ -5,6 +5,7 @@
 推荐使用最新稳定版
 
 ### 必须开启的扩展
+
 ```config
 extension=curl
 extension=fileinfo
@@ -142,3 +143,8 @@ Windows系统双击`windows.bat`运行；
 
 Windows系统双击`windows.bat`运行；
 其他系统`php start.php restart -d`
+
+## 感谢贡献者
+
+- https://github.com/hxsf
+- https://github.com/DDS-Derek
