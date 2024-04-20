@@ -4,7 +4,10 @@ COPY . /iyuu
 WORKDIR /iyuu
 
 # 安装php扩展可能没配置国内镜像，工具链和composer已经配置国内镜像，可能的话，需要拆分成基础镜像（php+扩展+composer本体）并定期构建基础镜像，然后在此基础上构建应用镜像（代码+composer依赖）
-ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN curl -sSLf \
+        -o /usr/local/bin/install-php-extensions \
+        https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions && \
+    chmod +x /usr/local/bin/install-php-extensions
 
 RUN sed -i 's/dl-cdn\.alpinelinux\.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && install-php-extensions bcmath event gd mysqli pdo_mysql opcache pcntl sockets zip xdebug \
