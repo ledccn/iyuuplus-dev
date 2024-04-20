@@ -4,15 +4,25 @@ COPY . /iyuu
 WORKDIR /iyuu
 
 # 安装php扩展可能没配置国内镜像，工具链和composer已经配置国内镜像，可能的话，需要拆分成基础镜像（php+扩展+composer本体）并定期构建基础镜像，然后在此基础上构建应用镜像（代码+composer依赖）
-RUN curl -sSLf \
-        -o /usr/local/bin/install-php-extensions \
-        https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions && \
-    chmod +x /usr/local/bin/install-php-extensions
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN sed -i 's/dl-cdn\.alpinelinux\.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && install-php-extensions pcntl gd xdebug curl fileinfo mbstring mysqli openssl pdo_mysql pdo_sqlite sqlite3 sockets sodium pcntl zip \
+    && install-php-extensions bcmath event gd mysqli pdo_mysql opcache pcntl sockets zip xdebug \
     && wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
     && composer install
+
+# 设置配置文件
+# php
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY ./php.ini "$PHP_INI_DIR/conf.d/app.ini"
+
+# 暴露端口
+EXPOSE 8787
+EXPOSE 8788
+EXPOSE 3131
+
+# 文件系统
+VOLUME ["/iyuu"]
 
 CMD ["php", "start.php", "start"]

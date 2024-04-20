@@ -6,8 +6,9 @@ cd /iyuu || exit
 ## 更新一次IYUU
 if [[ ! -d .git ]]; then
     echo "Clone IYUU script..."
-    rm -rf /iyuu/* 2>/dev/null
-    git clone "${IYUU_REPO_URL}" /iyuu
+    git clone "${IYUU_REPO_URL}" /tmp/iyuu
+    find /tmp/iyuu -mindepth 1 -maxdepth 1 | xargs -I {} cp -r {} /iyuu
+    rm -rf /tmp/iyuu
 else
     echo "Update IYUU script..."
     git remote set-url origin "${IYUU_REPO_URL}"
