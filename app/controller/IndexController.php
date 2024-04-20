@@ -36,4 +36,15 @@ class IndexController
     {
         return json(['code' => 0, 'msg' => 'ok']);
     }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function stop(Request $request): Response
+    {
+        exec('php start.php stop');
+        sleep(3);
+        return json(['code' => 0, 'msg' => 'ok']);
+    }
 }
