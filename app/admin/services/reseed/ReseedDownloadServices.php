@@ -15,6 +15,7 @@ use Iyuu\BittorrentClient\Contracts\Torrent as TorrentContract;
 use Iyuu\SiteManager\Config;
 use Iyuu\SiteManager\Contracts\Torrent;
 use Iyuu\SiteManager\Spider\Helper;
+use support\Log;
 use Throwable;
 use Webman\Event\Event;
 
@@ -127,15 +128,16 @@ class ReseedDownloadServices
             $bittorrentClients = ClientServices::createBittorrent($clientModel);
             $contractsTorrent = new TorrentContract($response->payload, $response->metadata);
             $contractsTorrent->savePath = $reseed->directory;
-            self::sendBefore($contractsTorrent, $bittorrentClients, $clientModel);
 
             // 调度事件：把种子发送给下载器之前
+            self::sendBefore($contractsTorrent, $bittorrentClients, $clientModel);
             Event::dispatch('reseed.torrent.send.before', [$contractsTorrent, $bittorrentClients, $reseed]);
 
             $result = $bittorrentClients->addTorrent($contractsTorrent);
 
             // 调度事件：把种子发送给下载器之后
-            Event::dispatch('reseed.torrent.send.after', [$result, $bittorrentClients, $reseed]);
+            self::sendAfter($result, $bittorrentClients, $clientModel, $reseed);
+            Event::dispatch('reseed.torrent.send.after', [$result, $bittorrentClients, $clientModel, $reseed]);
 
             // 更新模型数据
             $reseed->message = is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE);
@@ -174,6 +176,33 @@ class ReseedDownloadServices
                 $contractsTorrent->parameters['paused'] = 'true';   // 添加任务校验后是否暂停
                 $contractsTorrent->parameters['root_folder'] = $clientModel->root_folder ? 'true' : 'false';    // 是否创建根目录
                 break;
+        }
+    }
+
+    /**
+     * 把种子发送给下载器之后，做一些操作
+     * @param mixed $result
+     * @param Clients $bittorrentClients
+     * @param Client $clientModel
+     * @param Reseed $reseed
+     * @return void
+     */
+    private static function sendAfter(mixed $result, Clients $bittorrentClients, Client $clientModel, Reseed $reseed): void
+    {
+        try {
+            switch ($clientModel->getClientEnums()) {
+                case ClientEnums::qBittorrent:
+                    if (is_string($result) && str_contains(strtolower($result), 'ok')) {
+                        // 发送校验命令
+                        /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $bittorrentClients */
+                        $bittorrentClients->recheck($reseed->info_hash);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (Throwable $throwable) {
+            Log::error('把种子发送给下载器之后，做一些操作，异常啦：' . $throwable->getMessage());
         }
     }
 }
