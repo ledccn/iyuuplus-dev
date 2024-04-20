@@ -46,7 +46,9 @@ function iyuu_project_name(): string
 function isDockerEnvironment(): bool
 {
     clearstatcache();
-    return is_file('/etc/s6-overlay/s6-rc.d/svc-iyuu/run');
+    $rs1 = is_file('/etc/php83/conf.d/99-overrides.ini');
+    $rs2 = is_file('/etc/s6-overlay/s6-rc.d/svc-iyuu/run');
+    return $rs1 && $rs2;
 }
 
 /**
