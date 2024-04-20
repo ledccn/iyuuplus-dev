@@ -11,6 +11,7 @@
 /config/sites.php
 /plugin/admin/config/database.php
 /plugin/admin/config/thinkorm.php
+/proxy.conf
 /cookie.sh
 /rss.sh
 /plugin/*.zip
