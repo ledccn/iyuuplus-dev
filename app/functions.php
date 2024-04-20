@@ -40,6 +40,32 @@ function iyuu_project_name(): string
 }
 
 /**
+ * 检测是否运行在docker环境
+ * @return bool
+ */
+function isDockerEnvironment(): bool
+{
+    clearstatcache();
+    $rs1 = is_file('/etc/my.cnf.d/mariadb-server.cnf');
+    $rs2 = is_file('/etc/php83/conf.d/99-overrides.ini');
+    $rs3 = is_file('/etc/s6-overlay/s6-rc.d/svc-iyuu/run');
+    return $rs1 && $rs2 && $rs3;
+}
+
+/**
+ * 在docker环境内，停止自身，等待S6重新拉起进程
+ * @return void
+ */
+function safe_webman_stop(): void
+{
+    if (isDockerEnvironment()) {
+        $cmd = implode(' ', ['php', base_path('start.php'), 'stop']);
+        exec($cmd);
+        sleep(3);
+    }
+}
+
+/**
  * 开发专用函数，打印变量exit
  * @param mixed $v
  * @param bool $format

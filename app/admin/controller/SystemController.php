@@ -32,4 +32,15 @@ class SystemController
         sleep(3);
         return json(['code' => 0, 'msg' => 'ok']);
     }
+
+    /**
+     * 重启
+     * @param Request $request
+     * @return Response
+     */
+    public function restart(Request $request): Response
+    {
+        safe_webman_stop();
+        return $this->success();
+    }
 }
