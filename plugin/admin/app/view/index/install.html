@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>IYUUPlus开发版 安装</title>
-    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
-    <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
 </head>
 <body class="pear-container">
 <div class="layui-row layui-col-space10">
@@ -17,41 +17,50 @@
                     <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
                         <div carousel-item>
                             <div>
-                                <form class="layui-form" action="javascript:void(0);" style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
+                                <form class="layui-form" action="javascript:void(0);"
+                                      style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">用户名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" placeholder="请填写入用户名" name="user" class="layui-input" lay-verify="required" required value="root" autocomplete="off"/>
+                                            <input type="text" placeholder="请填写入用户名" name="user"
+                                                   class="layui-input" lay-verify="required" required value="iyuu"
+                                                   autocomplete="off"/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">密码</label>
                                         <div class="layui-input-block">
-                                            <input type="password" placeholder="请填写入密码" name="password" class="layui-input" autocomplete="off"/>
+                                            <input type="password" placeholder="请填写入密码" name="password"
+                                                   class="layui-input" autocomplete="off" value="iyuu"/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">数据库</label>
                                         <div class="layui-input-block">
-                                            <input type="text" placeholder="请填写入数据库" name="database" class="layui-input" lay-verify="required" required value="webman_admin"/>
+                                            <input type="text" placeholder="请填写入数据库" name="database"
+                                                   class="layui-input" lay-verify="required" required value="iyuu"/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">host</label>
                                         <div class="layui-input-block">
-                                            <input type="text" placeholder="请填写入数据库host" name="host" class="layui-input" lay-verify="required" required value="127.0.0.1"/>
+                                            <input type="text" placeholder="请填写入数据库host" name="host"
+                                                   class="layui-input" lay-verify="required" required
+                                                   value="127.0.0.1"/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">端口</label>
                                         <div class="layui-input-block">
-                                            <input type="number" placeholder="请填写入数据库端口" name="port" class="layui-input" required value="3306" />
+                                            <input type="number" placeholder="请填写入数据库端口" name="port"
+                                                   class="layui-input" required value="3306"/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">爱语飞飞Token</label>
                                         <div class="layui-input-block">
-                                            <input type="text" placeholder="请填写爱语飞飞Token" name="iyuu_token" class="layui-input" value=""/>
+                                            <input type="text" placeholder="请填写爱语飞飞Token" name="iyuu_token"
+                                                   class="layui-input" value=""/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -72,23 +81,27 @@
                                 </form>
                             </div>
                             <div>
-                                <form class="layui-form"  action="javascript:void(0);" style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
+                                <form class="layui-form" action="javascript:void(0);"
+                                      style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">用户名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" placeholder="请填写入用户名" name="username" class="layui-input" lay-verify="required" required />
+                                            <input type="text" placeholder="请填写入用户名" name="username"
+                                                   class="layui-input" lay-verify="required" required/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">密码</label>
                                         <div class="layui-input-block">
-                                            <input type="password" placeholder="请填写入密码" name="password" class="layui-input"/>
+                                            <input type="password" placeholder="请填写入密码" name="password"
+                                                   class="layui-input"/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">确认密码</label>
                                         <div class="layui-input-block">
-                                            <input type="password" placeholder="请填再次写入密码" name="password_confirm" class="layui-input"/>
+                                            <input type="password" placeholder="请填再次写入密码"
+                                                   name="password_confirm" class="layui-input"/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -103,7 +116,8 @@
                             </div>
                             <div>
                                 <div style="text-align: center;margin-top: 90px;">
-                                    <i class="layui-icon layui-circle pear-back" style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
+                                    <i class="layui-icon layui-circle pear-back"
+                                       style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
                                     <div style="font-size: 24px;color: #333;font-weight: 500;margin-top: 30px;">
                                         安装成功
                                     </div>
@@ -135,10 +149,10 @@
 <script src="/app/admin/component/pear/pear.js"></script>
 
 <script>
-    layui.use(["form", "step","code","element", "popup"], function() {
+    layui.use(["form", "step", "code", "element", "popup"], function () {
         var $ = layui.$,
-                form = layui.form,
-                step = layui.step;
+            form = layui.form,
+            step = layui.step;
 
         layui.code();
 
@@ -157,7 +171,7 @@
             }]
         });
 
-        form.on("submit(formStep)", function(data) {
+        form.on("submit(formStep)", function (data) {
             let loading = layer.load();
             $.ajax({
                 url: "/app/admin/install/step1",
@@ -179,7 +193,7 @@
             return false;
         });
 
-        form.on("submit(formStep2)", function(data) {
+        form.on("submit(formStep2)", function (data) {
             let loading = layer.load();
             $.ajax({
                 url: "/app/admin/install/step2",
@@ -201,17 +215,17 @@
             return false;
         });
 
-        $(".pre").click(function() {
+        $(".pre").click(function () {
             step.pre("#stepForm");
             return false;
         });
 
-        $(".next").click(function() {
+        $(".next").click(function () {
             step.next("#stepForm");
             return false;
         });
 
-        $(".finish").click(function() {
+        $(".finish").click(function () {
             location.reload();
         });
     })
