@@ -96,7 +96,7 @@ class LayuiTemplate
             'audiences' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsRsskey::class, OptionsLimit::class], $default),
             'hdhome', 'pthome' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'zhuque' => Decorator::make([Zhuque::class, OptionsUid::class, OptionsLimit::class], $default),
-            'ourbits', 'piggo', 'zmpt' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
+            'ourbits', 'piggo', 'zmpt', 'agsvpt' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
             default => $default,
         };
     }

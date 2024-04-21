@@ -3,6 +3,7 @@
 namespace process;
 
 use app\admin\services\reseed\ReseedDownloadServices;
+use app\admin\services\SitesServices;
 use app\model\Site;
 use Error;
 use Exception;
@@ -24,6 +25,7 @@ class ReseedProcess
      */
     public function __construct()
     {
+        SitesServices::sync();
         clearstatcache();
     }
 

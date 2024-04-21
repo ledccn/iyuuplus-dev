@@ -12,7 +12,7 @@ class Client extends AbstractCurl
     /**
      * 主域名
      */
-    const BASE_API = 'http://dev.bolahg.cn';
+    protected const string BASE_API = 'http://dev.bolahg.cn';
 
     /**
      * 获取站点列表
