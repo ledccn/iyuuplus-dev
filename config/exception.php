@@ -5,4 +5,5 @@
 
 return [
     '' => support\exception\Handler::class,
+    'admin' => app\exception\AdminHandler::class,
 ];
