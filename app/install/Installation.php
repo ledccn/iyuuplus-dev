@@ -30,17 +30,20 @@ class Installation
         $first = false;
         try {
             Util::pauseFileMonitor();
-            // 安装应用插件和数据库
+            // 安装应用插件
+            CrontabInstall::install();
+            EmailInstall::install();
+            SmsInstall::install();
+
+            // 安装数据库
             if (empty(Util::schema()->hasTable('cn_client'))) {
                 CrontabInstall::importSqlFile(__DIR__ . '/iyuuplus.sql');
-                CrontabInstall::install();
-                EmailInstall::install();
-                SmsInstall::install();
                 $first = true;
             }
 
             // 安装菜单
             if (!Menu::get(self::MENU_KEY)) {
+                $first = true;
                 Menu::import(include __DIR__ . '/menu.php');
             }
         } catch (\Error|\Exception|\Throwable $throwable) {

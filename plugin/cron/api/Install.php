@@ -5,6 +5,7 @@ namespace plugin\cron\api;
 use InvalidArgumentException;
 use plugin\admin\api\Menu;
 use plugin\admin\app\common\Util;
+use plugin\cron\app\admin\controller\CrontabController;
 use RuntimeException;
 use Throwable;
 
@@ -25,6 +26,10 @@ class Install
                 $filename,
                 str_replace('{{secret}}', \sha1(\microtime(true) . \uniqid('', true) . \mt_rand()), $content)
             );
+        }
+
+        if (Menu::get(CrontabController::class)) {
+            return;
         }
 
         if (empty(Util::schema()->hasTable('cn_crontab'))) {
