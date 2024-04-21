@@ -822,8 +822,8 @@
         },
         {
             "name": "illuminate/bus",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/bus.git",
@@ -878,8 +878,8 @@
         },
         {
             "name": "illuminate/collections",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -936,8 +936,8 @@
         },
         {
             "name": "illuminate/conditionable",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
@@ -985,8 +985,8 @@
         },
         {
             "name": "illuminate/container",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -1039,8 +1039,8 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -1090,17 +1090,17 @@
         },
         {
             "name": "illuminate/database",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "635b0319641f7c746300f615838232ae30b0760c"
+                "reference": "cf468c45729ec39f0ab03b3c97e65b0cc937b22b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/635b0319641f7c746300f615838232ae30b0760c",
-                "reference": "635b0319641f7c746300f615838232ae30b0760c",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/cf468c45729ec39f0ab03b3c97e65b0cc937b22b",
+                "reference": "cf468c45729ec39f0ab03b3c97e65b0cc937b22b",
                 "shasum": ""
             },
             "require": {
@@ -1127,7 +1127,7 @@
                 "illuminate/pagination": "Required to paginate the result set (^10.0).",
                 "symfony/finder": "Required to use Eloquent model factories (^6.2)."
             },
-            "time": "2024-04-10T14:11:27+00:00",
+            "time": "2024-04-15T18:56:27+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1166,8 +1166,8 @@
         },
         {
             "name": "illuminate/events",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
@@ -1224,8 +1224,8 @@
         },
         {
             "name": "illuminate/macroable",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -1273,17 +1273,17 @@
         },
         {
             "name": "illuminate/pagination",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pagination.git",
-                "reference": "b42a851e037984e38f8964d1a96d15b0302bebfc"
+                "reference": "616874b9607ff35925347e1710a8b5151858cdf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/pagination/zipball/b42a851e037984e38f8964d1a96d15b0302bebfc",
-                "reference": "b42a851e037984e38f8964d1a96d15b0302bebfc",
+                "url": "https://api.github.com/repos/illuminate/pagination/zipball/616874b9607ff35925347e1710a8b5151858cdf2",
+                "reference": "616874b9607ff35925347e1710a8b5151858cdf2",
                 "shasum": ""
             },
             "require": {
@@ -1293,7 +1293,7 @@
                 "illuminate/support": "^10.0",
                 "php": "^8.1"
             },
-            "time": "2024-01-12T17:17:46+00:00",
+            "time": "2024-04-11T14:31:05+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1326,8 +1326,8 @@
         },
         {
             "name": "illuminate/pipeline",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pipeline.git",
@@ -1377,8 +1377,8 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v10.48.7",
-            "version_normalized": "10.48.7.0",
+            "version": "v10.48.8",
+            "version_normalized": "10.48.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
@@ -2102,17 +2102,17 @@
         },
         {
             "name": "overtrue/easy-sms",
-            "version": "2.6.0",
-            "version_normalized": "2.6.0.0",
+            "version": "2.7.1",
+            "version_normalized": "2.7.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/easy-sms.git",
-                "reference": "bb88b244f0de8d1f74bc50c4c08414f4c5f30281"
+                "reference": "d71d32f6631dda4c0da09c2831ff110a1c19873c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/overtrue/easy-sms/zipball/bb88b244f0de8d1f74bc50c4c08414f4c5f30281",
-                "reference": "bb88b244f0de8d1f74bc50c4c08414f4c5f30281",
+                "url": "https://api.github.com/repos/overtrue/easy-sms/zipball/d71d32f6631dda4c0da09c2831ff110a1c19873c",
+                "reference": "d71d32f6631dda4c0da09c2831ff110a1c19873c",
                 "shasum": ""
             },
             "require": {
@@ -2126,7 +2126,7 @@
                 "mockery/mockery": "~1.3.3 || ^1.4.2",
                 "phpunit/phpunit": "^5.7 || ^7.5 || ^8.5.19 || ^9.5.8"
             },
-            "time": "2024-03-08T06:36:45+00:00",
+            "time": "2024-04-17T07:10:05+00:00",
             "type": "library",
             "extra": {
                 "hooks": {
@@ -2159,7 +2159,7 @@
             "description": "The easiest way to send short message.",
             "support": {
                 "issues": "https://github.com/overtrue/easy-sms/issues",
-                "source": "https://github.com/overtrue/easy-sms/tree/2.6.0"
+                "source": "https://github.com/overtrue/easy-sms/tree/2.7.1"
             },
             "funding": [
                 {
