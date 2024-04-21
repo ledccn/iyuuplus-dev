@@ -94,6 +94,16 @@ class SiteController extends Crud
     }
 
     /**
+     * 导入旧版配置
+     * @param Request $request
+     * @return Response
+     */
+    public function export(Request $request): Response
+    {
+        return $this->success();
+    }
+
+    /**
      * 格式化下拉列表
      * @param $items
      * @return Response
