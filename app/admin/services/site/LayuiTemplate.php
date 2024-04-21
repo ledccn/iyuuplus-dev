@@ -85,6 +85,7 @@ class LayuiTemplate
             'upxin',
             'wintersakura',
             'qhstudio',
+            'ptvicomo',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'pt', 'chdbits', 'hdsky' => Decorator::make([NexusPHP::class, OptionsLimit::class], $default),
