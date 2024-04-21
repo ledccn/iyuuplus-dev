@@ -33,8 +33,6 @@ RUN set -ex && \
         libressl \
         tar \
         s6-overlay \
-        mysql \
-        mysql-client \
         php83 \
         php83-bz2 \
         php83-bcmath \
@@ -60,16 +58,24 @@ RUN set -ex && \
         php83-pdo_mysql \
         php83-pecl-event \
         php83-xml && \
-    sed -i "s/skip-networking/#skip-networking/g" /etc/my.cnf.d/mariadb-server.cnf && \
     ln -sf /usr/bin/php83 /usr/bin/php && \
     curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
     echo -e "upload_max_filesize=100M\npost_max_size=108M\nmemory_limit=1024M\ndate.timezone=${TZ}\n" > /etc/php83/conf.d/99-overrides.ini && \
     echo -e "[opcache]\nopcache.enable=1\nopcache.enable_cli=1" >> /etc/php83/conf.d/99-overrides.ini && \
+    rm -rf /var/cache/apk/* /tmp/*
+
+RUN set -ex && \
+    apk add --no-cache \
+        mysql \
+        mysql-client && \
+    sed -i "s/skip-networking/#skip-networking/g" /etc/my.cnf.d/mariadb-server.cnf && \
+    rm -rf /var/cache/apk/* /tmp/*
+
+RUN set -ex && \
     git config --global pull.ff only && \
     git config --global --add safe.directory /iyuu && \
-    git clone --depth 1 ${IYUU_REPO_URL} /iyuu && \
-    rm -rf /var/cache/apk/* /tmp/*
+    git clone --depth 1 ${IYUU_REPO_URL} /iyuu
 
 COPY --chmod=755 ./rootfs /
 
