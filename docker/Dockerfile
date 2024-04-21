@@ -19,6 +19,7 @@ ENV PS1="\[\e[32m\][\[\e[m\]\[\e[36m\]\u \[\e[m\]\[\e[37m\]@ \[\e[m\]\[\e[34m\]\
     APP_ENV=prod \
     IYUU_REPO_URL="https://gitee.com/ledc/iyuuplus-dev.git"
 
+# 安装PHP环境
 RUN set -ex && \
     apk add --no-cache \
         ca-certificates \
@@ -65,6 +66,7 @@ RUN set -ex && \
     echo -e "[opcache]\nopcache.enable=1\nopcache.enable_cli=1" >> /etc/php83/conf.d/99-overrides.ini && \
     rm -rf /var/cache/apk/* /tmp/*
 
+# 安装数据库 mysql mariadb
 RUN set -ex && \
     apk add --no-cache \
         mysql \
@@ -72,11 +74,13 @@ RUN set -ex && \
     sed -i "s/skip-networking/#skip-networking/g" /etc/my.cnf.d/mariadb-server.cnf && \
     rm -rf /var/cache/apk/* /tmp/*
 
+# 创建目录，设置git
 RUN set -ex && \
+    mkdir /iyuu && \
     git config --global pull.ff only && \
-    git config --global --add safe.directory /iyuu && \
-    git clone --depth 1 ${IYUU_REPO_URL} /iyuu
+    git config --global --add safe.directory /iyuu
 
+# s6配置
 COPY --chmod=755 ./rootfs /
 
 # 暴露端口
