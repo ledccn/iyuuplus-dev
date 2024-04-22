@@ -167,6 +167,11 @@ class TransferTemplate extends CrontabAbstract
     <label class="layui-form-label">路径转换规则</label>
     <div class="layui-input-block">
         <textarea name="parameter[path_convert_rule]" placeholder="请输入路径转换规则，每一行代表一条规则；" class="layui-textarea"></textarea>
+        <div class="layui-form-mid layui-text-em">分隔符<span class="layui-badge">{#**#}</span><br />
+        路径转换规则为空时，表示路径转换类型为相等；路径转换规则每一行代表一条规则，每条规则如果包含两个文件夹，请用<span class="layui-badge">{#**#}</span>作为分隔符（分隔符用来分隔 源路径和目标路径）。<br />
+        举例：路径转换类型<span class="layui-badge layui-bg-cyan">加</span>，路径转换规则<span class="layui-badge layui-bg-black">/downloads{#**#}/volume1</span>，<span class="layui-badge layui-bg-blue">转移时从路径前段匹配/downloads成功时，加/volume1得到完整的转换后路径：/volume1/downloads</span>。<br />
+        路径转换类型<span class="layui-badge layui-bg-cyan">替换</span>，路径转换规则<span class="layui-badge layui-bg-black">/downloads{#**#}/volume1/downloads</span>，<span class="layui-badge layui-bg-blue">转移时从路径前段匹配/downloads成功时，替换得到完整的转换后路径：/volume1/downloads</span>。
+        </div>
     </div>
 </div>
 <div class="layui-form-item">
