@@ -126,8 +126,14 @@ class Crud extends Base
      * @param string $order
      * @return EloquentBuilder|QueryBuilder|Model
      */
-    protected function doSelect(array $where, string $field = null, string $order= 'desc')
+    protected function doSelect(array $where, string $field = null, string $order= 'desc'): EloquentBuilder|Model|QueryBuilder
     {
+        //按主键降序排列
+        if (empty($field) || empty($order)) {
+            $field = $this->model->getKeyName();
+            $order = 'desc';
+        }
+
         $model = $this->model;
         foreach ($where as $column => $value) {
             if (is_array($value)) {
