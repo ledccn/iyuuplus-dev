@@ -21,6 +21,7 @@ if [ ! -d /data/iyuu ]; then
         echo "alter user 'root'@'%' IDENTIFIED BY '123456';"
         echo "grant all privileges on *.* to 'iyuu'@'%' identified by 'iyuu' with grant option;"
         echo "grant all privileges on *.* to 'iyuu'@'localhost' identified by 'iyuu' with grant option;"
+        echo "grant all privileges on *.* to 'iyuu'@'127.0.0.1' identified by 'iyuu' with grant option;"
         echo "flush privileges;"
         echo "select User, host from mysql.user;"
         echo "create database iyuu;"
