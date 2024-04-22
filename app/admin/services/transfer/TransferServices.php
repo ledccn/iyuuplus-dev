@@ -362,7 +362,7 @@ class TransferServices
      */
     private function pathFilter(string $path): bool
     {
-        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
+        $path = rtrim($path, "/\\");      // 提高Windows转移兼容性
         $path_filter = $this->path_filter;
         $path_selector = $this->path_selector;
         if (empty($path_filter) && empty($path_selector)) {
@@ -419,7 +419,7 @@ class TransferServices
             return $path;
         }
 
-        $path = rtrim($path, DIRECTORY_SEPARATOR);      // 提高Windows转移兼容性
+        $path = rtrim($path, "/\\");      // 提高Windows转移兼容性
         foreach ($this->path_convert_rule as $key => $val) {
             if (str_starts_with($path, $key)) {
                 return match ($this->path_convert_type) {
