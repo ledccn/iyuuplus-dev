@@ -369,6 +369,8 @@ class TransferServices
             return false;
         }
 
+        echo '当前做种的数据目录：' . $path . PHP_EOL;
+
         switch (true) {
             case empty($path_filter):
                 // 仅设置 选择器
