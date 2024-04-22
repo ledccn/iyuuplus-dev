@@ -142,7 +142,7 @@ class TransferServices
                 echo $msg . PHP_EOL;
                 Transfer::updateOrCreate($attributes, [
                     'directory' => $downloadDirOriginal,
-                    'convert_directory' => $downloadDir,
+                    'convert_directory' => '',
                     'message' => $msg,
                     'state' => 0,
                     'last_time' => time(),
