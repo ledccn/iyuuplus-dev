@@ -35,11 +35,13 @@
         <div id="control" class="layui-layout-control"></div>
         <!-- 顶 部 右 侧 菜 单 -->
         <ul class="layui-nav layui-layout-right">
-            <li class="layui-nav-item layui-hide-xs"><a href="/h5/index.html" class="layui-icon layui-icon-home" target="_blank"></a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="/h5/index.html" class="layui-icon layui-icon-home"
+                                                        target="_blank"></a></li>
             <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
-            <li class="layui-nav-item layui-hide-xs"><a href="/" class="layui-icon layui-icon-wifi"
+            <li class="layui-nav-item layui-hide-xs"><a href="#" class="layui-icon layui-icon-wifi"
                                                         style="color: #ff5722;" id="websocket_state"
-                                                        target="_blank" title="Push长连接状态"></a></li>
+                                                        lay-on="websocket_state"
+                                                        title="Push长连接状态"></a></li>
             <li class="layui-nav-item layui-hide-xs"><a href="#" class="menuSearch layui-icon layui-icon-search"></a>
             </li>
             <li class="layui-nav-item layui-hide-xs"><a href="#"
@@ -131,7 +133,7 @@
     const hostname = location.hostname;
     console.log(location);
     <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
-    const WEBSOCKET_PORT = location.port ? ':<?=$websocket_port?>' : '';
+    const WEBSOCKET_PORT = localStorage.getItem('websocket_port') ? ':' + localStorage.getItem('websocket_port') : (location.port ? ':<?=$websocket_port?>' : '');
     //接口地址
     const API = {
         push: {
@@ -162,6 +164,19 @@
         let notice = layui.notice;
         let element = layui.element;
         let util = layui.util;
+
+        util.on('lay-on', {
+            websocket_state: function () {
+                let that = this;
+                layer.prompt({title: '请设置长连接端口'}, function (value, index, elem) {
+                    if (value === '') return elem.focus(util.escape(value));
+                    localStorage.setItem('websocket_port', value);
+                    layer.tips('已设置长连接端口：' + util.escape(value), that, {tips: 1});
+                    // 关闭 prompt
+                    layer.close(index);
+                });
+            }
+        });
 
         isWidthLessThan();
         // 渲染进度条组件
@@ -241,6 +256,7 @@
 
         let connection = new Push(API.push);
         console.info(API);
+
         /**
          * 显示websocket连接的状态
          */
