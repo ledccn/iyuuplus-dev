@@ -28,6 +28,10 @@ class SystemController
             return $this->fail('不受支持的命令，允许：' . implode('|', Params::ACTION_LIST));
         }
 
+        if (!isDockerEnvironment()) {
+            return $this->fail('docker环境存在s6时，才能进行此操作');
+        }
+
         $cmd = implode(' ', ['php', base_path('start.php'), $command]);
         exec($cmd);
         sleep(3);
