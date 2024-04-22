@@ -464,12 +464,12 @@ class TransferServices
 
         // 路径过滤器
         if ($path_filter = $this->getParameter('path_filter')) {
-            $this->path_filter = Folder::whereIn('folder_id', $path_filter)->pluck('folder_value')->toArray();
+            $this->path_filter = Folder::whereIn('folder_id', explode(',', $path_filter))->pluck('folder_value')->toArray();
         }
 
         // 路径选择器
         if ($path_selector = $this->getParameter('path_selector')) {
-            $this->path_selector = Folder::whereIn('folder_id', $path_selector)->pluck('folder_value')->toArray();
+            $this->path_selector = Folder::whereIn('folder_id', explode(',', $path_selector))->pluck('folder_value')->toArray();
         }
 
         // 路径转换类型
