@@ -43,4 +43,16 @@ class SystemController
         safe_webman_stop();
         return $this->success();
     }
+
+    /**
+     * 拉取最新代码
+     * @param Request $request
+     * @return Response
+     */
+    public function pull(Request $request): Response
+    {
+        $cmd = implode(' ', ['git', 'pull']);
+        exec($cmd, $output, $status);
+        return $status ? $this->fail('刷新失败') : $this->success('ok', ['status' => $status, 'output' => $output]);
+    }
 }

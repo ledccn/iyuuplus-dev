@@ -189,7 +189,7 @@
 								</tr>
 								<tr>
 									<td>CommitID</td>
-									<td title="<?=$app_filemtime?>"><?=$app_version?></td>
+									<td title="<?=$app_filemtime?>"><?=$app_version?><i class="layui-icon layui-icon-refresh layui-font-green" lay-on="git_pull" title="通过git拉取最新代码" style="padding-left: 5px"></i></td>
 								</tr>
 								</tbody>
 							</table>
@@ -231,11 +231,13 @@
 		<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
 		<script src="/app/admin/component/pear/pear.js"></script>
 		<script>
-			layui.use(['layer', 'echarts', 'element', 'count'], function() {
+			layui.use(['layer', 'echarts', 'element', 'count', 'util', 'popup'], function() {
 				const $ = layui.jquery,
 						layer = layui.layer,
 						element = layui.element,
 						count = layui.count,
+						util = layui.util,
+						popup = layui.popup,
 						echarts = layui.echarts;
 
 				count.up("value1", {
@@ -415,6 +417,24 @@
 
 				};
 				echartsRecords.setOption(option);
+
+				// pull拉取代码 2024年4月22日
+				layui.util.on('lay-on', {
+					git_pull: function () {
+						$.ajax({
+							url: "/admin/system/pull",
+							dataType: "json",
+							success: function (res) {
+								if (res.code) {
+									return popup.error(res.msg);
+								}
+								popup.success("更新成功", function () {
+									parent.location.reload();
+								})
+							}
+						});
+					}
+				});
 
 				window.onresize = function() {
 					echartsRecords.resize();

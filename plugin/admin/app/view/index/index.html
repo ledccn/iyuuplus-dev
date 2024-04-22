@@ -35,11 +35,11 @@
         <div id="control" class="layui-layout-control"></div>
         <!-- 顶 部 右 侧 菜 单 -->
         <ul class="layui-nav layui-layout-right">
-            <li class="layui-nav-item layui-hide-xs"><a href="/mobile/index.html" class="layui-icon layui-icon-home" target="_blank"></a></li>
+            <li class="layui-nav-item layui-hide-xs"><a href="/h5/index.html" class="layui-icon layui-icon-home" target="_blank"></a></li>
             <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
             <li class="layui-nav-item layui-hide-xs"><a href="/" class="layui-icon layui-icon-wifi"
                                                         style="color: #ff5722;" id="websocket_state"
-                                                        target="_blank"></a></li>
+                                                        target="_blank" title="Push长连接状态"></a></li>
             <li class="layui-nav-item layui-hide-xs"><a href="#" class="menuSearch layui-icon layui-icon-search"></a>
             </li>
             <li class="layui-nav-item layui-hide-xs"><a href="#"
@@ -155,18 +155,13 @@
         Account: {}
     };
 
-    layui.use(["admin", "jquery", "popup", "drawer", "notice", "element", 'pusher'], function () {
+    layui.use(["admin", "jquery", "popup", "drawer", "notice", "element", "util"], function () {
         var $ = layui.$;
         var admin = layui.admin;
         var popup = layui.popup;
         let notice = layui.notice;
-        let pusher = layui.pusher;
         let element = layui.element;
-
-        pusher.connect({
-            url: '<?=$services_url?>',
-            token: '<?=$services_token?>'
-        });
+        let util = layui.util;
 
         isWidthLessThan();
         // 渲染进度条组件
@@ -246,8 +241,6 @@
 
         let connection = new Push(API.push);
         console.info(API);
-
-
         /**
          * 显示websocket连接的状态
          */
