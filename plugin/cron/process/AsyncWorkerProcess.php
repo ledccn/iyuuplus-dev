@@ -2,6 +2,7 @@
 
 namespace plugin\cron\process;
 
+use plugin\cron\api\Install;
 use support\Container;
 use Throwable;
 use Workerman\Connection\TcpConnection;
@@ -46,6 +47,15 @@ class AsyncWorkerProcess
         $code = 0;
         $msg = '';
         $res = null;
+        if (!Install::isInstalled()) {
+            $connection->send(json_encode([
+                'code' => '500',
+                'msg' => '计划任务未安装',
+                'data' => $res,
+                'worker_id' => static::$worker->id,
+            ], JSON_UNESCAPED_UNICODE));
+            return;
+        }
 
         $payload = json_decode($data, true);
         $class = $payload['class'] ?? '';

@@ -27,7 +27,6 @@ class Installation
      */
     public static function install(string $version = ''): void
     {
-        $first = false;
         try {
             Util::pauseFileMonitor();
             // 安装应用插件
@@ -38,22 +37,16 @@ class Installation
             // 安装数据库
             if (empty(Util::schema()->hasTable('cn_client'))) {
                 CrontabInstall::importSqlFile(__DIR__ . '/iyuuplus.sql');
-                $first = true;
             }
 
             // 安装菜单
             if (!Menu::get(self::MENU_KEY)) {
-                $first = true;
                 Menu::import(include __DIR__ . '/menu.php');
             }
         } catch (\Error|\Exception|\Throwable $throwable) {
             echo $throwable->getMessage() . PHP_EOL;
         } finally {
             Util::resumeFileMonitor();
-        }
-
-        if ($first) {
-            safe_webman_stop();
         }
     }
 

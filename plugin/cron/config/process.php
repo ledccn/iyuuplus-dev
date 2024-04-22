@@ -3,10 +3,6 @@
 /**
  * 进程配置
  */
-$database = base_path('/plugin/admin/config/database.php');
-if (!is_file($database) || !is_file(dirname(__DIR__, 3) . '/config/crontab.php')) {
-    return [];
-}
 
 return [
     // 计划任务调度进程

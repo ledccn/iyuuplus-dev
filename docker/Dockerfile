@@ -72,7 +72,7 @@ RUN set -ex && \
         mysql \
         mysql-client && \
     sed -i "s|.*bind-address\s*=.*|bind-address=127.0.0.1|g" /etc/my.cnf.d/mariadb-server.cnf && \
-    sed -i "s|.*skip-networking.*|skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf && \
+    sed -i "s|.*skip-networking.*|#skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf && \
     rm -rf /var/cache/apk/* /tmp/*
 
 # 创建目录

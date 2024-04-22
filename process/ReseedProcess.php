@@ -26,7 +26,6 @@ class ReseedProcess
     public function __construct()
     {
         SitesServices::sync();
-        clearstatcache();
     }
 
     /**
@@ -36,9 +35,7 @@ class ReseedProcess
      */
     public function onWorkerStart(Worker $worker): void
     {
-        if (getenv('CONFIG_NOT_MYSQL')
-            || !is_file(base_path('/.env'))
-            || !is_file(config_path('/crontab.php'))
+        if (getenv('CONFIG_NOT_MYSQL') || !is_file(base_path('/.env'))
         ) {
             return;
         }

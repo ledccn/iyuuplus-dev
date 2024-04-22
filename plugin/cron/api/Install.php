@@ -43,6 +43,15 @@ class Install
     }
 
     /**
+     * 判断是否已安装
+     * @return bool
+     */
+    public static function isInstalled(): bool
+    {
+        return is_file(config_path('/crontab.php'));
+    }
+
+    /**
      * 导入SQL文件
      * @param string $sqlFilePath
      * @return void

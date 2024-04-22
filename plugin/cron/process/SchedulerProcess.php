@@ -6,6 +6,7 @@ use Error;
 use Exception;
 use FilesystemIterator;
 use InvalidArgumentException;
+use plugin\cron\api\Install;
 use plugin\cron\app\model\Crontab;
 use plugin\cron\app\services\CrontabEventEnums;
 use plugin\cron\app\services\CrontabRocket;
@@ -47,6 +48,9 @@ class SchedulerProcess
      */
     public function __construct(public readonly string $secret)
     {
+        if (!Install::isInstalled()) {
+            return;
+        }
         $directory = config('crontab.observer_directory');
         if (empty($directory)) {
             throw new InvalidArgumentException('Crontab observer directory does not config.');
@@ -128,6 +132,10 @@ class SchedulerProcess
     public function onWorkerStart(Worker $worker): void
     {
         static::$worker = $worker;
+        if (!Install::isInstalled()) {
+            return;
+        }
+
         $this->initPoolsCrontab();
     }
 
