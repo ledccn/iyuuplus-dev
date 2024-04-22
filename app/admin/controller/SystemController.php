@@ -6,6 +6,7 @@ use app\common\HasJsonResponse;
 use Iyuu\SiteManager\Spider\Params;
 use support\Request;
 use support\Response;
+use Symfony\Component\Process\Process;
 
 /**
  * 系统管理
@@ -51,8 +52,10 @@ class SystemController
      */
     public function pull(Request $request): Response
     {
-        $cmd = implode(' ', ['git', 'pull']);
-        exec($cmd, $output, $status);
+        $process = new Process(['git', 'pull'], base_path(), null, null, 10);
+        $process->run();
+        $status = $process->getExitCode();
+        $output = $process->getOutput();
         return $status ? $this->fail('刷新失败') : $this->success('ok', ['status' => $status, 'output' => $output]);
     }
 }
