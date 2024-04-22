@@ -362,14 +362,13 @@ class TransferServices
      */
     private function pathFilter(string $path): bool
     {
+        echo '当前做种的数据目录：' . $path . PHP_EOL;
         $path = rtrim($path, "/\\");      // 提高Windows转移兼容性
         $path_filter = $this->path_filter;
         $path_selector = $this->path_selector;
         if (empty($path_filter) && empty($path_selector)) {
             return false;
         }
-
-        echo '当前做种的数据目录：' . $path . PHP_EOL;
 
         switch (true) {
             case empty($path_filter):
