@@ -75,11 +75,14 @@ RUN set -ex && \
     sed -i "s|.*skip-networking.*|skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf && \
     rm -rf /var/cache/apk/* /tmp/*
 
-# 创建目录，设置git
+# 创建目录
 RUN set -ex && \
     mkdir /iyuu && \
     git config --global pull.ff only && \
-    git config --global --add safe.directory /iyuu
+    git config --global --add safe.directory /iyuu && \
+    mkdir /data && \
+    chown mysql:mysql /data && \
+    chown -R mysql:mysql /data
 
 # s6配置
 COPY --chmod=755 ./rootfs /
