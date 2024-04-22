@@ -108,7 +108,7 @@ class TransferServices
         $toBittorrentClient = ClientServices::createBittorrent($this->to_client);
 
         // 来源下载器，qb版本大于4.4
-        $qBittorrent_version_geq_4_4 = $this->versionGEQ44();
+        $qBittorrent_version_geq_4_4 = $this->versionGEQ44($fromBittorrentClient);
 
         echo "正在从 {$this->from_clients->title} 下载器获取当前做种hash..." . PHP_EOL;
 
@@ -338,10 +338,11 @@ class TransferServices
 
     /**
      * 检测qBittorrent版本号是否大于4.4.0
+     * @param Clients $fromBittorrentClient
      * @return bool
      * @throws ServerErrorException
      */
-    private function versionGEQ44(): bool
+    private function versionGEQ44(Clients $fromBittorrentClient): bool
     {
         if ($this->from_clients->getClientEnums() === ClientEnums::qBittorrent) {
             /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $fromBittorrentClient */
