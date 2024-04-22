@@ -22,7 +22,12 @@ function send_shell_output(int $crontab_id, string $msg): bool
  */
 function webman_commands(): array
 {
-    $webman_commands = json_decode(shell_exec(PHP_BINARY . ' webman list --format=json'), true);
+    $result = shell_exec(implode(' ', [PHP_BINARY, base_path('webman'), 'list', '--format=json']));
+    if (empty($result)) {
+        return [];
+    }
+
+    $webman_commands = json_decode($result, true);
     $commands = array_column($webman_commands['commands'], null, 'name');
     $namespaces = [];
     foreach ($webman_commands['namespaces'] as $item) {
