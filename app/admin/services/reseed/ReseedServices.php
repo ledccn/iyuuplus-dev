@@ -64,6 +64,9 @@ class ReseedServices
      */
     public function __construct(public readonly string $token, public readonly int $crontab_id)
     {
+        if (empty($this->token)) {
+            throw new InvalidArgumentException('缺少IYUU_TOKEN');
+        }
         [$this->crontabModel, $this->crontabSites, $this->crontabClients] = $this->parseCrontab($crontab_id);
         $this->notifyData = new NotifyData(Site::count(), count($this->crontabSites));
     }

@@ -131,10 +131,11 @@
     const hostname = location.hostname;
     console.log(location);
     <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
+    const WEBSOCKET_PORT = location.port ? ':<?=$websocket_port?>' : '';
     //接口地址
     const API = {
         push: {
-            url: (location.protocol === 'http:' ? 'ws://' : 'wss://') + hostname + (location.port ? ':<?=$websocket_port?>' : ''),
+            url: (location.protocol === 'http:' ? 'ws://' : 'wss://') + hostname + WEBSOCKET_PORT,
             app_key: '<?=$app_key?>',
             auth: '/plugin/webman/push/auth'
         },
@@ -257,7 +258,7 @@
             } else {
                 document.getElementById('websocket_state').style.color = '#ff5722';
                 sessionStorage.setItem('websocket_state', '0');
-                notice.error('长链接断线');
+                notice.error('长链接断线，端口：' + WEBSOCKET_PORT);
             }
         }
 
