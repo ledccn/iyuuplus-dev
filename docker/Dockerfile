@@ -78,7 +78,7 @@ RUN set -ex && \
 # 创建目录
 RUN set -ex && \
     mkdir /iyuu && \
-    git config --global pull.ff only && \
+    #git config --global pull.ff only && \
     git config --global --add safe.directory /iyuu && \
     mkdir /data && \
     chown mysql:mysql /data && \
