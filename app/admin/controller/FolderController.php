@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\model\Folder;
 use plugin\admin\app\controller\Crud;
@@ -14,7 +15,7 @@ use support\Response;
  */
 class FolderController extends Crud
 {
-    use HasDelete;
+    use HasDelete, HasBackupRecovery;
 
     /**
      * @var Folder

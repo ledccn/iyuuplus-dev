@@ -61,6 +61,12 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
+    <button class="pear-btn pear-btn-success pear-btn-md" lay-event="backup" permission="admin.folder.backup">
+        <i class="layui-icon layui-icon-export"></i>全部备份并下载
+    </button>
+    <button class="pear-btn pear-btn-warming pear-btn-md" id="recovery" permission="admin.folder.recovery">
+        <i class="layui-icon layui-icon-upload"></i>数据恢复
+    </button>
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="admin.folder.insert">
         <i class="layui-icon layui-icon-add-1"></i>新增
     </button>
@@ -91,12 +97,14 @@
     const UPDATE_URL = "/admin/folder/update";
 
     // 表格渲染
-    layui.use(["table", "form", "common", "popup", "util"], function () {
+    layui.use(["table", "form", "common", "popup", "util", "layer", "upload"], function () {
         let table = layui.table;
         let form = layui.form;
         let $ = layui.$;
         let common = layui.common;
         let util = layui.util;
+        let upload = layui.upload;
+        let layer = layui.layer;
 
         // 表头参数
         let cols = [
@@ -148,9 +156,23 @@
             }, "filter", "print", "exports"],
             done: function () {
                 layer.photos({photos: 'div[lay-id="data-table"]', anim: 5});
+
+                // 数据恢复
+                upload.render({
+                    elem: '#recovery',
+                    url: '/admin/folder/recovery',
+                    accept: 'file',
+                    exts: 'json',
+                    dataType : 'json',
+                    done: function(res){
+                        if (res.code) {
+                            return layui.popup.failure(res.msg);
+                        }
+                        return layui.popup.success("操作成功", refreshTable);
+                    }
+                });
             }
         });
-
 
         // 编辑或删除行事件
         table.on("tool(data-table)", function (obj) {
@@ -169,6 +191,8 @@
                 refreshTable();
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
+            } else if (obj.event === "backup") {
+                window.open('/admin/folder/backup')
             }
         });
 

@@ -3,6 +3,7 @@
 namespace app\command;
 
 use app\model\Client;
+use app\model\Folder;
 use app\model\Site;
 use Illuminate\Database\Eloquent\Collection;
 use Iyuu\SiteManager\Contracts\RecoveryInterface;
@@ -24,8 +25,9 @@ class BackupCommand extends Command
      * 需要备份的模型
      */
     public const array BACKUP = [
-        Site::class,
         Client::class,
+        Folder::class,
+        Site::class,
         Crontab::class,
         Option::class,
     ];

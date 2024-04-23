@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use app\admin\services\client\ClientServices;
 use app\admin\services\download\DownloaderServices;
 use app\admin\services\download\PacificUtil;
+use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\model\Client;
 use Iyuu\PacificSdk\Api;
@@ -22,7 +23,7 @@ use Throwable;
  */
 class ClientController extends Crud
 {
-    use HasDelete;
+    use HasDelete, HasBackupRecovery;
 
     /**
      * 无需登录及鉴权的方法

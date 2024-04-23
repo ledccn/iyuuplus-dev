@@ -53,11 +53,17 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
-    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.site.delete">
-        <i class="layui-icon layui-icon-delete"></i>删除
+    <button class="pear-btn pear-btn-success pear-btn-md" lay-event="backup" permission="admin.site.backup">
+        <i class="layui-icon layui-icon-export"></i>全部备份并下载
+    </button>
+    <button class="pear-btn pear-btn-warming pear-btn-md" id="recovery" permission="admin.site.recovery">
+        <i class="layui-icon layui-icon-upload"></i>数据恢复
     </button>
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="bind" permission="admin.site.bind">
         <i class="layui-icon layui-icon-user"></i>绑定合作站点
+    </button>
+    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.site.delete">
+        <i class="layui-icon layui-icon-delete"></i>删除
     </button>
 </script>
 
@@ -274,6 +280,21 @@
                 }, "filter", "print", "exports"],
                 done: function () {
                     layer.photos({photos: 'div[lay-id="data-table"]', anim: 5});
+
+                    // 数据恢复
+                    layui.upload.render({
+                        elem: '#recovery',
+                        url: '/admin/site/recovery',
+                        accept: 'file',
+                        exts: 'json',
+                        dataType : 'json',
+                        done: function(res){
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success("操作成功", refreshTable);
+                        }
+                    });
                 }
             });
         }
@@ -334,6 +355,8 @@
                 batchRemove(obj);
             } else if (obj.event === "bind") {
                 bind(obj);
+            } else if (obj.event === "backup") {
+                window.open('/admin/site/backup')
             }
         });
 

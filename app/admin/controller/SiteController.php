@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\admin\services\site\LayuiTemplate;
+use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\common\HasValidate;
 use app\model\Site;
@@ -18,7 +19,7 @@ use Throwable;
  */
 class SiteController extends Crud
 {
-    use HasDelete, HasValidate;
+    use HasDelete, HasValidate, HasBackupRecovery;
 
     /**
      * @var Site
@@ -126,10 +127,10 @@ class SiteController extends Crud
         if ($request->method() === 'POST') {
             try {
                 $rule = [
-                    'token|IYUU_TOKEN'  =>  'require|max:60',
-                    'id|用户数字ID' =>  'require|number',
-                    'site|站点' =>  'require',
-                    'passkey|绑定密钥' =>  'require',
+                    'token|IYUU_TOKEN' => 'require|max:60',
+                    'id|用户数字ID' => 'require|number',
+                    'site|站点' => 'require',
+                    'passkey|绑定密钥' => 'require',
                 ];
                 $data = [
                     'token' => iyuu_token(),
