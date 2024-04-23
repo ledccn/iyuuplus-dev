@@ -249,6 +249,7 @@ class TransferServices
         $help_msg = implode(PHP_EOL, IyuuDocuments::get('transfer.help', [])) . PHP_EOL;
 
         $extra_options = [
+            // 添加分类标签
             'category' => 'IYUU自动转移'
         ];
         if ($this->paused) {
