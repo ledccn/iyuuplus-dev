@@ -27,7 +27,7 @@ function iyuu_token(): string
  */
 function iyuu_version(): string
 {
-    return '8.0.1';
+    return '8.0.7';
 }
 
 /**
@@ -59,19 +59,6 @@ function isDockerEnvironment(): bool
     $rs1 = is_file('/etc/php83/conf.d/99-overrides.ini');
     $rs2 = is_file('/etc/s6-overlay/s6-rc.d/svc-iyuu/run');
     return $rs1 && $rs2;
-}
-
-/**
- * 在docker环境内，停止自身，等待S6重新拉起进程
- * @return void
- */
-function safe_webman_stop(): void
-{
-    if (isDockerEnvironment()) {
-        $cmd = implode(' ', ['php', base_path('start.php'), 'stop']);
-        exec($cmd);
-        sleep(3);
-    }
 }
 
 /**

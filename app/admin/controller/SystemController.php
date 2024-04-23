@@ -32,21 +32,10 @@ class SystemController
             return $this->fail('docker环境存在s6时，才能进行此操作');
         }
 
-        $cmd = implode(' ', ['php', base_path('start.php'), $command]);
+        $cmd = implode(' ', [PHP_BINARY, base_path('start.php'), $command]);
         exec($cmd);
         sleep(3);
         return json(['code' => 0, 'msg' => 'ok']);
-    }
-
-    /**
-     * 重启
-     * @param Request $request
-     * @return Response
-     */
-    public function restart(Request $request): Response
-    {
-        safe_webman_stop();
-        return $this->success();
     }
 
     /**
