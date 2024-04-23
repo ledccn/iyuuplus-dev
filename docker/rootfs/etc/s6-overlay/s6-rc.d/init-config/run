@@ -14,5 +14,4 @@ else
     git remote set-url origin "${IYUU_REPO_URL}"
     git fetch --all
     git reset --hard origin/master
-    git pull
 fi
