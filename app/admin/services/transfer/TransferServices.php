@@ -248,7 +248,9 @@ class TransferServices
         $move = $rocket->move;
         $help_msg = implode(PHP_EOL, IyuuDocuments::get('transfer.help', [])) . PHP_EOL;
 
-        $extra_options = [];
+        $extra_options = [
+            'category' => 'IYUU自动转移'
+        ];
         if ($this->paused) {
             $extra_options['paused'] = 'true';
         }

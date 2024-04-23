@@ -174,6 +174,7 @@ class ReseedDownloadServices
             case ClientEnums::qBittorrent;
                 $contractsTorrent->parameters['autoTMM'] = 'false'; // 关闭自动种子管理
                 $contractsTorrent->parameters['paused'] = 'true';   // 添加任务校验后是否暂停
+                $contractsTorrent->parameters['category'] = 'IYUU自动辅种';   // 添加任务校验后是否暂停
                 $contractsTorrent->parameters['root_folder'] = $clientModel->root_folder ? 'true' : 'false';    // 是否创建根目录
                 break;
         }
