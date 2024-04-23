@@ -23,14 +23,14 @@
             <div class="layui-form-item">
                 <label class="layui-form-label required">绑定密钥</label>
                 <div class="layui-input-block">
-                    <input type="text" name="passkey" value="" required class="layui-input">
+                    <input type="text" name="passkey" value="" required lay-verify="required" placeholder="请输入绑定密钥" lay-vertype="tips" lay-reqtext="绑定密钥必填" class="layui-input" lay-affix="eye">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label required" title="转换前目录">用户数字ID</label>
+                <label class="layui-form-label required">用户数字ID</label>
                 <div class="layui-input-block">
-                    <input type="number" name="id" value="" required class="layui-input">
+                    <input type="number" name="id" value="" required lay-verify="required" placeholder="请输入用户数字ID" lay-vertype="tips" lay-reqtext="用户数字ID必填" class="layui-input">
                 </div>
             </div>
 

@@ -4,19 +4,21 @@ namespace app\admin\controller;
 
 use app\admin\services\site\LayuiTemplate;
 use app\common\HasDelete;
+use app\common\HasValidate;
 use app\model\Site;
 use Ledc\Curl\Curl;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
+use Throwable;
 
 /**
  * 站点设置
  */
 class SiteController extends Crud
 {
-    use HasDelete;
+    use HasDelete, HasValidate;
 
     /**
      * @var Site
@@ -122,29 +124,41 @@ class SiteController extends Crud
     public function bind(Request $request): Response
     {
         if ($request->method() === 'POST') {
-            $data = [
-                'token' => iyuu_token(),
-                'id' => $request->post('id'),
-                'site' => $request->post('site'),
-                'passkey' => sha1($request->post('passkey', '')), // 避免泄露用户密钥passkey
-            ];
-            $curl = new Curl();
-            $curl->setSslVerify();
-            $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.bind'), $data);
-            $result = $curl->response ? json_decode($curl->response, true) : [];
-            if (empty($result)) {
-                return $this->fail("用户绑定出错，无法访问IYUU接口，请检查本地网络；或重新创建容器，网络模式改为HOST模式。");
-            }
+            try {
+                $rule = [
+                    'token|IYUU_TOKEN'  =>  'require|max:60',
+                    'id|用户数字ID' =>  'require|number',
+                    'site|站点' =>  'require',
+                    'passkey|绑定密钥' =>  'require',
+                ];
+                $data = [
+                    'token' => iyuu_token(),
+                    'id' => $request->post('id'),
+                    'site' => $request->post('site'),
+                    'passkey' => sha1($request->post('passkey', '')), // 避免泄露用户密钥passkey
+                ];
+                $this->validate($data, $rule);
 
-            // 响应码200表示请求成功
-            $success = $result['data']['success'] ?? false;
-            if (200 === $result['ret'] && $success) {
-                return $this->success('绑定成功');
-            }
+                $curl = new Curl();
+                $curl->setSslVerify();
+                $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.bind'), $data);
+                $result = $curl->response ? json_decode($curl->response, true) : [];
+                if (empty($result)) {
+                    return $this->fail("用户绑定出错，无法访问IYUU接口，请检查本地网络；或重新创建容器，网络模式改为HOST模式。");
+                }
 
-            $code = $result['ret'] ?? 400;
-            $msg = $result['msg'] ?? ($rs['data']['errmsg'] ?? 'IYUU服务器无响应，请稍后重试！');
-            return $this->fail("绑定失败，code：{$code} msg：{$msg}");
+                // 响应码200表示请求成功
+                $success = $result['data']['success'] ?? false;
+                if (200 === $result['ret'] && $success) {
+                    return $this->success('绑定成功');
+                }
+
+                $code = $result['ret'] ?? 400;
+                $msg = $result['msg'] ?? ($rs['data']['errmsg'] ?? 'IYUU服务器无响应，请稍后重试！');
+                return $this->fail("绑定失败，code：{$code} msg：{$msg}");
+            } catch (Throwable $throwable) {
+                return $this->fail($throwable->getMessage());
+            }
         }
 
         return view('site/bind');
