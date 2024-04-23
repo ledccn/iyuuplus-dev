@@ -220,7 +220,7 @@
             }, {
                 title: "禁用", align: "center",
                 field: "disabled",
-                width: 80,
+                width: 100,
                 templet: function (d) {
                     let field = "disabled";
                     form.on("switch(" + field + ")", function (data) {
@@ -240,7 +240,7 @@
                         })
                     });
                     let checked = d[field] === 1 ? "checked" : "";
-                    return '<input type="checkbox" value="' + util.escape(d[PRIMARY_KEY]) + '" lay-filter="' + util.escape(field) + '" lay-skin="switch" lay-text="' + util.escape('') + '" ' + checked + '/>';
+                    return '<input type="checkbox" title="已禁用|已启用" value="' + util.escape(d[PRIMARY_KEY]) + '" lay-filter="' + util.escape(field) + '" lay-skin="switch" lay-text="' + util.escape('') + '" ' + checked + '/>';
                 }
             }, {
                 title: "创建时间", align: "center",
@@ -287,8 +287,8 @@
                         url: '/admin/site/recovery',
                         accept: 'file',
                         exts: 'json',
-                        dataType : 'json',
-                        done: function(res){
+                        dataType: 'json',
+                        done: function (res) {
                             if (res.code) {
                                 return layui.popup.failure(res.msg);
                             }
