@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>合作站绑定</title>
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
+</head>
+<body>
+
+<form class="layui-form" action="">
+
+    <div class="mainBox">
+        <div class="main-container mr-5">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">站点</label>
+                <div class="layui-input-block">
+                    <div name="site" id="site" required value=""></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">绑定密钥</label>
+                <div class="layui-input-block">
+                    <input type="text" name="passkey" value="" required class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required" title="转换前目录">用户数字ID</label>
+                <div class="layui-input-block">
+                    <input type="number" name="id" value="" required class="layui-input">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                    lay-filter="save">
+                提交
+            </button>
+        </div>
+    </div>
+
+</form>
+
+<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+<script src="/app/admin/admin/js/permission.js"></script>
+
+<script>
+
+    // 相关接口
+    const BIND_API = "/admin/site/bind";
+    const RECOMMEND_API = '/admin/site/getRecommendSites';
+
+    // 字段 合作站点
+    layui.use(["jquery", "xmSelect", "popup"], function () {
+        layui.$.ajax({
+            url: RECOMMEND_API,
+            dataType: "json",
+            success: function (res) {
+                let value = layui.$("#site").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#site",
+                    name: "site",
+                    initValue: initValue,
+                    filterable: true,
+                    data: res.data,
+                    prop: {
+                        name: 'site',
+                        value: 'site',
+                    },
+                    model: {"icon": "hidden", "label": {"type": "text"}},
+                    clickClose: true,
+                    radio: true,
+                    layVerify: "required",
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
+    });
+
+    //提交事件
+    layui.use(["form", "popup"], function () {
+        layui.form.on("submit(save)", function (data) {
+            layui.$.ajax({
+                url: BIND_API,
+                type: "POST",
+                dateType: "json",
+                data: data.field,
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return layui.popup.success("操作成功", function () {
+                        parent.refreshTable();
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    });
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+
+</body>
+</html>

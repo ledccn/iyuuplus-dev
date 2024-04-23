@@ -56,6 +56,9 @@
     <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.site.delete">
         <i class="layui-icon layui-icon-delete"></i>删除
     </button>
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="bind" permission="admin.site.bind">
+        <i class="layui-icon layui-icon-user"></i>绑定合作站点
+    </button>
 </script>
 
 <!-- 表格行工具栏 -->
@@ -75,7 +78,7 @@
     const SELECT_API = "/admin/site/select";
     const UPDATE_API = "/admin/site/update";
     const DELETE_API = "/admin/site/delete";
-    const INSERT_URL = "/admin/site/insert";
+    const BIND_URL = "/admin/site/bind";
     const UPDATE_URL = "/admin/site/update";
 
     // 字段 站点名称 site
@@ -329,6 +332,8 @@
                 refreshTable();
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
+            } else if (obj.event === "bind") {
+                bind(obj);
             }
         });
 
@@ -380,6 +385,20 @@
                 }
             });
         });
+
+        /**
+         * 合作站点用户UID绑定
+         */
+        function bind() {
+            layer.open({
+                type: 2,
+                title: "绑定合作站点，激活IYUU_TOKEN",
+                shade: 0.1,
+                maxmin: true,
+                area: [common.isModile() ? "100%" : "500px", common.isModile() ? "100%" : "450px"],
+                content: BIND_URL
+            });
+        }
 
         // 表格编辑数据
         let edit = function (obj) {

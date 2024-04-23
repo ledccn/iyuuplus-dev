@@ -31,6 +31,16 @@ function iyuu_version(): string
 }
 
 /**
+ * 粗略验证字符串是否为IYUU的token
+ * @param string $token
+ * @return bool
+ */
+function check_iyuu_token(string $token = ''): bool
+{
+    return (strlen($token) < 60) && (str_starts_with($token, 'IYUU')) && (strpos($token, 'T') < 15);
+}
+
+/**
  * 返回项目名称
  * @return string
  */
