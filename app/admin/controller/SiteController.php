@@ -147,7 +147,7 @@ class SiteController extends Crud
                 $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.bind'), $data);
                 $result = $curl->response ? json_decode($curl->response, true) : [];
                 if (empty($result)) {
-                    return $this->fail("用户绑定出错，无法访问IYUU接口，请检查本地网络；或重新创建容器，网络模式改为HOST模式。");
+                    return $this->fail("用户绑定出错，无法访问IYUU接口，请检查本地网络或稍后重试");
                 }
 
                 // 响应码200表示请求成功
