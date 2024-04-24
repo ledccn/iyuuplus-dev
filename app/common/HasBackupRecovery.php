@@ -4,7 +4,6 @@ namespace app\common;
 
 use Illuminate\Database\Eloquent\Collection;
 use Iyuu\SiteManager\Contracts\RecoveryInterface;
-use support\exception\BusinessException;
 use support\Request;
 use support\Response;
 
