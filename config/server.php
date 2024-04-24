@@ -10,7 +10,7 @@ if (false === $listenPort || !is_numeric($listenPort)) {
 }
 
 return [
-    'listen' => (defined('IYUU_LISTEN_IPV6') ? 'http://[::]:' : 'http://0.0.0.0:') . $listenPort,
+    'listen' => (getenv('IYUU_LISTEN_IPV6') ? 'http://[::]:' : 'http://0.0.0.0:') . $listenPort,
     'transport' => 'tcp',
     'context' => [],
     'name' => 'webman',

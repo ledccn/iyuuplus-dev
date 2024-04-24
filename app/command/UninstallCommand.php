@@ -43,6 +43,7 @@ class UninstallCommand extends Command
 
         // 删除文件
         $unlinks = [
+            base_path() . '/.env',
             base_path() . '/config/crontab.php',
             base_path() . '/plugin/admin/config/database.php',
             base_path() . '/plugin/admin/config/thinkorm.php',
