@@ -143,7 +143,7 @@ class SiteController extends Crud
                 // 新版验证依赖的sid字段 2024年4月24日
                 $data['sid'] = Site::uniqueSite($data['site'])->sid;
                 $curl = new Curl();
-                $curl->setSslVerify();
+                $curl->setSslVerify()->setTimeout(5);
                 $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.bind'), $data);
                 $result = $curl->response ? json_decode($curl->response, true) : [];
                 if (empty($result)) {
