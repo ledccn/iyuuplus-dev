@@ -2,6 +2,7 @@
 
 namespace app\model;
 
+use app\common\HasStaticBackup;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\ClientEnums;
 use RuntimeException;
@@ -12,6 +13,8 @@ use RuntimeException;
  */
 class ClientObserver
 {
+    use HasStaticBackup;
+
     /**
      * 监听数据即将创建的事件。
      *
@@ -108,6 +111,7 @@ class ClientObserver
      */
     public function saved(Client $model): void
     {
+        static::onBackupByModel($model);
     }
 
     /**

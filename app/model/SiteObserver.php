@@ -2,6 +2,7 @@
 
 namespace app\model;
 
+use app\common\HasStaticBackup;
 use RuntimeException;
 
 /**
@@ -10,6 +11,8 @@ use RuntimeException;
  */
 class SiteObserver
 {
+    use HasStaticBackup;
+
     /**
      * 监听数据即将创建的事件。
      *
@@ -76,6 +79,7 @@ class SiteObserver
      */
     public function saved(Site $model): void
     {
+        static::onBackupByModel($model);
     }
 
     /**

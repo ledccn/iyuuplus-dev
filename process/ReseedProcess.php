@@ -12,6 +12,7 @@ use Iyuu\SiteManager\SiteManager;
 use Ledc\Container\App;
 use support\Log;
 use Throwable;
+use Workerman\Crontab\Crontab;
 use Workerman\Timer;
 use Workerman\Worker;
 
@@ -40,6 +41,12 @@ class ReseedProcess
             return;
         }
 
+        // 每天执行
+        new Crontab('10 10 * * *', function () {
+            exec(implode(' ', [PHP_BINARY, base_path('webman'), 'iyuu:backup', 'backup']));
+        });
+
+        // 每60秒执行
         Timer::add(60, function () {
             try {
                 $list = Site::getEnabled()->get();

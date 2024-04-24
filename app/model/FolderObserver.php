@@ -2,12 +2,16 @@
 
 namespace app\model;
 
+use app\common\HasStaticBackup;
+
 /**
  * 数据目录 模型观察者：cn_folder
  * @usage Folder::observe(FolderObserver::class);
  */
 class FolderObserver
 {
+    use HasStaticBackup;
+
     /**
      * 监听数据即将创建的事件。
      *
@@ -66,6 +70,7 @@ class FolderObserver
      */
     public function saved(Folder $model): void
     {
+        static::onBackupByModel($model);
     }
 
     /**
