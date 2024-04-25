@@ -62,6 +62,9 @@
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="bind" permission="admin.site.bind">
         <i class="layui-icon layui-icon-user"></i>绑定合作站点
     </button>
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="sync">
+        <i class="layui-icon layui-icon-refresh"></i>同步新站点
+    </button>
     <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.site.delete">
         <i class="layui-icon layui-icon-delete"></i>删除
     </button>
@@ -129,7 +132,7 @@
     });
 
     // 表格渲染
-    layui.use(["table", "form", "common", "popup", "util"], function () {
+    layui.use(["table", "form", "common", "popup", "util", "notice"], function () {
         let table = layui.table;
         let form = layui.form;
         let $ = layui.$;
@@ -357,6 +360,18 @@
                 bind(obj);
             } else if (obj.event === "backup") {
                 window.open('/admin/site/backup')
+            } else if (obj.event === "sync") {
+                $.ajax({
+                    url: '/admin/site/sync',
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.code) {
+                            return layui.popup.failure(res.msg);
+                        }
+                        layui.notice.success("同步站点成功");
+                        refreshTable();
+                    }
+                });
             }
         });
 

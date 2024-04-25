@@ -65,7 +65,7 @@
 								<div class="layui-col-xs8 layui-col-md8 top-panel-number" style="color: #28333E;" id="value4">
 									0
 								</div>
-								<div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+								<div class="layui-col-xs4 layui-col-md4 top-panel-tips" lay-on="site_sync">
 									<i class="layui-icon layui-icon-release layui-font-blue"></i>
 								</div>
 							</div>
@@ -231,7 +231,7 @@
 		<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
 		<script src="/app/admin/component/pear/pear.js"></script>
 		<script>
-			layui.use(['layer', 'echarts', 'element', 'count', 'util', 'popup'], function() {
+			layui.use(['layer', 'echarts', 'element', 'count', 'util', 'popup', 'notice'], function() {
 				const $ = layui.jquery,
 						layer = layui.layer,
 						element = layui.element,
@@ -239,6 +239,21 @@
 						util = layui.util,
 						popup = layui.popup,
 						echarts = layui.echarts;
+
+				util.on('lay-on', {
+					site_sync: function () {
+						$.ajax({
+							url: '/admin/site/sync',
+							dataType: "json",
+							success: function (res) {
+								if (res.code) {
+									return layui.popup.failure(res.msg);
+								}
+								return layui.notice.success("同步站点成功");
+							}
+						});
+					}
+				});
 
 				count.up("value1", {
 					time: 4000,

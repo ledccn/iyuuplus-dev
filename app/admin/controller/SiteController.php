@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\admin\services\site\LayuiTemplate;
+use app\admin\services\SitesServices;
 use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\common\HasValidate;
@@ -177,8 +178,19 @@ class SiteController extends Crud
      * @param Request $request
      * @return Response
      */
-    public function export(Request $request): Response
+    public function import(Request $request): Response
     {
+        return $this->success();
+    }
+
+    /**
+     * 同步站点
+     * @param Request $request
+     * @return Response
+     */
+    public function sync(Request $request): Response
+    {
+        SitesServices::sync();
         return $this->success();
     }
 
