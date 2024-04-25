@@ -89,6 +89,7 @@ class LayuiTemplate
             'hdkyl',
             'ilolicon',
             'gtkpw',
+            'icc2022',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'pter', 'pt', 'hdsky' => Decorator::make([NexusPHP::class, OptionsLimit::class], $default),
