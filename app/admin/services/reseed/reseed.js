@@ -74,6 +74,13 @@ update_render_callable.push(
                                     init_element_attr_value('*[name="parameter[clients][' + key + ']"]', value);
                                 });
                             }
+
+                            // 渲染标记规则
+                            if (parameter['marker']) {
+                                $('input[name="parameter[marker]').each(function () {
+                                    $(this).prop('checked', $(this).val() === parameter['marker']);
+                                });
+                            }
                         }
                         form.render();
                     });

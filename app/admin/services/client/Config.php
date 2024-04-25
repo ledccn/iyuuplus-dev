@@ -14,7 +14,7 @@ class Config implements ConfigInterface
     /**
      * 分隔符
      */
-    public const SEPARATOR = ':';
+    public const string SEPARATOR = ':';
 
     /**
      * 获取配置

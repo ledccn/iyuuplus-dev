@@ -3,6 +3,7 @@
 namespace app\admin\services\transfer;
 
 use app\command\TransferCommand;
+use app\model\enums\DownloaderMarkerEnums;
 use Ledc\Element\GenerateInterface;
 use plugin\cron\app\interfaces\CrontabAbstract;
 use plugin\cron\app\model\CrontabLog;
@@ -108,6 +109,10 @@ class TransferTemplate extends CrontabAbstract
         $sub = PathConvertTypeEnums::Sub->value;
         $add = PathConvertTypeEnums::Add->value;
         $replace = PathConvertTypeEnums::Replace->value;
+
+        $markerEmpty = DownloaderMarkerEnums::Empty->value;
+        $markerTag = DownloaderMarkerEnums::Tag->value;
+        $markerCategory = DownloaderMarkerEnums::Category->value;
         return PHP_EOL . <<<EOF
 <style>
 .layui-form-label {
@@ -141,6 +146,15 @@ class TransferTemplate extends CrontabAbstract
     <div class="layui-input-block">
         <div name="parameter[to_clients]" id="to_clients" value=""></div>
     </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label required">标记规则</label>
+    <div class="layui-input-block">
+        <input type="radio" name="parameter[marker]" value="$markerEmpty" title="不操作" checked>
+        <input type="radio" name="parameter[marker]" value="$markerTag" title="标记标签">
+        <input type="radio" name="parameter[marker]" value="$markerCategory" title="标记分类">
+    </div>
+    <div class="layui-form-mid layui-text-em">转移成功后，对种子做标记（需要下载器支持）</div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label" title="不转移此目录内的种子">路径过滤器</label>

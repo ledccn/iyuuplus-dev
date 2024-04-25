@@ -37,7 +37,7 @@ enum ConfigEnums: string
     /**
      * 配置项前缀
      */
-    private const PREFIX = 'sys_config_';
+    private const string PREFIX = 'sys_config_';
 
     /**
      * 获取配置项名称

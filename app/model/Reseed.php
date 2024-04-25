@@ -3,6 +3,8 @@
 namespace app\model;
 
 use app\model\enums\ReseedStatusEnums;
+use app\model\enums\ReseedSubtypeEnums;
+use app\model\payload\ReseedPayload;
 use Illuminate\Database\Eloquent\Builder;
 use plugin\admin\app\model\Base;
 
@@ -18,6 +20,8 @@ use plugin\admin\app\model\Base;
  * @property string $directory 目标文件夹
  * @property integer $dispatch_time 调度时间
  * @property integer $status 状态
+ * @property integer $subtype 业务子类型
+ * @property string $payload 有效载荷
  * @property string $message 异常信息
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
@@ -46,12 +50,30 @@ class Reseed extends Base
     protected $guarded = [];
 
     /**
-     * 获取状态枚举
+     * 获取状态枚举对象
      * @return ReseedStatusEnums
      */
     public function getStatusEnums(): ReseedStatusEnums
     {
         return ReseedStatusEnums::from($this->getAttribute('status'));
+    }
+
+    /**
+     * 获取业务子类型枚举对象
+     * @return ReseedSubtypeEnums
+     */
+    public function getSubtypeEnums(): ReseedSubtypeEnums
+    {
+        return ReseedSubtypeEnums::from($this->getAttribute('subtype'));
+    }
+
+    /**
+     * 获取有效载荷对象
+     * @return ReseedPayload
+     */
+    public function getReseedPayload(): ReseedPayload
+    {
+        return new ReseedPayload($this->getAttribute('payload'));
     }
 
     /**

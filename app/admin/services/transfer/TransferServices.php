@@ -4,6 +4,8 @@ namespace app\admin\services\transfer;
 
 use app\admin\services\client\ClientServices;
 use app\model\Client;
+use app\model\enums\DownloaderMarkerEnums;
+use app\model\enums\ReseedSubtypeEnums;
 use app\model\Folder;
 use app\model\IyuuDocuments;
 use app\model\Transfer;
@@ -16,6 +18,8 @@ use Iyuu\BittorrentClient\Utils;
 use plugin\cron\app\model\Crontab;
 use Rhilip\Bencode\Bencode;
 use Rhilip\Bencode\ParseException;
+use support\Log;
+use Throwable;
 use Webman\Event\Event;
 
 /**
@@ -47,6 +51,11 @@ class TransferServices
      * @var Client
      */
     protected Client $to_client;
+    /**
+     * 计划任务：标记规则
+     * @var DownloaderMarkerEnums
+     */
+    protected DownloaderMarkerEnums $downloaderMarkerEnums;
     /**
      * 路径过滤器
      * - 优先级：高
@@ -91,7 +100,7 @@ class TransferServices
      */
     public function __construct(public readonly int $crontab_id)
     {
-        [$this->crontabModel, $this->parameter] = $this->parseCrontab();
+        [$this->crontabModel, $this->parameter, $this->downloaderMarkerEnums] = $this->parseCrontab();
         $this->parseOthers();
     }
 
@@ -173,8 +182,14 @@ class TransferServices
 
             $contractsTorrent->savePath = $downloadDir;
 
+            // 调度事件：把种子发送给下载器之前
+            $this->sendBefore($contractsTorrent, $fromBittorrentClient, $toBittorrentClient, $rocket);
+
             echo "将把种子文件推送给下载器，正在转移做种客户端..." . PHP_EOL . PHP_EOL;
             $ret = $toBittorrentClient->addTorrent($contractsTorrent);
+
+            // 调度事件：把种子发送给下载器之后
+            $this->sendAfter($contractsTorrent, $fromBittorrentClient, $toBittorrentClient, $rocket, $ret);
 
             if ($ret) {
                 $state = 1;
@@ -195,6 +210,48 @@ class TransferServices
                 'state' => $state,
                 'last_time' => time(),
             ]);
+        }
+    }
+
+    /**
+     * 把种子发送给下载器前，做一些操作
+     * @param TorrentContract $contractsTorrent
+     * @param Clients $fromBittorrentClient
+     * @param Clients $toBittorrentClient
+     * @param TransferRocket $rocket
+     * @return void
+     */
+    private function sendBefore(TorrentContract $contractsTorrent, Clients $fromBittorrentClient, Clients $toBittorrentClient, TransferRocket $rocket): void
+    {
+    }
+
+    /**
+     * 把种子发送给下载器之后，做一些操作
+     * @param TorrentContract $contractsTorrent
+     * @param Clients $fromBittorrentClient
+     * @param Clients $toBittorrentClient
+     * @param TransferRocket $rocket
+     * @param mixed $result
+     * @return void
+     */
+    private function sendAfter(TorrentContract $contractsTorrent, Clients $fromBittorrentClient, Clients $toBittorrentClient, TransferRocket $rocket, mixed $result): void
+    {
+        try {
+            switch ($this->to_client->getClientEnums()) {
+                case ClientEnums::qBittorrent:
+                    if (is_string($result) && str_contains(strtolower($result), 'ok')) {
+                        /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $toBittorrentClient */
+                        // 标记标签 2024年4月25日
+                        if (DownloaderMarkerEnums::Tag === $this->downloaderMarkerEnums) {
+                            $toBittorrentClient->torrentRemoveTags($rocket->infohash, 'IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer));
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (Throwable $throwable) {
+            Log::error('把种子发送给下载器之后，做一些操作，异常啦：' . $throwable->getMessage());
         }
     }
 
@@ -336,6 +393,11 @@ class TransferServices
 
         $contractsTorrent = new TorrentContract($metadata, true);
         $contractsTorrent->parameters = $extra_options;
+
+        // 添加分类标签
+        if (DownloaderMarkerEnums::Category === $this->downloaderMarkerEnums) {
+            $contractsTorrent->parameters['category'] = 'IYUU'  . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer);
+        }
         return $contractsTorrent;
     }
 
@@ -453,7 +515,9 @@ class TransferServices
         if (is_string($parameter)) {
             $parameter = json_decode($parameter, true);
         }
-        return [$crontabModel, $parameter];
+
+        $marker = DownloaderMarkerEnums::from($parameter['marker'] ?? DownloaderMarkerEnums::Empty->value);
+        return [$crontabModel, $parameter, $marker];
     }
 
     /**

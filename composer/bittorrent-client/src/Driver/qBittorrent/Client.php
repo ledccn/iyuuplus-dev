@@ -530,6 +530,21 @@ class Client extends Clients
     }
 
     /**
+     * 给种子打标签
+     * @param string|array $hashes
+     * @param string|array $tags
+     * @return false|string|null
+     * @throws ServerErrorException
+     */
+    public function torrentRemoveTags(string|array $hashes, string|array $tags = 'IYUU'): false|string|null
+    {
+        return $this->postData('torrent_removeTags', [
+            'hashes' => is_string($hashes) ? $hashes : implode('|', $hashes),
+            'tags' => is_string($tags) ? $tags : implode(',', $tags)
+        ]);
+    }
+
+    /**
      * @param $hash
      * @param $location
      * @return false|string|null

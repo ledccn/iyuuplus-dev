@@ -3,6 +3,7 @@
 namespace app\admin\services\reseed;
 
 use app\command\ReseedCommand;
+use app\model\enums\DownloaderMarkerEnums;
 use Error;
 use Exception;
 use Ledc\Element\GenerateInterface;
@@ -107,6 +108,9 @@ class ReseedTemplate extends CrontabAbstract
     public function html(): string
     {
         $command = ReseedCommand::COMMAND_NAME;
+        $markerEmpty = DownloaderMarkerEnums::Empty->value;
+        $markerTag = DownloaderMarkerEnums::Tag->value;
+        $markerCategory = DownloaderMarkerEnums::Category->value;
         return PHP_EOL . <<<EOF
 <div class="layui-form-item layui-hide">
     <label class="layui-form-label required">命令名称</label>
@@ -126,6 +130,15 @@ class ReseedTemplate extends CrontabAbstract
     <div class="layui-input-block">
         <div name="clients" id="clients" value=""></div>
     </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label required" title="辅种成功后，对添加的种子做标记">标记规则</label>
+    <div class="layui-input-block">
+        <input type="radio" name="parameter[marker]" value="$markerEmpty" title="不操作" checked>
+        <input type="radio" name="parameter[marker]" value="$markerTag" title="标记标签">
+        <input type="radio" name="parameter[marker]" value="$markerCategory" title="标记分类">
+    </div>
+    <div class="layui-form-mid layui-text-em">辅种成功后，对种子做标记（需要下载器支持）</div>
 </div>
 <!-- 辅种站点模板 -->
 <script type="text/html" id="sites_tpl">

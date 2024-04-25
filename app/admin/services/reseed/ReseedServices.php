@@ -4,7 +4,10 @@ namespace app\admin\services\reseed;
 
 use app\admin\services\client\ClientServices;
 use app\model\Client;
+use app\model\enums\DownloaderMarkerEnums;
 use app\model\enums\ReseedStatusEnums;
+use app\model\enums\ReseedSubtypeEnums;
+use app\model\payload\ReseedPayload;
 use app\model\Reseed;
 use app\model\Site;
 use InvalidArgumentException;
@@ -21,7 +24,7 @@ class ReseedServices
     /**
      * 辅种每批次分组数量
      */
-    private const RESEED_GROUP_NUMBER = 500;
+    private const int RESEED_GROUP_NUMBER = 500;
     /**
      * 计划任务：数据模型
      * @var Crontab
@@ -37,6 +40,11 @@ class ReseedServices
      * @var array
      */
     protected array $crontabClients;
+    /**
+     * 计划任务：标记规则
+     * @var DownloaderMarkerEnums
+     */
+    protected DownloaderMarkerEnums $downloaderMarkerEnums;
     /**
      * 辅种完毕后的通知数据
      * @var NotifyData
@@ -67,7 +75,7 @@ class ReseedServices
         if (empty($this->token)) {
             throw new InvalidArgumentException('缺少IYUU_TOKEN');
         }
-        [$this->crontabModel, $this->crontabSites, $this->crontabClients] = $this->parseCrontab($crontab_id);
+        [$this->crontabModel, $this->crontabSites, $this->crontabClients, $this->downloaderMarkerEnums] = $this->parseCrontab($crontab_id);
         $this->notifyData = new NotifyData(Site::count(), count($this->crontabSites));
     }
 
@@ -198,6 +206,10 @@ class ReseedServices
                     continue;
                 }
 
+                // 有效载荷
+                $reseedPayload = new ReseedPayload();
+                $reseedPayload->marker = $this->downloaderMarkerEnums->value;
+
                 $attributes = [
                     'client_id' => $this->clientModel->id,
                     'info_hash' => $reseed_infohash,
@@ -210,6 +222,8 @@ class ReseedServices
                     'directory' => $downloadDir,
                     'dispatch_time' => 0,
                     'status' => ReseedStatusEnums::Default->value,
+                    'subtype' => ReseedSubtypeEnums::Default->value,
+                    'payload' => (string)$reseedPayload
                 ];
                 Reseed::firstOrCreate($attributes, $values);
                 $this->notifyData->reseedSuccess++;
@@ -262,6 +276,7 @@ class ReseedServices
         }
         $sites = $parameter['sites'];
         $clients = $parameter['clients'];
-        return [$crontabModel, $sites, $clients];
+        $marker = DownloaderMarkerEnums::from($parameter['marker'] ?? DownloaderMarkerEnums::Empty->value);
+        return [$crontabModel, $sites, $clients, $marker];
     }
 }
