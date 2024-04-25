@@ -157,12 +157,12 @@ class SiteController extends Crud
                 }
 
                 // 响应码200表示请求成功
+                $code = $result['ret'] ?? 400;
                 $success = $result['data']['success'] ?? false;
-                if (200 === $result['ret'] && $success) {
+                if (200 === $code && $success) {
                     return $this->success('绑定成功');
                 }
 
-                $code = $result['ret'] ?? 400;
                 $msg = $result['msg'] ?? ($rs['data']['errmsg'] ?? 'IYUU服务器无响应，请稍后重试！');
                 return $this->fail("绑定失败，code：{$code} msg：{$msg}");
             } catch (Throwable $throwable) {
