@@ -17,5 +17,5 @@ class CookieJoyhd extends BaseCookie
     /**
      * 站点名称
      */
-    public const SITE_NAME = 'joyhd';
+    public const string SITE_NAME = 'joyhd';
 }
