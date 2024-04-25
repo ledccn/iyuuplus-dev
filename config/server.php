@@ -14,7 +14,7 @@ return [
     'transport' => 'tcp',
     'context' => [],
     'name' => 'webman',
-    'count' => cpu_count() * 2,
+    'count' => min(cpu_count() * 2, 4),
     'user' => '',
     'group' => '',
     'reusePort' => false,

@@ -15,12 +15,12 @@ abstract class BaseCookie implements Processor, PaginationUriBuilder
     /**
      * 子类的命名空间
      */
-    public const NAMESPACE = __NAMESPACE__ . '\\Cookie\\';
+    public const string NAMESPACE = __NAMESPACE__ . '\\Cookie\\';
 
     /**
      * 子类的类名前缀
      */
-    public const CLASS_PREFIX = 'Cookie';
+    public const string CLASS_PREFIX = 'Cookie';
 
     /**
      * 构造函数

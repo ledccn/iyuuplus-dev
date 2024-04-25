@@ -27,7 +27,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
      * 当前站点配置
      * @var Config
      */
-    protected readonly Config $config;
+    private readonly Config $config;
 
     /**
      * @param array $config 当前站点配置
@@ -52,7 +52,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
      */
     final public function makeBaseCookie(): BaseCookie
     {
-        $site = $this->config->site;
+        $site = $this->getConfig()->site;
         $class = BaseCookie::siteToClass($site);
         if (is_subclass_of($class, BaseCookie::class)) {
             return new $class($this);
@@ -190,7 +190,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
      */
     protected function beforeDownload(Curl $curl): void
     {
-        $this->config->setCurlOptions($curl);
+        $this->getConfig()->setCurlOptions($curl);
     }
 
     /**
