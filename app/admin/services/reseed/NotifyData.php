@@ -39,6 +39,11 @@ class NotifyData
      */
     public int $reseedSuccess = 0;
     /**
+     * 辅种详情
+     * @var array
+     */
+    public array $reseedSuccessData = [];
+    /**
      * 辅种失败数
      * @var int
      */
@@ -51,6 +56,19 @@ class NotifyData
      */
     public function __construct(public readonly int $supportSitesCount, public readonly int $userSitesCount)
     {
+    }
 
+    /**
+     * 累计站点成功数
+     * @param string $site
+     * @return void
+     */
+    public function incrReseedSuccessData(string $site): void
+    {
+        if (isset($this->reseedSuccessData[$site])) {
+            $this->reseedSuccessData[$site]++;
+        } else {
+            $this->reseedSuccessData[$site] = 1;
+        }
     }
 }

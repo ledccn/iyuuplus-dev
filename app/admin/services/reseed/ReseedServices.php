@@ -226,7 +226,9 @@ class ReseedServices
                     'payload' => (string)$reseedPayload
                 ];
                 Reseed::firstOrCreate($attributes, $values);
+                // 统计成功数
                 $this->notifyData->reseedSuccess++;
+                $this->notifyData->incrReseedSuccessData($site);
             }
         }
     }

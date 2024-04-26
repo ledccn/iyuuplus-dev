@@ -3,7 +3,7 @@
         'name' => 'iyuuplus/iyuuplus',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '9deb729f198a9032464ef492666c35fe164c2ecb',
+        'reference' => '62e713450a8d9e358739fe990b2df1e26c92ab99',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -256,7 +256,7 @@
         'iyuuplus/iyuuplus' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '9deb729f198a9032464ef492666c35fe164c2ecb',
+            'reference' => '62e713450a8d9e358739fe990b2df1e26c92ab99',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -427,9 +427,9 @@
         'psr/container-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.1|2.0',
-                1 => '^1.0',
-                2 => '^2.0',
+                0 => '^2.0',
+                1 => '1.1|2.0',
+                2 => '^1.0',
             ),
         ),
         'psr/http-client' => array(
