@@ -5,6 +5,9 @@ declare(strict_types=1);
 use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 
+/**
+ * 修复subtype和 payload未定义
+ */
 final class ModifyReseedSubtype extends AbstractMigration
 {
     /**
