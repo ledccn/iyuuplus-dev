@@ -357,7 +357,7 @@
         let $ = layui.$;
         let form = layui.form;
         layui.form.verify({
-            token: [/^(?=.{1,60}$)IYUU.{0,7}T.{0,7}.*$/, "IYUU_TOKEN格式错误 请重新配置!"],
+            token: [/^IYUU\d+T[a-f0-9]{40}$/, "IYUU_TOKEN格式错误 请重新配置!"],
         });
         // 提交
         form.on("submit(saveiyuu_config)", function (data) {
