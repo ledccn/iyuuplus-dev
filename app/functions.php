@@ -21,13 +21,23 @@ function iyuu_token(): string
 }
 
 /**
- * 返回IYUU客户端版本号
+ * 返回IYUU客户端主版本号
  * - 要求PHP版本^8.3
  * @return string
  */
 function iyuu_version(): string
 {
-    return '8.0.7';
+    return '8.1.0';
+}
+
+/**
+ * 是否为IYUU的token格式
+ * @param string $token
+ * @return bool
+ */
+function is_iyuu_token(string $token): bool
+{
+    return strlen($token) < 60 && str_starts_with($token, 'IYUU') && strpos($token, 'T') < 15;
 }
 
 /**
@@ -41,7 +51,7 @@ function check_iyuu_token(string $token = ''): bool
     if (!$token) {
         throw new RuntimeException("未配置IYUU_TOKEN：通用设置->系统设置->爱语飞飞token配置");
     }
-    if (!(strlen($token) < 60 && str_starts_with($token, 'IYUU') && strpos($token, 'T') < 15)) {
+    if (!is_iyuu_token($token)) {
         throw new RuntimeException("IYUU_TOKEN格式错误 请重新配置: 通用设置->系统设置->爱语飞飞token配置");
     }
     return true;

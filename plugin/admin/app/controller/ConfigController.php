@@ -62,7 +62,7 @@ class ConfigController extends Base
 
         // 将获取到的IYUU_TOKEN值添加到配置数组中
         $decodedConfig = json_decode($config, true);
-        $decodedConfig['iyuu_config']['layui_token'] = $iyuuToken;
+        $decodedConfig['iyuu_config']['iyuu_token'] = $iyuuToken;
 
         // 更新配置数组
         $config = json_encode($decodedConfig);
@@ -115,7 +115,7 @@ class ConfigController extends Base
                     $data[$section]['index']['title'] = htmlspecialchars($items['index']['title'] ?? '首页');
                     break;
                 case 'iyuu_config':
-                    $data[$section]['layui_token'] = check_iyuu_token($items['layui_token'],1) ? update_git_EnvValue('IYUU_TOKEN', $items['layui_token']) : '';
+                    $data[$section]['iyuu_token'] = is_iyuu_token($items['iyuu_token']) ? update_git_EnvValue('IYUU_TOKEN', $items['iyuu_token']) : '';
                     break;
                 case 'theme':
                     $data[$section]['defaultColor'] = Util::filterNum($items['defaultColor'] ?? '2');
