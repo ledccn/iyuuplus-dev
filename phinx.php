@@ -5,6 +5,8 @@
  * @link https://github.com/cakephp/phinx
  * @link https://tsy12321.gitbooks.io/phinx-doc/content/
  */
+require_once __DIR__ . '/bootstrap.php';
+
 return [
     'paths' => [
         'migrations' => '%%PHINX_CONFIG_DIR%%/db/migrations',
@@ -28,7 +30,7 @@ return [
             'name' => getenv('DB_DATABASE'),
             'user' => getenv('DB_USERNAME'),
             'pass' => getenv('DB_PASSWORD'),
-            'port' => '3306',
+            'port' => getenv('DB_PORT'),
             'charset' => 'utf8mb4',
         ],
         'testing' => [
