@@ -105,17 +105,20 @@ class SiteController extends Crud
      */
     public function getRecommendSites(Request $request): Response
     {
-        if (!check_iyuu_token(iyuu_token())) {
-            return $this->fail('IYUU_TOKEN格式错误');
+        try {
+            check_iyuu_token(iyuu_token());
+
+            $curl = new Curl();
+            $curl->setSslVerify();
+            $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.getRecommendSites'));
+            $result = $curl->response ? json_decode($curl->response, true) : [];
+            $recommend = $result['data']['recommend'] ?? [];
+
+            return $recommend ? $this->success('ok', $recommend) : $this->fail('IYUU服务器无响应');
+
+        } catch (Throwable $exception) {
+            return $this->fail($exception->getMessage());
         }
-
-        $curl = new Curl();
-        $curl->setSslVerify();
-        $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.getRecommendSites'));
-        $result = $curl->response ? json_decode($curl->response, true) : [];
-        $recommend = $result['data']['recommend'] ?? [];
-
-        return $recommend ? $this->success('ok', $recommend) : $this->fail('IYUU服务器无响应');
     }
 
     /**
@@ -190,8 +193,14 @@ class SiteController extends Crud
      */
     public function sync(Request $request): Response
     {
-        SitesServices::sync();
-        return $this->success();
+        try {
+            check_iyuu_token(iyuu_token());
+            SitesServices::sync();
+            return $this->success();
+        }catch (Throwable $exception){
+            return $this->fail($exception->getMessage());
+        }
+
     }
 
     /**

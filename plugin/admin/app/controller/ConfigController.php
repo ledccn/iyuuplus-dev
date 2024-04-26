@@ -56,6 +56,17 @@ class ConfigController extends Base
                 $option->save();
             }
         }
+
+        // 获取环境变量中的IYUU_TOKEN值
+        $iyuuToken = env('IYUU_TOKEN', '');
+
+        // 将获取到的IYUU_TOKEN值添加到配置数组中
+        $decodedConfig = json_decode($config, true);
+        $decodedConfig['iyuu_config']['layui_token'] = $iyuuToken;
+
+        // 更新配置数组
+        $config = json_encode($decodedConfig);
+
         return json_decode($config, true);
     }
 
@@ -102,6 +113,9 @@ class ConfigController extends Base
                     $data[$section]['index']['id'] = Util::filterNum($items['index']['id'] ?? '0');
                     $data[$section]['index']['href'] = Util::filterUrlPath($items['index']['href'] ?? '');
                     $data[$section]['index']['title'] = htmlspecialchars($items['index']['title'] ?? '首页');
+                    break;
+                case 'iyuu_config':
+                    $data[$section]['layui_token'] = check_iyuu_token($items['layui_token'],1) ? update_git_EnvValue('IYUU_TOKEN', $items['layui_token']) : '';
                     break;
                 case 'theme':
                     $data[$section]['defaultColor'] = Util::filterNum($items['defaultColor'] ?? '2');

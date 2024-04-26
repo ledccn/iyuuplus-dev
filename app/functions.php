@@ -34,10 +34,17 @@ function iyuu_version(): string
  * 粗略验证字符串是否为IYUU的token
  * @param string $token
  * @return bool
+ * @throws RuntimeException 如果 IYUU_TOKEN 未配置或格式不正确
  */
 function check_iyuu_token(string $token = ''): bool
 {
-    return (strlen($token) < 60) && (str_starts_with($token, 'IYUU')) && (strpos($token, 'T') < 15);
+    if (!$token) {
+        throw new RuntimeException("未配置IYUU_TOKEN：通用设置->系统设置->爱语飞飞token配置");
+    }
+    if (!(strlen($token) < 60 && str_starts_with($token, 'IYUU') && strpos($token, 'T') < 15)) {
+        throw new RuntimeException("IYUU_TOKEN格式错误 请重新配置: 通用设置->系统设置->爱语飞飞token配置");
+    }
+    return true;
 }
 
 /**
@@ -127,4 +134,41 @@ function current_git_filemtime(string $branch = 'master', string $format = 'Y-m-
         return date($format, $time);
     }
     return '';
+}
+
+/**
+ * 更新 .env 文件中的单个值。
+ *
+ * @param string $key   要更新的键名
+ * @param string $value 新的键值
+ * @return string
+ */
+function update_git_EnvValue(string $key, string $value): string
+{
+    // 读取 .env 文件的内容
+    $envFile = base_path('/.env');
+    $contents = file_get_contents($envFile);
+
+    // 解析成键值对数组
+    $lines = explode("\n", $contents);
+    $envData = [];
+    foreach ($lines as $line) {
+        if (strpos($line, '=') !== false) {
+            list($envKey, $envValue) = explode('=', $line, 2);
+            $envData[$envKey] = $envValue;
+        }
+    }
+
+    // 更新指定的键值对
+    $envData[$key] = $value;
+
+    // 重新构建 .env 文件内容
+    $newContents = '';
+    foreach ($envData as $envKey => $envValue) {
+        $newContents .= "$envKey=$envValue\n";
+    }
+
+    // 将更新后的内容写入 .env 文件
+    file_put_contents($envFile, $newContents);
+    return $value;
 }

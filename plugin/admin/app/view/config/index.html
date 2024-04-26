@@ -10,7 +10,7 @@
 <body class="pear-container">
 <style>
     .layui-input-block input {
-        width: 300px;
+        width: 500px;
     }
 </style>
 
@@ -22,6 +22,7 @@
                 <li class="layui-this">基本信息</li>
                 <li>菜单配置</li>
                 <li>页面配置</li>
+                <li>爱语飞飞token配置</li>
             </ul>
             <div class="layui-tab-content">
 
@@ -212,6 +213,26 @@
                             </div>
                         </div>
                     </form>
+                </div>
+                <!-- 爱语飞飞token配置 -->
+                <div class="layui-tab-item">
+
+                    <form class="layui-form" lay-filter="iyuu_config">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">token</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="layui_token" required  lay-verify="required|token" placeholder="请输入IYUU_TOKEN" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                                        lay-filter="saveiyuu_config">
+                                    提交
+                                </button>
+                            </div>
+                        </div>
+                    </form>
 
                 </div>
 
@@ -331,6 +352,35 @@
         });
     });
 
+    //爱语飞飞token配置
+    layui.use(["upload", "layer", "popup"], function () {
+        let $ = layui.$;
+        let form = layui.form;
+        layui.form.verify({
+            token: [/^(?=.{1,60}$)IYUU.{0,7}T.{0,7}.*$/, "IYUU_TOKEN格式错误 请重新配置!"],
+        });
+        // 提交
+        form.on("submit(saveiyuu_config)", function (data) {
+            let field = data.field;
+            delete data.field;
+            $.ajax({
+                url: "/app/admin/config/update",
+                dataType: "json",
+                type: "POST",
+                data: {iyuu_config: field},
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return layui.popup.success("操作成功");
+                }
+            });
+            // 删除sessionStorage缓存
+            sessionStorage.clear();
+            return false;
+        });
+    });
+
     layui.use(["form"], function () {
         let form = layui.form;
         let $ = layui.$;
@@ -344,6 +394,7 @@
                 form.val("baseInfo", res.logo);
                 $("#image").prev().val(res.logo.image).prev().attr("src", res.logo.image);
                 form.val("menuInfo", res.menu);
+                form.val("iyuu_config", res.iyuu_config);
                 let tab = res.tab;
                 let index = tab.index;
                 delete tab.index;
