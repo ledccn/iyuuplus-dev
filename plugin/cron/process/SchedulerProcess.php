@@ -48,6 +48,7 @@ class SchedulerProcess
      */
     public function __construct(public readonly string $secret)
     {
+        clearstatcache();
         if (!Install::isInstalled()) {
             return;
         }

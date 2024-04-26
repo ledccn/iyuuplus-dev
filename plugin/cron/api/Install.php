@@ -48,6 +48,7 @@ class Install
      */
     public static function isInstalled(): bool
     {
+        clearstatcache();
         return is_file(config_path('/crontab.php'));
     }
 
