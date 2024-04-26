@@ -4,8 +4,6 @@
  */
 
 use Webman\Session\FileSessionHandler;
-use Webman\Session\RedisSessionHandler;
-use Webman\Session\RedisClusterSessionHandler;
 
 return [
 
@@ -32,12 +30,20 @@ return [
     ],
     'session_name' => 'PHPSID',
     'auto_update_timestamp' => false,
-    'lifetime' => 7*24*60*60,
-    'cookie_lifetime' => 365*24*60*60,
+    // session过期时间
+    'lifetime' => 30 * 24 * 60 * 60,
+    // 存储session_id的cookie过期时间
+    'cookie_lifetime' => 365 * 24 * 60 * 60,
+    // 存储session_id的cookie路径
     'cookie_path' => '/',
+    // 存储session_id的cookie域名
     'domain' => '',
+    // 是否开启httpOnly，默认开启
     'http_only' => true,
+    // 仅在https下开启session，默认关闭
     'secure' => false,
+    // 用于防止CSRF攻击和用户追踪，可选值strict/lax/none
     'same_site' => '',
+    // 回收session的几率
     'gc_probability' => [1, 1000],
 ];
