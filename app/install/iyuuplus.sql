@@ -43,6 +43,8 @@ CREATE TABLE IF NOT EXISTS `cn_reseed` (
   `directory` varchar(900) NOT NULL DEFAULT '' COMMENT '目标文件夹',
   `dispatch_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '调度时间',
   `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '状态',
+  `subtype` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '业务子类型',
+  `payload` text COMMENT '有效载荷',
   `message` text COMMENT '异常信息',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
@@ -96,5 +98,4 @@ CREATE TABLE IF NOT EXISTS `cn_transfer` (
   KEY `info_hash` (`info_hash`),
   KEY `state` (`state`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='自动转移';
-
 COMMIT;
