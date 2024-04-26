@@ -8,6 +8,7 @@ use app\admin\services\reseed\CrontabObserver;
 use app\admin\services\reseed\ReseedTemplate;
 use app\admin\services\transfer\CrontabObserver as TransferCrontabObserver;
 use app\admin\services\transfer\TransferTemplate;
+use app\locker\PhinxLocker;
 use app\model\Client;
 use app\model\ClientObserver;
 use app\model\Folder;
@@ -18,6 +19,7 @@ use app\model\Site;
 use app\model\SiteObserver;
 use plugin\cron\api\CrontabExtend;
 use plugin\cron\app\model\Crontab;
+use support\Log;
 use Workerman\Worker;
 
 /**
@@ -32,11 +34,30 @@ class Bootstrap implements \Webman\Bootstrap
      */
     public static function start(?Worker $worker): void
     {
+        self::initMigrate();
         self::initObserver();
         self::initCrontabExtend();
 
         ClientServices::bootstrap();
         DownloaderServices::bootstrap();
+    }
+
+    /**
+     * 初始化Migration数据库（使用的迁移工具Phinx）
+     * @return void
+     */
+    protected static function initMigrate(): void
+    {
+        $locker = PhinxLocker::lock('init');
+        try {
+            if ($locker->acquire()) {
+                echo shell_exec(implode(' ', [PHP_BINARY, base_path('vendor/bin/phinx'), 'migrate', '-e', 'development']));
+            }
+        } catch (\Error|\Exception|\Throwable) {
+            Log::error('数据库迁移指令执行失败');
+        } finally {
+            $locker->release();
+        }
     }
 
     /**
