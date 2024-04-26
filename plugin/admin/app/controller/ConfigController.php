@@ -116,6 +116,7 @@ class ConfigController extends Base
                     break;
                 case 'iyuu_config':
                     $data[$section]['iyuu_token'] = is_iyuu_token($items['iyuu_token']) ? update_git_EnvValue('IYUU_TOKEN', $items['iyuu_token']) : '';
+                    $data[$section]['listen_ipv6'] = update_git_EnvValue('IYUU_LISTEN_IPV6', empty($items['listen_ipv6']) ? '0' : '1');
                     break;
                 case 'theme':
                     $data[$section]['defaultColor'] = Util::filterNum($items['defaultColor'] ?? '2');

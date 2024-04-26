@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
     <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
 </head>
-<body class="pear-container">
 <style>
     .layui-input-block input {
         width: 500px;
     }
+    .layui-input-wrap {
+        width: 60px !important;
+        line-height: 20px !important;
+    }
 </style>
+<body class="pear-container">
 
 <div class="layui-card">
     <div class="layui-card-body">
@@ -223,6 +227,13 @@
                             <div class="layui-input-block">
                                 <input type="password" name="iyuu_token" required  lay-verify="required|token" placeholder="请输入IYUU_TOKEN" autocomplete="off" class="layui-input">
                             </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">监听IPv6</label>
+                            <div class="layui-input-inline layui-input-wrap">
+                                <input type="checkbox" name="listen_ipv6" id="listen_ipv6" lay-skin="switch"/>
+                            </div>
+                            <div class="layui-form-mid layui-text-em">变更监听之后需重启容器</div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">

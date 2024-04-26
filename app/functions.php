@@ -163,7 +163,7 @@ function update_git_EnvValue(string $key, string $value): string
     $lines = explode("\n", $contents);
     $envData = [];
     foreach ($lines as $line) {
-        if (strpos($line, '=') !== false) {
+        if (str_contains($line, '=')) {
             list($envKey, $envValue) = explode('=', $line, 2);
             $envData[$envKey] = $envValue;
         }
