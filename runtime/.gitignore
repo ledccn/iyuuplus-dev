@@ -1,4 +1,7 @@
 *
+!backup
+!lock
 !logs
+!sessions
 !views
 !.gitignore

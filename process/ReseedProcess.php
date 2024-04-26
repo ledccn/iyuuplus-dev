@@ -36,6 +36,7 @@ class ReseedProcess
      */
     public function onWorkerStart(Worker $worker): void
     {
+        clearstatcache();
         if (getenv('CONFIG_NOT_MYSQL') || !is_file(base_path('/.env'))
         ) {
             return;

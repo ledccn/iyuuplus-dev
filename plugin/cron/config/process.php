@@ -8,7 +8,7 @@ return [
     // 计划任务调度进程
     'scheduler' => [
         'handler' => plugin\cron\process\SchedulerProcess::class,
-        'reloadable' => false,
+        //'reloadable' => false,
         'constructor' => [
             // 通信密钥
             'secret' => config('crontab.secret', ''),

@@ -18,7 +18,7 @@ class Installation
     /**
      * 菜单KEY
      */
-    const MENU_KEY = 'management_center';
+    const string MENU_KEY = 'management_center';
 
     /**
      * 安装方法
