@@ -63,7 +63,8 @@
     "symfony/dom-crawler": "^7.0",
     "symfony/css-selector": "^7.0",
     "symfony/filesystem": "^7.0",
-    "chrome-php/chrome": "^1.11"
+    "chrome-php/chrome": "^1.11",
+    "robmorgan/phinx": "^0.16.0"
   },
   "autoload": {
     "psr-4": {
