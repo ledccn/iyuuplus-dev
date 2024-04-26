@@ -15,6 +15,7 @@ use Iyuu\BittorrentClient\Clients;
 use Ledc\Curl\Curl;
 use plugin\cron\app\model\Crontab;
 use RuntimeException;
+use Webman\Event\Event;
 
 /**
  * 自动辅种服务
@@ -95,6 +96,10 @@ class ReseedServices
             $torrentList = $this->bittorrentClient->getTorrentList();
             $hashDict = $torrentList['hashString'];   // 哈希目录字典
             $total = count($hashDict);
+
+            // 调度事件：当前客户端辅种开始前
+            Event::emit('reseed.current.before', [$hashDict, $this->bittorrentClient, $this->clientModel]);
+
             $this->notifyData->hashCount += $total;
             if (self::RESEED_GROUP_NUMBER < $total) {
                 // 分批次辅种
@@ -123,7 +128,13 @@ class ReseedServices
                 ];
                 $this->requestApi($hashDict, $data);
             }
+
+            // 调度事件：当前客户端辅种结束后
+            Event::emit('reseed.current.after', [$hashDict, $this->bittorrentClient, $this->clientModel]);
         }
+
+        // 调度事件：全部客户端辅种结束
+        Event::emit('reseed.all.done', [$this->notifyData, $this->crontabClients]);
     }
 
     /**
