@@ -22,15 +22,6 @@ use Workerman\Worker;
 class ReseedProcess
 {
     /**
-     * 构造函数
-     */
-    public function __construct()
-    {
-        SitesServices::sync();
-        init_migrate();
-    }
-
-    /**
      * 子进程启动时执行
      * @param Worker $worker
      * @return void
@@ -42,6 +33,9 @@ class ReseedProcess
         ) {
             return;
         }
+
+        SitesServices::sync();
+        init_migrate();
 
         // 每天执行
         new Crontab('10 10 * * *', function () {
