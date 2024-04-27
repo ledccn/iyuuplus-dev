@@ -62,6 +62,10 @@ function check_iyuu_token(string $token = ''): bool
  */
 function init_migrate(): void
 {
+    if (!plugin\cron\api\Install::isInstalled()) {
+        return;
+    }
+
     $command = implode(' ', [PHP_BINARY, base_path('vendor/bin/phinx'), 'migrate', '-e', 'development']);
     $process = Symfony\Component\Process\Process::fromShellCommandline($command, base_path(), null, null, 30);
     $process->run();
