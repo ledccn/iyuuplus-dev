@@ -33,11 +33,15 @@ use plugin\admin\app\model\Base;
 class Site extends Base implements RecoveryInterface
 {
     /**
+     * 数据表名称
+     */
+    public const string TABLE_NAME = 'cn_sites';
+    /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'cn_sites';
+    protected $table = self::TABLE_NAME;
 
     /**
      * The primary key associated with the table.

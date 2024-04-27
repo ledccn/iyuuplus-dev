@@ -22,7 +22,6 @@ class Install implements MiddlewareInterface
     {
         match ($request->path()) {
             '/app/admin/config/get' => Installation::install(),
-            '/admin/site/index' => Installation::initDatabase(),
             default => false
         };
         return $handler($request);

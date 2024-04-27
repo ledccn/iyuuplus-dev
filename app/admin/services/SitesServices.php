@@ -4,6 +4,7 @@ namespace app\admin\services;
 
 use app\model\Site;
 use Iyuu\ReseedClient\Client;
+use plugin\admin\app\common\Util;
 use Throwable;
 
 /**
@@ -18,6 +19,10 @@ class SitesServices
     public static function sync(): void
     {
         try {
+            if (!Util::schema()->hasTable(Site::TABLE_NAME)) {
+                return;
+            }
+
             $reseedClient = new Client(iyuu_token());
             $list = $reseedClient->sites();
             file_put_contents(runtime_path('sync.json'), json_encode($list, JSON_UNESCAPED_UNICODE));
