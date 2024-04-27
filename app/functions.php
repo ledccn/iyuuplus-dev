@@ -22,7 +22,6 @@ function iyuu_token(): string
 
 /**
  * 返回IYUU客户端主版本号
- * - 要求PHP版本^8.3
  * @return string
  */
 function iyuu_version(): string
@@ -58,12 +57,13 @@ function check_iyuu_token(string $token = ''): bool
 }
 
 /**
- * 返回项目名称
- * @return string
+ * Migration初始化数据库（使用的迁移工具Phinx）
+ * @return void
  */
-function iyuu_project_name(): string
+function init_migrate(): void
 {
-    return 'IYUUPlus-dev';
+    $rs = shell_exec(implode(' ', [PHP_BINARY, base_path('vendor/bin/phinx'), 'migrate', '-e', 'development']));
+    echo is_string($rs) ? $rs : 'Migration初始化数据库，失败！！！';
 }
 
 /**
@@ -149,7 +149,7 @@ function current_git_filemtime(string $branch = 'master', string $format = 'Y-m-
 /**
  * 更新 .env 文件中的单个值。
  *
- * @param string $key   要更新的键名
+ * @param string $key 要更新的键名
  * @param string $value 新的键值
  * @return string
  */

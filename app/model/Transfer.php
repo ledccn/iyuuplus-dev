@@ -65,10 +65,10 @@ class Transfer extends Base
     /**
      * 私有方法，批量删除数据
      * @param string $column
-     * @param string $value
+     * @param string|int $value
      * @return int
      */
-    protected static function deleteByColumnValue(string $column, string $value): int
+    protected static function deleteByColumnValue(string $column, string|int $value): int
     {
         $count = 0;
         Transfer::where($column, '=', $value)->chunkById(50, function ($reseeds) use (&$count) {

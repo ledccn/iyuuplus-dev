@@ -27,6 +27,7 @@ class ReseedProcess
     public function __construct()
     {
         SitesServices::sync();
+        init_migrate();
     }
 
     /**
