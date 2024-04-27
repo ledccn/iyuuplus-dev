@@ -62,8 +62,10 @@ function check_iyuu_token(string $token = ''): bool
  */
 function init_migrate(): void
 {
-    $rs = shell_exec(implode(' ', [PHP_BINARY, base_path('vendor/bin/phinx'), 'migrate', '-e', 'development']));
-    echo is_string($rs) ? $rs : 'Migration初始化数据库，失败！！！';
+    $command = implode(' ', [PHP_BINARY, base_path('vendor/bin/phinx'), 'migrate', '-e', 'development']);
+    $process = Symfony\Component\Process\Process::fromShellCommandline($command, base_path(), null, null, 30);
+    $process->run();
+    echo $process->getOutput();
 }
 
 /**
