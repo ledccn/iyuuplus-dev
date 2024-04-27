@@ -2,8 +2,6 @@
 
 namespace app\install;
 
-use app\admin\services\SitesServices;
-use app\model\Site;
 use plugin\admin\api\Menu;
 use plugin\admin\app\common\Util;
 use plugin\cron\api\Install as CrontabInstall;
@@ -60,17 +58,6 @@ class Installation
         $_env = file_get_contents(base_path('/.env.example'));
         $env = strtr($_env, $params);
         file_put_contents(base_path('/.env'), $env);
-    }
-
-    /**
-     * 初始化数据
-     * @return void
-     */
-    public static function initDatabase(): void
-    {
-        if (Util::schema()->hasTable('cn_sites') && !Site::exists()) {
-            SitesServices::sync();
-        }
     }
 
     /**

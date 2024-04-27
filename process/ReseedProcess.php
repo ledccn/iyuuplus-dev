@@ -10,6 +10,7 @@ use Exception;
 use Iyuu\BittorrentClient\ClientDownloader;
 use Iyuu\SiteManager\SiteManager;
 use Ledc\Container\App;
+use plugin\cron\api\Install;
 use support\Log;
 use Throwable;
 use Workerman\Crontab\Crontab;
@@ -29,8 +30,7 @@ class ReseedProcess
     public function onWorkerStart(Worker $worker): void
     {
         clearstatcache();
-        if (getenv('CONFIG_NOT_MYSQL') || !is_file(base_path('/.env'))
-        ) {
+        if (Install::isInstalled()) {
             return;
         }
 
