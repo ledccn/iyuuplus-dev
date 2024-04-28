@@ -5,6 +5,7 @@ namespace Iyuu\SiteManager\Driver;
 use Iyuu\SiteManager\BaseDriver;
 use Iyuu\SiteManager\Contracts\Processor;
 use Iyuu\SiteManager\Contracts\ProcessorXml;
+use Iyuu\SiteManager\Contracts\Torrent;
 use Iyuu\SiteManager\Frameworks\NexusPhp\HasRss;
 use Iyuu\SiteManager\Spider\RouteEnum;
 
@@ -18,7 +19,7 @@ class DriverZhuque extends BaseDriver implements Processor, ProcessorXml
     /**
      * 站点名称
      */
-    public const SITE_NAME = 'zhuque';
+    public const string SITE_NAME = 'zhuque';
 
     /**
      * 提取种子ID的正则表达式
@@ -45,5 +46,19 @@ class DriverZhuque extends BaseDriver implements Processor, ProcessorXml
         ];
 
         return strtr(RouteEnum::N10->value, $replace);
+    }
+
+    /**
+     * 解析生成替换规则
+     * @param Torrent $torrent
+     * @return array
+     */
+    protected function parseReplace(Torrent $torrent): array
+    {
+        return [
+            '{}' => $torrent->torrent_id,
+            '{id}' => $torrent->torrent_id,
+            '{torrent_key}' => $this->getConfig()->getOptions('torrent_key'),
+        ];
     }
 }
