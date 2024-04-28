@@ -134,7 +134,7 @@ class ReseedServices
         }
 
         // 调度事件：全部客户端辅种结束
-        Event::emit('reseed.all.done', [$this->notifyData, $this->crontabClients]);
+        Event::emit('reseed.all.done', [$this->notifyData, $this->clientModel, $this->crontabClients]);
     }
 
     /**
