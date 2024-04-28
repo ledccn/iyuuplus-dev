@@ -6,6 +6,7 @@ use app\admin\services\SitesServices;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Collection;
+use InvalidArgumentException;
 use Iyuu\SiteManager\Contracts\Config;
 use Iyuu\SiteManager\Contracts\RecoveryInterface;
 use plugin\admin\app\model\Base;
@@ -53,7 +54,7 @@ class Site extends Base implements RecoveryInterface
     /**
      * 需要恢复的字段
      */
-    private const RECOVERY_FIELD = ['mirror', 'cookie', 'options', 'disabled'];
+    private const array RECOVERY_FIELD = ['mirror', 'cookie', 'options', 'disabled'];
 
     /**
      * 类型转换。
@@ -72,6 +73,10 @@ class Site extends Base implements RecoveryInterface
     {
         SitesServices::sync();
         foreach ($list as $data) {
+            if (empty($data['sid'])) {
+                throw new InvalidArgumentException('未知格式的备份文件：'. json_encode($data, JSON_UNESCAPED_UNICODE));
+            }
+
             if ($model = self::uniqueSid($data['sid'])) {
                 foreach (self::RECOVERY_FIELD as $field) {
                     $model->{$field} = $data[$field];
