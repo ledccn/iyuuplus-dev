@@ -30,7 +30,7 @@ class UninstallCommand extends Command
      */
     protected function configure(): void
     {
-        $this->addArgument('name', InputArgument::OPTIONAL, 'Name description');
+        $this->addArgument('code', InputArgument::OPTIONAL, 'Code description');
     }
 
     /**
@@ -40,7 +40,11 @@ class UninstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        //$name = $input->getArgument('name');
+        $name = $input->getArgument('code');
+        if (date('Ymd') !== $name) {
+            $output->writeln('<error>Code错误（当前的年月日）</error>');
+            return self::INVALID;
+        }
 
         clearstatcache();
         // 删除数据表
