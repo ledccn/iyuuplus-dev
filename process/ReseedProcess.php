@@ -30,7 +30,7 @@ class ReseedProcess
     public function onWorkerStart(Worker $worker): void
     {
         clearstatcache();
-        if (Install::isInstalled()) {
+        if (!Install::isInstalled()) {
             return;
         }
 
