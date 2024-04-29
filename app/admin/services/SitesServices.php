@@ -44,6 +44,7 @@ class SitesServices
                 $siteModel->save();
             }
         } catch (Throwable $throwable) {
+            echo $throwable->getMessage() . PHP_EOL;
         }
     }
 }
