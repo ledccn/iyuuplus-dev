@@ -183,6 +183,71 @@ class SiteController extends Crud
      */
     public function import(Request $request): Response
     {
+        $file = $request->file('file');
+        $list = json_decode(file_get_contents($file->getPathname()), true);
+        foreach ($list as $site => $item) {
+            if ($model = Site::uniqueSite($site)) {
+                $cookie = $item['cookie'] ?? '';
+                if ($cookie) {
+                    $model->cookie = $cookie;
+                }
+
+                $mirror = $item['mirror'] ?? '';
+                if ($mirror) {
+                    $model->mirror = $mirror;
+                }
+
+                $options = [];
+                if ($uid = $item['id'] ?? 0) {
+                    $options['uid'] = $uid;
+                }
+
+                $passkey = $item['passkey'] ?? '';
+                if ($passkey) {
+                    $options['passkey'] = $passkey;
+                }
+
+                $torrent_pass = $item['torrent_pass'] ?? '';
+                if ($torrent_pass) {
+                    $options['torrent_pass'] = $torrent_pass;
+                }
+
+                $authkey = $item['authkey'] ?? '';
+                if ($authkey) {
+                    $options['authkey'] = $authkey;
+                }
+
+                $torrent_key = $item['torrent_key'] ?? '';
+                if ($torrent_key) {
+                    $options['torrent_key'] = $torrent_key;
+                }
+
+                $rss_key = $item['rss_key'] ?? '';
+                if ($rss_key) {
+                    $options['rss_key'] = $rss_key;
+                }
+
+                $rsskey = $item['rsskey'] ?? '';
+                if ($rsskey) {
+                    $options['rsskey'] = $rsskey;
+                }
+
+                if (in_array($site, [
+                    'ttg', 'redleaves', 'pter', 'pt', 'hdsky',
+                    'dicmusic', 'greatposterwall', 'audiences', 'hdhome', 'pthome',
+                    'zhuque', 'ourbits', 'chdbits', 'piggo', 'zmpt',
+                    'agsvpt', 'hdfans'
+                ], true)) {
+                    $options['limit']['count'] = 20;
+                    $options['limit']['sleep'] = 5;
+                }
+
+                if (!empty($options)) {
+                    $model->options = $options;
+                }
+                $model->save();
+            }
+        }
         return $this->success();
     }
 
@@ -197,7 +262,7 @@ class SiteController extends Crud
             check_iyuu_token(iyuu_token());
             SitesServices::sync();
             return $this->success();
-        }catch (Throwable $exception){
+        } catch (Throwable $exception) {
             return $this->fail($exception->getMessage());
         }
 

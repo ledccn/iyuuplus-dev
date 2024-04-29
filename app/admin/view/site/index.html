@@ -68,6 +68,9 @@
     <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.site.delete">
         <i class="layui-icon layui-icon-delete"></i>删除
     </button>
+    <button class="pear-btn pear-btn-warming pear-btn-md" id="import" permission="admin.site.import">
+        <i class="layui-icon layui-icon-upload"></i>导入旧版配置
+    </button>
 </script>
 
 <!-- 表格行工具栏 -->
@@ -288,6 +291,21 @@
                     layui.upload.render({
                         elem: '#recovery',
                         url: '/admin/site/recovery',
+                        accept: 'file',
+                        exts: 'json',
+                        dataType: 'json',
+                        done: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success("操作成功", refreshTable);
+                        }
+                    });
+
+                    // 导入旧版配置
+                    layui.upload.render({
+                        elem: '#import',
+                        url: '/admin/site/import',
                         accept: 'file',
                         exts: 'json',
                         dataType: 'json',
