@@ -5,6 +5,7 @@ namespace app\admin\services;
 use app\model\Site;
 use Iyuu\ReseedClient\Client;
 use plugin\admin\app\common\Util;
+use plugin\cron\app\support\PushNotify;
 use Throwable;
 
 /**
@@ -44,7 +45,9 @@ class SitesServices
                 $siteModel->save();
             }
         } catch (Throwable $throwable) {
-            echo $throwable->getMessage() . PHP_EOL;
+            $msg = '同步站点列表失败：' . $throwable->getMessage();
+            PushNotify::error($msg);
+            echo $msg . PHP_EOL;
         }
     }
 }
