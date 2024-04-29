@@ -43,6 +43,7 @@ class LayuiTemplate
             'dmhy',
             'dragonhd',
             'eastgame',
+            'ecustpt',
             'haidan',
             'hares',
             'hd4fans',
