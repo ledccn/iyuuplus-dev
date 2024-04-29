@@ -21,16 +21,17 @@ class OptionsLimit extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label required">辅种数量</label>
                 <div class="layui-input-group">
-                    <input type="text" name="options[limit][count]" value="20" required lay-verify="required" placeholder="每天辅种的总数量" class="layui-input">
-                    <div class="layui-input-suffix">个</div>
+                    <input type="number" name="options[limit][count]" value="20" required lay-verify="required" placeholder="每天辅种的总数量" class="layui-input">
+                    <div class="layui-input-suffix">个/天<span class="layui-badge">擅自调整加大，可能导致站点账号异常</span></div>
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label required">辅种间隔</label>
                 <div class="layui-input-group">
-                    <input type="text" name="options[limit][sleep]" value="5" required lay-verify="required" placeholder="每个种子间隔时间" class="layui-input">
+                    <input type="number" name="options[limit][sleep]" value="5" required lay-verify="required" placeholder="每个种子间隔时间" class="layui-input">
                     <div class="layui-input-suffix">秒</div>
+                    
                 </div>
             </div>
 
