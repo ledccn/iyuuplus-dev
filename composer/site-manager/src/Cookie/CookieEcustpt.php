@@ -13,16 +13,18 @@ use Iyuu\SiteManager\Spider\Pagination;
 class CookieEcustpt extends BaseCookie
 {
     use HasCookie, Pagination;
+
     /**
      * 站点名称
      */
-    public const SITE_NAME = 'ecustpt';
+    public const string SITE_NAME = 'ecustpt';
+
     /**
      * 是否调试当前站点
      * @return bool
      */
     protected function isDebugCurrent(): bool
     {
-        return true;
+        return false;
     }
 }

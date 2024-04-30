@@ -25,11 +25,10 @@ class PacificUtil
             throw new RuntimeException('未配置基本信息：通用设置->基本设置->基本信息');
         }
 
-        $services_url = $config['logo']['services_url'] ?? '';
         $services_token = $config['logo']['services_token'] ?? '';
-        if (empty($services_url) || empty($services_token)) {
+        if (empty($services_token)) {
             throw new RuntimeException('未配置服务器地址或用户Token');
         }
-        return [$services_url, $services_token];
+        return [$services_token];
     }
 }

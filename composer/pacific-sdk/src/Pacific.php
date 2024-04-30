@@ -11,25 +11,16 @@ use RuntimeException;
 abstract class Pacific
 {
     /**
-     * 域名和协议
-     * @var string
-     */
-    protected readonly string $host;
-    /**
      * @var Curl
      */
     protected Curl $curl;
 
     /**
      * 构造函数
-     * @param string $serverAddress 服务器地址
      * @param string $token 请求token
      */
-    final public function __construct(public readonly string $serverAddress, public readonly string $token)
+    final public function __construct(public readonly string $token)
     {
-        $scheme = parse_url($serverAddress, PHP_URL_SCHEME);
-        $host = parse_url($serverAddress, PHP_URL_HOST);
-        $this->host = $scheme . '://' . $host;
         $this->initCurl();
         $this->initialize();
     }

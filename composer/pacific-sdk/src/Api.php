@@ -10,12 +10,27 @@ use Iyuu\PacificSdk\Contracts\ResponsePusher;
 class Api extends Pacific
 {
     /**
+     * 服务器地址
+     */
+    protected const string SERVER_URL = 'http://v.hilx.cn';
+    /**
+     * 接入点
+     */
+    protected const array ENDPOINT = [
+        'device' => '/likeadmin/device/index',
+        'deviceGenerate' => '/likeadmin/device/generate',
+        'deviceBind' => '/likeadmin/device/bind',
+        'userDownloadUpdate' => '/likeadmin/UserDownload/update',
+        'pushAuth' => '/plugin/webman/push/auth',
+    ];
+
+    /**
      * @return ResponsePusher
      */
     public function getPusher(): ResponsePusher
     {
         $curl = $this->curl;
-        $curl->get($this->serverAddress);
+        $curl->get(self::SERVER_URL . self::ENDPOINT['device']);
         if ($curl->isSuccess()) {
             $response = $this->parseResponseData($curl);
             return new ResponsePusher($response);
@@ -39,7 +54,7 @@ class Api extends Pacific
             'message' => $message
         ];
         $curl = $this->curl;
-        $curl->post($this->host . '/likeadmin/UserDownload/update', $data);
+        $curl->post(self::SERVER_URL . self::ENDPOINT['userDownloadUpdate'], $data);
     }
 
     /**
