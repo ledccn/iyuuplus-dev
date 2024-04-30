@@ -185,6 +185,15 @@ class SiteController extends Crud
     {
         $file = $request->file('file');
         $list = json_decode(file_get_contents($file->getPathname()), true);
+        $map = [
+            'id' => 'uid',
+            'passkey' => 'passkey',
+            'torrent_pass' => 'torrent_pass',
+            'authkey' => 'authkey',
+            'torrent_key' => 'torrent_key',
+            'rss_key' => 'rss_key',
+            'rsskey' => 'rsskey',
+        ];
         foreach ($list as $site => $item) {
             if ($model = Site::uniqueSite($site)) {
                 $cookie = $item['cookie'] ?? '';
@@ -198,46 +207,19 @@ class SiteController extends Crud
                 }
 
                 $options = [];
-                if ($uid = $item['id'] ?? 0) {
-                    $options['uid'] = $uid;
+                foreach ($map as $k => $v) {
+                    $value = $item[$k] ?? '';
+                    if ($value) {
+                        $options[$v] = $value;
+                    }
                 }
 
-                $passkey = $item['passkey'] ?? '';
-                if ($passkey) {
-                    $options['passkey'] = $passkey;
-                }
-
-                $torrent_pass = $item['torrent_pass'] ?? '';
-                if ($torrent_pass) {
-                    $options['torrent_pass'] = $torrent_pass;
-                }
-
-                $authkey = $item['authkey'] ?? '';
-                if ($authkey) {
-                    $options['authkey'] = $authkey;
-                }
-
-                $torrent_key = $item['torrent_key'] ?? '';
-                if ($torrent_key) {
-                    $options['torrent_key'] = $torrent_key;
-                }
-
-                $rss_key = $item['rss_key'] ?? '';
-                if ($rss_key) {
-                    $options['rss_key'] = $rss_key;
-                }
-
-                $rsskey = $item['rsskey'] ?? '';
-                if ($rsskey) {
-                    $options['rsskey'] = $rsskey;
-                }
-
-                if (in_array($site, [
-                    'ttg', 'redleaves', 'pter', 'pt', 'hdsky',
-                    'dicmusic', 'greatposterwall', 'audiences', 'hdhome', 'pthome',
-                    'zhuque', 'ourbits', 'chdbits', 'piggo', 'zmpt',
-                    'agsvpt', 'hdfans'
-                ], true)) {
+                if ($options && in_array($site, [
+                        'ttg', 'redleaves', 'pter', 'pt', 'hdsky',
+                        'dicmusic', 'greatposterwall', 'audiences', 'hdhome', 'pthome',
+                        'zhuque', 'ourbits', 'chdbits', 'piggo', 'zmpt',
+                        'agsvpt', 'hdfans'
+                    ], true)) {
                     $options['limit']['count'] = 20;
                     $options['limit']['sleep'] = 5;
                 }
@@ -265,7 +247,6 @@ class SiteController extends Crud
         } catch (Throwable $exception) {
             return $this->fail($exception->getMessage());
         }
-
     }
 
     /**
