@@ -112,6 +112,12 @@ class ReseedTemplate extends CrontabAbstract
         $markerTag = DownloaderMarkerEnums::Tag->value;
         $markerCategory = DownloaderMarkerEnums::Category->value;
         return PHP_EOL . <<<EOF
+<style>
+.layui-input-wrap {
+    width: 60px !important;
+    line-height: 20px !important;
+}
+</style>
 <div class="layui-form-item layui-hide">
     <label class="layui-form-label required">命令名称</label>
     <div class="layui-input-block">
@@ -139,6 +145,13 @@ class ReseedTemplate extends CrontabAbstract
         <input type="radio" name="parameter[marker]" value="$markerCategory" title="标记分类">
     </div>
     <div class="layui-form-mid layui-text-em">辅种成功后，对种子做标记（需要下载器支持）</div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">自动校验</label>
+    <div class="layui-input-inline layui-input-wrap">
+        <input type="checkbox" name="parameter[auto_check]" lay-skin="switch" title="ON|OFF" lay-filter="auto_check" id="auto_check">
+    </div>
+    <div class="layui-form-mid layui-text-em">此功能在TR以及低版本QB中属于默认行为，是否勾选都会自动校验</div>
 </div>
 <!-- 辅种站点模板 -->
 <script type="text/html" id="sites_tpl">

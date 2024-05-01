@@ -3,6 +3,7 @@
 namespace app\model\payload;
 
 use app\model\enums\DownloaderMarkerEnums;
+use Iyuu\BittorrentClient\Utils;
 
 /**
  * 自动辅种表payload有效载荷对象
@@ -14,6 +15,12 @@ class ReseedPayload
      * @var string
      */
     public string $marker = DownloaderMarkerEnums::Empty->value;
+
+    /**
+     * 自动校验
+     * @var string
+     */
+    public string $auto_check = '';
 
     /**
      * @param string|null $payload
@@ -31,12 +38,12 @@ class ReseedPayload
     }
 
     /**
-     * 获取下载器标记规则枚举值
-     * @return string
+     * 判断是否自动校验
+     * @return bool
      */
-    public function getMarker(): string
+    public function isAutoCheck(): bool
     {
-        return $this->marker;
+        return Utils::booleanParse($this->auto_check);
     }
 
     /**

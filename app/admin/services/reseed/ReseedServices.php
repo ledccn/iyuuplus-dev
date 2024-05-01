@@ -47,6 +47,11 @@ class ReseedServices
      */
     protected DownloaderMarkerEnums $downloaderMarkerEnums;
     /**
+     * 计划任务：自动校验
+     * @var string
+     */
+    protected string $auto_check = '';
+    /**
      * 辅种完毕后的通知数据
      * @var NotifyData
      */
@@ -76,7 +81,7 @@ class ReseedServices
         if (empty($this->token)) {
             throw new InvalidArgumentException('缺少IYUU_TOKEN');
         }
-        [$this->crontabModel, $this->crontabSites, $this->crontabClients, $this->downloaderMarkerEnums] = $this->parseCrontab($crontab_id);
+        $this->parseCrontab($crontab_id);
         $this->notifyData = new NotifyData(Site::count(), count($this->crontabSites));
     }
 
@@ -220,6 +225,7 @@ class ReseedServices
                 // 有效载荷
                 $reseedPayload = new ReseedPayload();
                 $reseedPayload->marker = $this->downloaderMarkerEnums->value;
+                $reseedPayload->auto_check = $this->auto_check;
 
                 $attributes = [
                     'client_id' => $this->clientModel->id,
@@ -274,9 +280,8 @@ class ReseedServices
     /**
      * 解析任务
      * @param int $crontab_id
-     * @return array
      */
-    private function parseCrontab(int $crontab_id): array
+    private function parseCrontab(int $crontab_id): void
     {
         $crontabModel = Crontab::find($crontab_id);
         if (!$crontabModel) {
@@ -290,6 +295,12 @@ class ReseedServices
         $sites = $parameter['sites'];
         $clients = $parameter['clients'];
         $marker = DownloaderMarkerEnums::from($parameter['marker'] ?? DownloaderMarkerEnums::Empty->value);
-        return [$crontabModel, $sites, $clients, $marker];
+        $auto_check = $parameter['auto_check'] ?? '';
+
+        $this->crontabModel = $crontabModel;
+        $this->crontabSites = $sites;
+        $this->crontabClients = $clients;
+        $this->downloaderMarkerEnums = $marker;
+        $this->auto_check = $auto_check;
     }
 }

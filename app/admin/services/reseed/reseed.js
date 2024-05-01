@@ -81,6 +81,9 @@ update_render_callable.push(
                                     $(this).prop('checked', $(this).val() === parameter['marker']);
                                 });
                             }
+
+                            // 自动校验
+                            $('#auto_check').attr("checked", Boolean(parameter['auto_check']));
                         }
                         form.render();
                     });

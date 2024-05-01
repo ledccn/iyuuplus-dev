@@ -136,6 +136,7 @@ class ReseedDownloadServices
             $contractsTorrent->savePath = $reseed->directory;
 
             // 调度事件：把种子发送给下载器之前
+            $step = '4.调度事件，种子发送给下载器之前';
             self::sendBefore($contractsTorrent, $bittorrentClients, $clientModel, $reseed);
             Event::dispatch('reseed.torrent.send.before', [$contractsTorrent, $bittorrentClients, $clientModel, $reseed]);
 
@@ -144,7 +145,7 @@ class ReseedDownloadServices
             // 调度事件：把种子发送给下载器之后
             self::sendAfter($result, $bittorrentClients, $clientModel, $reseed);
             Event::dispatch('reseed.torrent.send.after', [$result, $bittorrentClients, $clientModel, $reseed]);
-            $step = '4.调度事件，种子发送给下载器之后';
+            $step = '5.调度事件，种子发送给下载器之后';
 
             // 更新模型数据
             $reseed->message = $step . ' ' . (is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE));
@@ -209,12 +210,15 @@ class ReseedDownloadServices
             switch ($clientModel->getClientEnums()) {
                 case ClientEnums::qBittorrent:
                     if (is_string($result) && str_contains(strtolower($result), 'ok')) {
-                        // 发送校验命令
                         /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $bittorrentClients */
-                        $bittorrentClients->recheck($reseed->info_hash);
                         // 标记标签 2024年4月25日
                         if (DownloaderMarkerEnums::Tag === $markerEnum) {
                             $bittorrentClients->torrentRemoveTags($reseed->info_hash, 'IYUU' . ReseedSubtypeEnums::text($reseed->getSubtypeEnums()));
+                        }
+
+                        // 发送校验命令
+                        if ($reseedPayload->isAutoCheck()) {
+                            $bittorrentClients->recheck($reseed->info_hash);
                         }
                     }
                     break;
