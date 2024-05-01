@@ -114,6 +114,7 @@ class ReseedDownloadServices
      */
     public static function sendDownloader(Reseed $reseed, int $limitSleep = 0): bool
     {
+        $step = '';
         try {
             $torrent = new Torrent([
                 'site' => $reseed->site,
@@ -122,9 +123,12 @@ class ReseedDownloadServices
                 'torrent_id' => $reseed->torrent_id,
                 'group_id' => $reseed->group_id,
             ]);
+            $step = '1.准备下载种子';
             $response = Helper::download($torrent);
+            $step = '2.种子下载成功';
             // 调度事件：下载种子之后
             Event::dispatch('reseed.torrent.download.after', [$response, $reseed]);
+            $step = '3.调度事件，下载种子后';
 
             $clientModel = ClientServices::getClient($reseed->client_id);
             $bittorrentClients = ClientServices::createBittorrent($clientModel);
@@ -140,15 +144,16 @@ class ReseedDownloadServices
             // 调度事件：把种子发送给下载器之后
             self::sendAfter($result, $bittorrentClients, $clientModel, $reseed);
             Event::dispatch('reseed.torrent.send.after', [$result, $bittorrentClients, $clientModel, $reseed]);
+            $step = '4.调度事件，种子发送给下载器之后';
 
             // 更新模型数据
-            $reseed->message = is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE);
+            $reseed->message = $step . ' ' . (is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE));
             $reseed->status = ReseedStatusEnums::Success->value;
             $reseed->save();
 
             return true;
         } catch (Error|Exception|Throwable $throwable) {
-            $reseed->message = $throwable->getMessage();
+            $reseed->message = $step . ' ' . $throwable->getMessage();
             $reseed->status = ReseedStatusEnums::Fail->value;
             $reseed->save();
         } finally {
