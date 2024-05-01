@@ -69,6 +69,9 @@ class SiteObserver
      */
     public function saving(Site $model): void
     {
+        if ($model->mirror && false === filter_var($model->mirror, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            throw new \InvalidArgumentException('镜像域名格式错误');
+        }
     }
 
     /**
