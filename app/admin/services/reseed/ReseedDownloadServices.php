@@ -148,7 +148,7 @@ class ReseedDownloadServices
             $step = '5.调度事件，种子发送给下载器之后';
 
             // 更新模型数据
-            $reseed->message = $step . ' ' . (is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE));
+            $reseed->message = is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE);
             $reseed->status = ReseedStatusEnums::Success->value;
             $reseed->save();
 
