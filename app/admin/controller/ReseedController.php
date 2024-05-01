@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\HasDelete;
+use app\model\enums\ReseedStatusEnums;
 use app\model\Reseed;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
@@ -65,5 +66,22 @@ class ReseedController extends Crud
             return parent::update($request);
         }
         return view('reseed/update');
+    }
+
+    /**
+     * 刷新辅种
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function refresh(Request $request): Response
+    {
+        $request->isPost();
+        if (!Reseed::getStatusEqFail()->count()) {
+            return $this->fail('没有失败的种子，无需刷新');
+        }
+
+        Reseed::getStatusEqFail()->update(['status' => ReseedStatusEnums::Default->value]);
+        return $this->success();
     }
 }

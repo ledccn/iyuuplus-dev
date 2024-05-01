@@ -98,6 +98,15 @@ class Reseed extends Base
     }
 
     /**
+     * 构造器：获取状态等于失败的
+     * @return Builder
+     */
+    public static function getStatusEqFail(): Builder
+    {
+        return static::where('status', '=', ReseedStatusEnums::Fail->value);
+    }
+
+    /**
      * 依据client_id批量删除数据
      * @param int $client_id
      * @return int
