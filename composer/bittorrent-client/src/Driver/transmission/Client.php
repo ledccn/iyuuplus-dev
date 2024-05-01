@@ -24,6 +24,8 @@ class Client extends Clients
      */
     protected function initialize(): void
     {
+        $this->curl->setHeader('Referer', $this->getConfig()->getHostname() . '/transmission/web/');
+        $this->curl->setXRequestedWith();
     }
 
     /**
