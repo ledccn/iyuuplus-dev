@@ -87,13 +87,13 @@
                                         <label class="layui-form-label">用户名</label>
                                         <div class="layui-input-block">
                                             <input type="text" placeholder="请填写入用户名" name="username"
-                                                   class="layui-input" lay-verify="required" required/>
+                                                   class="layui-input" lay-verify="required|username" required/>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">密码</label>
                                         <div class="layui-input-block">
-                                            <input type="password" placeholder="请填写入密码" name="password"
+                                            <input type="password" required  lay-verify="required|password" placeholder="请填写入密码" name="password"
                                                    class="layui-input"/>
                                         </div>
                                     </div>
@@ -153,7 +153,11 @@
         var $ = layui.$,
             form = layui.form,
             step = layui.step;
+        layui.form.verify({
+            username: [/^(?!.*(admin|root|iyuu|password|user|guest)).{4,16}$/, "用户名不能包含admin、root、iyuu、password、user或guest，且长度必须在4到16位之间"],
+            password: [/^(?!.*(min|ssword))(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d])[^\\]{8,}$/, "密码必须至少包含一个小写字母、一个大写字母、一个数字和一个非字母和数字的字符，并且密码长度至少为 8 个字符"],
 
+        });
         layui.code();
 
         step.render({

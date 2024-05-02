@@ -72,7 +72,7 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">新密码</label>
                                 <div class="layui-input-block">
-                                    <input type="password" name="password" required  lay-verify="required" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+                                    <input type="password" name="password" required  lay-verify="required|password" placeholder="请输入新密码" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -110,6 +110,9 @@
             layui.use(["form", "popup"], function () {
                 let form = layui.form;
                 let $ = layui.$;
+                layui.form.verify({
+                    password: [/^(?!.*(min|ssword))(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d])[^\\]{8,}$/, "密码必须至少包含一个小写字母、一个大写字母、一个数字和一个非字母和数字的字符，并且密码长度至少为 8 个字符"],
+                });
                 $.ajax({
                     url: "/app/admin/account/info",
                     dataType: "json",
