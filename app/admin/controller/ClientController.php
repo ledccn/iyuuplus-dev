@@ -2,21 +2,14 @@
 
 namespace app\admin\controller;
 
-use app\admin\services\client\ClientServices;
-use app\admin\services\download\DownloaderServices;
-use app\admin\services\download\PacificUtil;
 use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\model\Client;
-use Iyuu\PacificSdk\Api;
-use Ledc\Container\App;
 use plugin\admin\app\common\Auth;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
-use support\Log;
 use support\Request;
 use support\Response;
-use Throwable;
 
 /**
  * 下载器设置
@@ -96,41 +89,6 @@ class ClientController extends Crud
             return $this->json(0);
         }
         return view('client/save');
-    }
-
-    /**
-     * 下载
-     * @param Request $request
-     * @return Response
-     */
-    public function download(Request $request): Response
-    {
-        if ($request->method() === 'POST') {
-            $payload = $request->post('payload', '');
-            if (empty($payload) || !is_array($payload)) {
-                return $this->fail('入口参数错误');
-            }
-
-            /** @var Api $pacificSdk */
-            $pacificSdk = App::pull(Api::class, PacificUtil::getConfig());
-            /** @var DownloaderServices $downloadServices */
-            $downloadServices = App::pull(DownloaderServices::class);
-
-            try {
-                $response = $downloadServices->download($payload['torrent']);
-                $model = ClientServices::getDefaultClient();
-                $result = ClientServices::sendClientDownloader($response, $model);
-                Log::info(__METHOD__ . ' | 下载成功' . PHP_EOL . json_encode($payload, JSON_UNESCAPED_UNICODE));
-                $pacificSdk->update($payload['id'], 3, is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_UNICODE));
-                return $this->success('下载成功');
-            } catch (Throwable $throwable) {
-                Log::error(__METHOD__ . ' | ' . $throwable->getMessage() . PHP_EOL . json_encode($payload, JSON_UNESCAPED_UNICODE));
-                $pacificSdk->update($payload['id'], 2, $throwable->getMessage());
-                return $this->fail($throwable->getMessage());
-            }
-        }
-
-        return $this->fail('仅支持POST请求');
     }
 
     /**

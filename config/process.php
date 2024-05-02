@@ -41,4 +41,12 @@ return [
         'handler' => process\ReseedProcess::class,
         'constructor' => [],
     ],
+    // 视听云
+    'cloud' => [
+        'handler' => process\MovieProcess::class,
+        'constructor' => [
+            'token' => getenv('CLOUD_ACCESS_TOKEN') ?: '',
+            'debug' => (bool)getenv('CLOUD_DEBUG'),
+        ],
+    ],
 ];

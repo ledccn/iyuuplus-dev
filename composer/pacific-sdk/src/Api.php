@@ -40,6 +40,33 @@ class Api extends Pacific
     }
 
     /**
+     * 鉴权
+     * @param int $uid
+     * @param string $socket_id
+     * @return string
+     */
+    public function pushAuth(int $uid, string $socket_id): string
+    {
+        $curl = $this->curl;
+        $curl->post(self::SERVER_URL . self::ENDPOINT['pushAuth'], ['channel_name' => $this->getChannelName($uid), 'socket_id' => $socket_id]);
+        if ($curl->isSuccess()) {
+            return $curl->response;
+        }
+
+        $this->throwException($curl);
+    }
+
+    /**
+     * 获取频道名称
+     * @param int $uid
+     * @return string
+     */
+    public function getChannelName(int $uid): string
+    {
+        return 'presence-lauser-' . $uid;
+    }
+
+    /**
      * 更新下载状态
      * @param int $id 下载主键
      * @param int $status 状态码：1已调度、2失败、3成功
