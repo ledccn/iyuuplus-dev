@@ -79,6 +79,16 @@ class CrontabObserver
             if ((int)$parameter['from_clients'] === (int)$parameter['to_clients']) {
                 throw new InvalidArgumentException('来源下载器和目标下载器不能相等');
             }
+
+            // 验证过滤器和选择器
+            $path_filter = $parameter['path_filter'] ?? '';
+            $path_selector = $parameter['path_selector'] ?? '';
+            if ($path_filter && $path_selector) {
+                $intersect = array_intersect(explode(',', $path_filter), explode(',', $path_selector));
+                if (!empty($intersect)) {
+                    throw new InvalidArgumentException('过滤器、选择器存在交集，数据目录主键：' . implode(',', $intersect));
+                }
+            }
         }
     }
 
