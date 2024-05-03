@@ -5,6 +5,8 @@ namespace Iyuu\SiteManager\Cookie;
 use Iyuu\SiteManager\BaseCookie;
 use Iyuu\SiteManager\Frameworks\NexusPhp\HasCookie;
 use Iyuu\SiteManager\Spider\Pagination;
+use Iyuu\SiteManager\Utils;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * okpt
@@ -13,16 +15,21 @@ use Iyuu\SiteManager\Spider\Pagination;
 class CookieOkpt extends BaseCookie
 {
     use HasCookie, Pagination;
+
     /**
      * 站点名称
      */
-    public const SITE_NAME = 'okpt';
+    public const string SITE_NAME = 'okpt';
+
     /**
-     * 是否调试当前站点
-     * @return bool
+     * 解析副标题节点值
+     * @param Crawler $node
+     * @return string
      */
-    protected function isDebugCurrent(): bool
+    protected function parseTitleNode(Crawler $node): string
     {
-        return true;
+        $first = $node->filterXPath('//td')->eq(1);
+        $temp = explode('<br>', $first->html());
+        return count($temp) === 2 ? Utils::regexRemove('#.*</span>#ims', $temp[1]) : '';
     }
 }
