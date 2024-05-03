@@ -113,7 +113,7 @@ class ConfigController extends Base
                     break;
                 case 'iyuu_config':
                     $data[$section]['iyuu_token'] = is_iyuu_token($items['iyuu_token']) ? update_env_value('IYUU_TOKEN', $items['iyuu_token']) : '';
-                    $data[$section]['listen_ipv6'] = update_env_value('IYUU_LISTEN_IPV6', empty($items['listen_ipv6']) ? '0' : '1');
+                    $data[$section]['listen_ipv6'] = (bool)update_env_value('IYUU_LISTEN_IPV6', empty($items['listen_ipv6']) ? '0' : '1');
                     $data[$section]['cloud_access_token'] = update_env_value('CLOUD_ACCESS_TOKEN', empty($items['cloud_access_token']) ? '' : $items['cloud_access_token']);
                     $data[$section]['cloud_sn'] = update_env_value('CLOUD_SN', empty($items['cloud_sn']) ? '' : $items['cloud_sn']);
                     break;
