@@ -11,6 +11,7 @@
     .layui-input-block input {
         width: 500px;
     }
+
     .layui-input-wrap {
         width: 60px !important;
         line-height: 20px !important;
@@ -74,20 +75,6 @@
                             <label class="layui-form-label">其它</label>
                             <div class="layui-input-block">
                                 <input type="text" name="footer_txt" placeholder="其它展示在页面底部的内容"
-                                       autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">服务器地址</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="services_url" placeholder="服务器地址"
-                                       autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">用户Token</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="services_token" placeholder="服务器地址"
                                        autocomplete="off" class="layui-input">
                             </div>
                         </div>
@@ -225,7 +212,8 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required">token</label>
                             <div class="layui-input-block">
-                                <input type="password" name="iyuu_token" required  lay-verify="required|token" placeholder="请输入IYUU_TOKEN" autocomplete="off" class="layui-input">
+                                <input type="password" name="iyuu_token" required lay-verify="required|token"
+                                       placeholder="请输入IYUU_TOKEN" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -234,6 +222,25 @@
                                 <input type="checkbox" name="listen_ipv6" id="listen_ipv6" lay-skin="switch"/>
                             </div>
                             <div class="layui-form-mid layui-text-em">变更监听之后需重启容器</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" title="影视设备TOKEN">影视TOKEN</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="cloud_access_token" placeholder="影视设备TOKEN"
+                                       autocomplete="off" class="layui-input" id="cloud_access_token">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label" title="影视用户SN码">影视SN码</label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="cloud_sn" placeholder="请输入影视用户SN码"
+                                           autocomplete="off" class="layui-input" id="cloud_sn">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button type="button" class="layui-btn" lay-on="cloud_sn_bind">绑定</button>
+                            </div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
@@ -259,8 +266,9 @@
 <script src="/app/admin/admin/js/permission.js"></script>
 <script>
 
+    const CLOUD_SERVER = 'https://v.hilx.cn';
     // 基础设置
-    layui.use(["upload", "layer", "popup"], function () {
+    layui.use(["upload", "layer", "popup", "util"], function () {
         let $ = layui.$;
         let form = layui.form;
 
@@ -364,9 +372,62 @@
     });
 
     //爱语飞飞token配置
-    layui.use(["upload", "layer", "popup"], function () {
+    layui.use(["upload", "layer", "popup", "util"], function () {
         let $ = layui.$;
         let form = layui.form;
+        let util = layui.util;
+
+        /**
+         * 设备端绑定用户
+         * @param {string} cloud_access_token
+         * @param {string} cloud_sn
+         * @returns {boolean}
+         */
+        function device_bind(cloud_access_token, cloud_sn) {
+            $.ajax({
+                url: CLOUD_SERVER + "/likeadmin/device/bind",
+                dataType: "json",
+                type: "POST",
+                data: {device_secret: cloud_access_token, sn: cloud_sn},
+                success: function (res) {
+                    if (1 !== res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return layui.popup.success("绑定成功，请点击提交");
+                }
+            });
+            return false;
+        }
+
+        util.on('lay-on', {
+            cloud_sn_bind: function () {
+                let cloud_sn = $('#cloud_sn').val();
+                let cloud_access_token = $('#cloud_access_token').val();
+                if (!cloud_sn) {
+                    return layui.popup.failure('影视SN码不能为空');
+                }
+                if (!cloud_access_token) {
+                    $.ajax({
+                        url: CLOUD_SERVER + "/likeadmin/device/generate",
+                        dataType: "json",
+                        success: function (res) {
+                            if (1 !== res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+
+                            cloud_access_token = res.data.device_secret;
+                            //sessionStorage.setItem('cloud_access_token', cloud_access_token);
+                            $('#cloud_access_token').val(cloud_access_token);
+
+                            return device_bind(cloud_access_token, cloud_sn);
+                        }
+                    });
+                } else {
+                    return device_bind(cloud_access_token, cloud_sn);
+                }
+            },
+        });
+
         layui.form.verify({
             token: [/^IYUU\d+T[a-f0-9]{40}$/, "IYUU_TOKEN格式错误 请重新配置!"],
         });

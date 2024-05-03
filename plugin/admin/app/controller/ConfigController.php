@@ -57,12 +57,11 @@ class ConfigController extends Base
             }
         }
 
-        // 获取环境变量中的IYUU_TOKEN值
-        $iyuuToken = env('IYUU_TOKEN', '');
-
-        // 将获取到的IYUU_TOKEN值添加到配置数组中
+        // 获取环境变量中的值
         $decodedConfig = json_decode($config, true);
-        $decodedConfig['iyuu_config']['iyuu_token'] = $iyuuToken;
+        $decodedConfig['iyuu_config']['iyuu_token'] = env('IYUU_TOKEN', '');
+        $decodedConfig['iyuu_config']['cloud_access_token'] = getenv('CLOUD_ACCESS_TOKEN') ?: '';
+        $decodedConfig['iyuu_config']['cloud_sn'] = getenv('CLOUD_SN') ?: '';
 
         // 更新配置数组
         $config = json_encode($decodedConfig);
@@ -92,8 +91,6 @@ class ConfigController extends Base
                     $data[$section]['icp'] = htmlspecialchars($items['icp'] ?? '');
                     $data[$section]['beian'] = htmlspecialchars($items['beian'] ?? '');
                     $data[$section]['footer_txt'] = htmlspecialchars($items['footer_txt'] ?? '');
-                    $data[$section]['services_url'] = htmlspecialchars($items['services_url'] ?? '');
-                    $data[$section]['services_token'] = htmlspecialchars($items['services_token'] ?? '');
                     break;
                 case 'menu':
                     $data[$section]['data'] = Util::filterUrlPath($items['data'] ?? '');
@@ -115,8 +112,10 @@ class ConfigController extends Base
                     $data[$section]['index']['title'] = htmlspecialchars($items['index']['title'] ?? '首页');
                     break;
                 case 'iyuu_config':
-                    $data[$section]['iyuu_token'] = is_iyuu_token($items['iyuu_token']) ? update_git_EnvValue('IYUU_TOKEN', $items['iyuu_token']) : '';
-                    $data[$section]['listen_ipv6'] = update_git_EnvValue('IYUU_LISTEN_IPV6', empty($items['listen_ipv6']) ? '0' : '1');
+                    $data[$section]['iyuu_token'] = is_iyuu_token($items['iyuu_token']) ? update_env_value('IYUU_TOKEN', $items['iyuu_token']) : '';
+                    $data[$section]['listen_ipv6'] = update_env_value('IYUU_LISTEN_IPV6', empty($items['listen_ipv6']) ? '0' : '1');
+                    $data[$section]['cloud_access_token'] = update_env_value('CLOUD_ACCESS_TOKEN', empty($items['cloud_access_token']) ? '' : $items['cloud_access_token']);
+                    $data[$section]['cloud_sn'] = update_env_value('CLOUD_SN', empty($items['cloud_sn']) ? '' : $items['cloud_sn']);
                     break;
                 case 'theme':
                     $data[$section]['defaultColor'] = Util::filterNum($items['defaultColor'] ?? '2');

@@ -138,7 +138,7 @@ class MovieProcess
                 case 'pusher_internal:subscription_succeeded':
                     $channel = $result['channel'];
                     if ($this->api->getChannelName($this->response->uid) === $channel) {
-                        echo '设备上线成功！' . PHP_EOL;
+                        echo date('Y-m-d H:i:s') . ' 设备上线成功！' . PHP_EOL;
                     }
                     break;
                 // pong事件
@@ -154,6 +154,7 @@ class MovieProcess
             }
         };
         $connection->onClose = function (AsyncTcpConnection $connection) {
+            echo date('Y-m-d H:i:s') . ' 设备离线！' . PHP_EOL;
             $this->connection->reconnect(3);
         };
         $connection->onError = function (AsyncTcpConnection $connection, $code, $msg) {

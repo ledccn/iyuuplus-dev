@@ -150,12 +150,11 @@ function current_git_filemtime(string $branch = 'master', string $format = 'Y-m-
 
 /**
  * 更新 .env 文件中的单个值。
- *
  * @param string $key 要更新的键名
  * @param string $value 新的键值
  * @return string
  */
-function update_git_EnvValue(string $key, string $value): string
+function update_env_value(string $key, string $value): string
 {
     // 读取 .env 文件的内容
     $envFile = base_path('/.env');
@@ -167,7 +166,7 @@ function update_git_EnvValue(string $key, string $value): string
     foreach ($lines as $line) {
         if (str_contains($line, '=')) {
             list($envKey, $envValue) = explode('=', $line, 2);
-            $envData[$envKey] = $envValue;
+            $envData[$envKey] = $envValue ?? '';
         }
     }
 
