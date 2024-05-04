@@ -30,7 +30,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label required">协议主机</label>
                 <div class="layui-input-block">
-                    <input type="text" name="hostname" value="" required lay-verify="required"
+                    <input type="text" name="hostname" value="" required lay-verify="required|url"
                            placeholder="协议主机端口，例：http://192.168.1.2:9091" class="layui-input">
                 </div>
             </div>
@@ -161,7 +161,9 @@
         let $ = layui.$;
         let popup = layui.popup;
         let util = layui.util;
-
+        layui.form.verify({
+            url: [/(^$)|(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, "链接格式不正确"],
+        });
         const client_id = layui.url().search[PRIMARY_KEY] || '';
         const brand = layui.url().search['brand'] || '';
         if (brand) {
