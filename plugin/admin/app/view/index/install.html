@@ -205,22 +205,21 @@
                 return checkPasswordStrength(value);
             },
             password_number: [
-                /.*\d.*$/,
+                /\d/,
                 '密码必须包含至少一个数字'
             ],
             password_letter: [
-                /.*[a-z].*$/,
+                /[a-z]/,
                 '密码必须包含至少一个小写字母'
             ],
             password_uppercase: [
-                /.*[A-Z].*$/,
+                /[A-Z]/,
                 '密码必须包含至少一个大写字母'
             ],
             password_special: [
                 /[^a-zA-Z0-9]/,
                 '密码必须包含至少一个特殊字符'
             ]
-
         });
         layui.code();
 
