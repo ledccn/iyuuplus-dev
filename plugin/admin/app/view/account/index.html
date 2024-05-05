@@ -72,7 +72,7 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">新密码</label>
                                 <div class="layui-input-block">
-                                    <input type="password" name="password" required  lay-verify="required|password" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+                                    <input type="password" name="password" required  lay-verify="password" placeholder="请输入新密码" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -111,8 +111,32 @@
                 let form = layui.form;
                 let $ = layui.$;
                 layui.form.verify({
-                    password: [/^(?!.*(min|ssword))(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d])[^\\]{8,}$/, "密码必须至少包含一个小写字母、一个大写字母、一个数字和一个非字母和数字的字符，并且密码长度至少为 8 个字符"],
+                    password: function(value, item) {
+                        if (value.length < 6) {
+                            return '密码长度不能少于6位';
+                        }
+                        if (/(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/.test(value)) {
+                            return '密码不能包含连续的数字序列';
+                        }
+                    },
+                    password_number: [
+                        /.*\d.*$/,
+                        '密码必须包含至少一个数字'
+                    ],
+                    password_letter: [
+                        /.*[a-z].*$/,
+                        '密码必须包含至少一个小写字母'
+                    ],
+                    password_uppercase: [
+                        /.*[A-Z].*$/,
+                        '密码必须包含至少一个大写字母'
+                    ],
+                    password_special: [
+                        /[^a-zA-Z0-9]/,
+                        '密码必须包含至少一个特殊字符'
+                    ]
                 });
+
                 $.ajax({
                     url: "/app/admin/account/info",
                     dataType: "json",
