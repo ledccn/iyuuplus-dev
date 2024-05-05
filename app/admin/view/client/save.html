@@ -46,7 +46,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label required">用户名</label>
                 <div class="layui-input-block">
-                    <input type="text" name="username" value="" required lay-verify="required|null"
+                    <input type="text" name="username" value="" required lay-verify="required"
                            class="layui-input" autocomplete="off">
                 </div>
             </div>
@@ -55,7 +55,7 @@
                 <label class="layui-form-label required">密码</label>
                 <div class="layui-input-block">
                     <input type="text" name="password" value="" lay-affix="eye" required
-                           lay-verify="required|null"
+                           lay-verify="required"
                            class="layui-input" autocomplete="off">
                 </div>
             </div>
@@ -162,7 +162,6 @@
         let popup = layui.popup;
         let util = layui.util;
         layui.form.verify({
-            null: [/\s/, "不能包含空格"],
             url: [/(^$)|(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, "链接格式不正确"],
         });
         const client_id = layui.url().search[PRIMARY_KEY] || '';
