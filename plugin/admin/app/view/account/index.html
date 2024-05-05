@@ -110,31 +110,48 @@
             layui.use(["form", "popup"], function () {
                 let form = layui.form;
                 let $ = layui.$;
+                function checkPasswordStrength(password) {
+                    const minLength = 8;
+                    const hasLowercase = /[a-z]/;
+                    const hasUppercase = /[A-Z]/;
+                    const hasNumber = /\d/;
+                    const hasSpecialChar = /[\W_]/;
+
+                    // 检查密码长度
+                    if (password.length < minLength) {
+                        return '长度须大于等于8位';
+                    }
+
+                    // 检查是否包含小写字母
+                    if (!hasLowercase.test(password)) {
+                        return '密码须包含小写字母';
+                    }
+
+                    // 检查是否包含大写字母
+                    if (!hasUppercase.test(password)) {
+                        return '密码须包含大写字母';
+                    }
+
+                    // 检查是否包含数字
+                    if (!hasNumber.test(password)) {
+                        return '密码须包含数字';
+                    }
+
+                    // 检查是否包含特殊字符
+                    if (!hasSpecialChar.test(password)) {
+                        return '密码须包含特殊字符';
+                    }
+
+                    // 密码符合强度要求
+                    //return true;
+                }
                 layui.form.verify({
-                    password: function(value, item) {
-                        if (value.length < 6) {
-                            return '密码长度不能少于6位';
-                        }
+                    password: function (value, item) {
                         if (/(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/.test(value)) {
                             return '密码不能包含连续的数字序列';
                         }
-                    },
-                    password_number: [
-                        /.*\d.*$/,
-                        '密码必须包含至少一个数字'
-                    ],
-                    password_letter: [
-                        /.*[a-z].*$/,
-                        '密码必须包含至少一个小写字母'
-                    ],
-                    password_uppercase: [
-                        /.*[A-Z].*$/,
-                        '密码必须包含至少一个大写字母'
-                    ],
-                    password_special: [
-                        /[^a-zA-Z0-9]/,
-                        '密码必须包含至少一个特殊字符'
-                    ]
+                        return checkPasswordStrength(value);
+                    }
                 });
 
                 $.ajax({
