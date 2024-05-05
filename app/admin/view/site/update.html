@@ -177,6 +177,11 @@
     layui.use(["form", "popup"], function () {
         // 字段验证允许为空
         layui.form.verify({
+            limit_sleep: function (value, elem) {
+                if (60 < value) {
+                    return '不能超过最大值60';
+                }
+            },
             phone: [/(^$)|^1\d{10}$/, "请输入正确的手机号"],
             email: [/(^$)|^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/, "邮箱格式不正确"],
             url: [/(^$)|(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, "链接格式不正确"],
