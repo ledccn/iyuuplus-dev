@@ -94,7 +94,7 @@
                                         <label class="layui-form-label">密码</label>
                                         <div class="layui-input-block">
                                             <input type="password" required lay-verify="password"
-                                                   placeholder="请填写入密码" name="password"
+                                                   placeholder="请填写入密码" name="required|password"
                                                    class="layui-input"/>
                                         </div>
                                     </div>
@@ -154,15 +154,55 @@
         var $ = layui.$,
             form = layui.form,
             step = layui.step;
+
+        /**
+         * 检查密码强度
+         * @param {string} password
+         */
+        function checkPasswordStrength(password) {
+            const minLength = 8;
+            const hasLowercase = /[a-z]/;
+            const hasUppercase = /[A-Z]/;
+            const hasNumber = /\d/;
+            const hasSpecialChar = /[\W_]/;
+
+            // 检查密码长度
+            if (password.length < minLength) {
+                return '长度须大于等于8位';
+            }
+
+            // 检查是否包含小写字母
+            if (!hasLowercase.test(password)) {
+                return '密码须包含小写字母';
+            }
+
+            // 检查是否包含大写字母
+            if (!hasUppercase.test(password)) {
+                return '密码须包含大写字母';
+            }
+
+            // 检查是否包含数字
+            if (!hasNumber.test(password)) {
+                return '密码须包含数字';
+            }
+
+            // 检查是否包含特殊字符
+            if (!hasSpecialChar.test(password)) {
+                return '密码须包含特殊字符';
+            }
+
+            // 密码符合强度要求
+            //return true;
+        }
+
         layui.form.verify({
             username: [/^(?!.*(admin|root|iyuu|password|user|guest)).{4,16}$/, "用户名不能包含admin、root、iyuu、password、user或guest，且长度必须在4到16位之间"],
-            password: function(value, item) {
-                if (value.length < 6) {
-                    return '密码长度不能少于6位';
-                }
+            password: function (value, item) {
                 if (/(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/.test(value)) {
                     return '密码不能包含连续的数字序列';
                 }
+
+                return checkPasswordStrength(value);
             },
             password_number: [
                 /.*\d.*$/,
