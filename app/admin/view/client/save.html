@@ -36,12 +36,16 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label required">接入点</label>
+                <label class="layui-form-label required">接入点
+                    <a href="https://doc.iyuu.cn/guide/downloader#接入点" target="_blank" rel="noopener noreferrer">
+                        <i class="layui-icon layui-icon-help layui-font-red"></i>
+                    </a>
+                </label>
                 <div class="layui-input-block">
-                    <input type="text" name="endpoint" value="" required lay-verify="required" class="layui-input"
-                           id="endpoint">
+                    <input type="text" name="endpoint" value="" required lay-verify="required" class="layui-input" id="endpoint">
                 </div>
             </div>
+
 
             <div class="layui-form-item">
                 <label class="layui-form-label required">用户名</label>
@@ -66,7 +70,9 @@
                     <input type="text" name="watch_path" value="" class="layui-input"
                            placeholder="通过放入.torrent创建任务">
                     <div class="layui-input-suffix">
-                        <i class="layui-icon layui-icon-help layui-font-red"></i>
+                        <a href="https://doc.iyuu.cn/guide/downloader#监控文件夹" target="_blank" rel="noopener noreferrer">
+                            <i class="layui-icon layui-icon-help layui-font-red"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -76,7 +82,9 @@
                 <div class="layui-input-group">
                     <input type="text" name="save_path" value="" class="layui-input" placeholder="即保存路径、保存目录">
                     <div class="layui-input-suffix">
-                        <i class="layui-icon layui-icon-help layui-font-red"></i>
+                        <a href="https://doc.iyuu.cn/guide/transfer-torrent#资源文件夹" target="_blank" rel="noopener noreferrer">
+                            <i class="layui-icon layui-icon-help layui-font-red"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -87,7 +95,9 @@
                     <input type="text" name="torrent_path" value="" class="layui-input"
                            placeholder=".torrent存放的目录">
                     <div class="layui-input-suffix">
-                        <i class="layui-icon layui-icon-help layui-font-red"></i>
+                        <a href="https://doc.iyuu.cn/guide/transfer-torrent#种子文件夹" target="_blank" rel="noopener noreferrer">
+                            <i class="layui-icon layui-icon-help layui-font-red"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -130,6 +140,7 @@
 
     <div class="bottom">
         <div class="button-container">
+            <button class="layui-icon layui-icon-help" id="helpButton"></button>
             <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
                     lay-filter="save">
                 提交
@@ -146,6 +157,11 @@
 <script src="/app/admin/component/pear/pear.js"></script>
 <script src="/app/admin/admin/js/permission.js"></script>
 <script>
+    // 点击帮助按钮跳转到新页面
+    document.getElementById("helpButton").addEventListener("click", function() {
+        var helpPageUrl = "https://doc.iyuu.cn/guide/downloader";
+        window.open(helpPageUrl, "_blank");
+    });
     /**
      * 帮助
      * @type {{qq_qun: string}}
