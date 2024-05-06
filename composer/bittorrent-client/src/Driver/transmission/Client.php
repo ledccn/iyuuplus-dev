@@ -95,7 +95,7 @@ class Client extends Clients
             throw new NotFoundException("下载器无响应" . PHP_EOL);
         }
         if (empty($res['arguments']['torrents'])) {
-            throw new NotFoundException("种子数据为空" . PHP_EOL);
+            throw new NotFoundException("下载器种子数据为空" . PHP_EOL);
         }
         $res = $res['arguments']['torrents'];
         // 过滤，只保留正常做种
@@ -104,7 +104,7 @@ class Client extends Clients
         });
 
         if (empty($res)) {
-            throw new NotFoundException("未获取到做种数据" . PHP_EOL);
+            throw new NotFoundException("从下载器未获取到做种数据" . PHP_EOL);
         }
         // 提取数组：hashString
         $info_hash = array_column($res, 'hashString');

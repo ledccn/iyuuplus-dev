@@ -15,6 +15,7 @@ use Iyuu\BittorrentClient\Clients;
 use Ledc\Curl\Curl;
 use plugin\cron\app\model\Crontab;
 use RuntimeException;
+use Throwable;
 use Webman\Event\Event;
 
 /**
@@ -98,7 +99,13 @@ class ReseedServices
 
             echo "正在从 {$this->clientModel->title} 下载器获取当前做种hash..." . PHP_EOL;
 
-            $torrentList = $this->bittorrentClient->getTorrentList();
+            try {
+                $torrentList = $this->bittorrentClient->getTorrentList();
+            } catch (Throwable $throwable) {
+                echo $throwable->getMessage() . PHP_EOL;
+                continue;
+            }
+
             $hashDict = $torrentList['hashString'];   // 哈希目录字典
             $total = count($hashDict);
 

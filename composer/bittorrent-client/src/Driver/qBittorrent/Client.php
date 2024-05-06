@@ -4,6 +4,7 @@ namespace Iyuu\BittorrentClient\Driver\qBittorrent;
 
 use Iyuu\BittorrentClient\Clients;
 use Iyuu\BittorrentClient\Contracts\Torrent;
+use Iyuu\BittorrentClient\Exception\NotFoundException;
 use Iyuu\BittorrentClient\Exception\ServerErrorException;
 use RuntimeException;
 
@@ -668,15 +669,14 @@ class Client extends Clients
     /**
      * 抽象方法，子类实现
      * @return array
-     * @throws ServerErrorException
+     * @throws ServerErrorException|NotFoundException
      */
     public function getTorrentList(): array
     {
         $result = $this->getData('torrent_list');
         $res = json_decode($result, true);
         if (empty($res)) {
-            echo "获取种子列表失败，可能qBittorrent暂时无响应，请稍后重试！" . PHP_EOL;
-            return array();
+            throw new NotFoundException("从下载器获取种子列表失败，可能qBittorrent暂时无响应，请稍后重试！" . PHP_EOL);
         }
         // 过滤，只保留正常做种
         $res = array_filter($res, function ($v) {
@@ -687,8 +687,7 @@ class Client extends Clients
         }, ARRAY_FILTER_USE_BOTH);
 
         if (empty($res)) {
-            echo "未获取到正常做种数据，请多保种，然后重试！" . PHP_EOL;
-            return array();
+            throw new NotFoundException("从下载器未获取到做种数据" . PHP_EOL);
         }
         // 提取数组：hashString
         $info_hash = array_column($res, 'hash');
