@@ -14,7 +14,7 @@ class NotifyAdmin
     /**
      * 频道名称
      */
-    const CHANNEL_NAME = 'private-webman-admin';
+    const string CHANNEL_NAME = 'private-webman-admin';
 
     /**
      * @param string $name
