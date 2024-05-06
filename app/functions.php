@@ -27,21 +27,20 @@ function iyuu_token(): string
 function iyuu_version(): string
 {
     clearstatcache();
-    $version_file = base_path('.version');
-    if (is_file($version_file)) {
-        return trim(file_get_contents($version_file));
-    }
 
-    $version = '8.1.0';
-    $dir = base_path() . '/.git/refs/tags';
+    $version_file = base_path('.version');
+    $version = trim(file_get_contents($version_file));
+    $dir = base_path() . '/.git/refs';
     if (!is_dir($dir)) {
         return $version;
     }
 
-    foreach (glob($dir . '/v*') as $tag_file) {
-        $offset = strripos($tag_file, 'v');
-        if (false !== $offset) {
-            $tag_version = substr($tag_file, $offset + 1);
+    $process = new Symfony\Component\Process\Process(['git', 'tag'], base_path(), null, null, 5);
+    $process->run();
+    $tags = explode("\n", $process->getOutput());
+    foreach ($tags as $tag) {
+        if (str_starts_with($tag, 'v')) {
+            $tag_version = trim(substr($tag, 1));
             if (version_compare($tag_version, $version, '>=')) {
                 $version = $tag_version;
             }
