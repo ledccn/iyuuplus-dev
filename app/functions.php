@@ -26,12 +26,24 @@ function iyuu_token(): string
  */
 function iyuu_version(): string
 {
-    $tagDir = base_path() . '/.git/refs/tags/';
-    $tags = glob($tagDir . '*');
-    if (empty($tags)) {
-        return '8.1.0';
+    clearstatcache();
+    $version = '8.1.0';
+    $dir= base_path() . '/.git/refs/tags';
+    if (!is_dir($dir)) {
+        return $version;
     }
-    return basename(max($tags)) ?? '8.1.0';
+
+    foreach (glob($dir . '/v*') as $tag_file) {
+        $offset = strripos($tag_file, 'v');
+        if (false !== $offset) {
+            $tag_version = substr($tag_file, $offset + 1);
+            if (version_compare($tag_version, $version, '>=')) {
+                $version = $tag_version;
+            }
+        }
+    }
+
+    return $version;
 }
 
 /**
