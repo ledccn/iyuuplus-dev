@@ -89,7 +89,7 @@ class IndexController
 
         return raw_view('index/dashboard', [
             'app_filemtime' => current_git_filemtime(),
-            'app_version' => current_git_commit(),
+            'app_commit_id' => current_git_commit(),
             'iyuu_version' => iyuu_version(),
             'count_value1' => Reseed::count(),
             'count_value2' => Client::count(),

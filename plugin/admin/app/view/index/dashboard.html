@@ -160,8 +160,8 @@
 								</thead>
 								<tbody>
 								<tr>
-									<td>IYUU当前版本</td>
-									<td title="<?=$app_filemtime?>"><?=$iyuu_version?><i class="layui-icon layui-icon-refresh layui-font-green" lay-on="git_pull" title="更新版本" style="padding-left: 5px"></i></td>
+									<td><a href="https://gitee.com/ledc/iyuuplus-dev" target="_blank" rel="noreferrer">IYUU版本</a></td>
+									<td title="<?=$app_filemtime?> <?=$app_commit_id?>"><a href="https://gitee.com/ledc/iyuuplus-dev/tags" target="_blank" rel="noreferrer"><?=$iyuu_version?></a><i class="layui-icon layui-icon-refresh layui-font-green" lay-on="git_pull" title="通过git拉取最新代码" style="padding-left: 5px"></i></td>
 								</tr>
 								<tr>
 									<td>Workerman版本</td>
@@ -190,10 +190,6 @@
 								<tr>
 									<td>Layui</td>
 									<td>v2.8.12</td>
-								</tr>
-								<tr>
-									<td>CommitID</td>
-									<td title="<?=$app_filemtime?>"><?=$app_version?><i class="layui-icon layui-icon-refresh layui-font-green" lay-on="git_pull" title="通过git拉取最新代码" style="padding-left: 5px"></i></td>
 								</tr>
 								</tbody>
 							</table>
