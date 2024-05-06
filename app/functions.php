@@ -35,19 +35,23 @@ function iyuu_version(): string
         return $version;
     }
 
-    $process = new Symfony\Component\Process\Process(['git', 'tag'], base_path(), null, null, 5);
-    $process->run();
-    $tags = explode("\n", $process->getOutput());
-    foreach ($tags as $tag) {
-        if (str_starts_with($tag, 'v')) {
-            $tag_version = trim(substr($tag, 1));
-            if (version_compare($tag_version, $version, '>=')) {
-                $version = $tag_version;
+    try {
+        $process = new Symfony\Component\Process\Process(['git', 'tag'], base_path(), null, null, 5);
+        $process->run();
+        $tags = explode("\n", $process->getOutput());
+        foreach ($tags as $tag) {
+            if (str_starts_with($tag, 'v')) {
+                $tag_version = trim(substr($tag, 1));
+                if (version_compare($tag_version, $version, '>=')) {
+                    $version = $tag_version;
+                }
             }
         }
+    } catch (Error|Exception|Throwable $throwable) {
+        echo '获取IYUU版本号异常：' . $throwable->getMessage() . PHP_EOL;
+    } finally {
+        return $version;
     }
-
-    return $version;
 }
 
 /**
