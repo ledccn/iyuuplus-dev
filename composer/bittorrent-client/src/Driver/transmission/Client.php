@@ -150,7 +150,7 @@ class Client extends Clients
         if ($config->is_debug) {
             var_dump($curl);
         }
-        throw new ServerErrorException('登录失败：' . $curl->error_message);
+        throw new ServerErrorException('下载器登录失败：' . $curl->error_message);
     }
 
     /**

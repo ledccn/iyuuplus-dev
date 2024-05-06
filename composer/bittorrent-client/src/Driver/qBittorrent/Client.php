@@ -263,7 +263,7 @@ class Client extends Clients
     {
         $this->clientUrl = rtrim($this->getConfig()->getClientUrl(), '/');
         if (!$this->login()) {
-            throw new RuntimeException("qBittorrent Unable to authenticate with Web Api.");
+            throw new RuntimeException("下载器登录失败 qBittorrent Unable to authenticate with Web Api.");
         }
     }
 
