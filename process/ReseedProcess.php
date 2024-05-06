@@ -4,6 +4,7 @@ namespace process;
 
 use app\admin\services\reseed\ReseedDownloadServices;
 use app\admin\services\SitesServices;
+use app\admin\support\NotifyAdmin;
 use app\model\Site;
 use Error;
 use Exception;
@@ -47,7 +48,11 @@ class ReseedProcess
             try {
                 $list = Site::getEnabled()->get();
                 $list->each(function (Site $site) {
-                    ReseedDownloadServices::handle($site);
+                    try {
+                        ReseedDownloadServices::handle($site);
+                    } catch (Throwable $throwable) {
+                        NotifyAdmin::warning('ReseedProcess 进程异常：' . $throwable->getMessage() . ' 站点：' . $site->nickname);
+                    }
                 });
             } catch (Error|Exception|Throwable $throwable) {
                 Log::error('ReseedProcess 进程异常：' . $throwable->getMessage());
