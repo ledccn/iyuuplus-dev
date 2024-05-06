@@ -27,8 +27,13 @@ function iyuu_token(): string
 function iyuu_version(): string
 {
     clearstatcache();
+    $version_file = base_path('.version');
+    if (is_file($version_file)) {
+        return trim(file_get_contents($version_file));
+    }
+
     $version = '8.1.0';
-    $dir= base_path() . '/.git/refs/tags';
+    $dir = base_path() . '/.git/refs/tags';
     if (!is_dir($dir)) {
         return $version;
     }
