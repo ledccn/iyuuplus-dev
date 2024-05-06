@@ -27,6 +27,11 @@ IYUU自动辅种工具，目前能对国内大部分的PT站点自动辅种，�
 IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编写的Private Tracker辅种脚本，通过计划任务或常驻内存，按指定频率调用transmission、qBittorrent下载软件的API接口，提取正在做种的info_hash提交到辅种服务器API接口（辅种过程和PT站没有交互），根据API接口返回的数据拼接种子连接，提交给下载器，由下载器主动去站点下载种子、校验、做种，自动辅种各个站点。
 
 
+# 使用文档
+
+[http://doc.iyuu.cn](http://doc.iyuu.cn)
+
+
 ## 运行要求最低PHP版本：v8.3.0
 
 推荐使用最新稳定版
@@ -73,11 +78,6 @@ extension=zip
 国内：https://gitee.com/ledc/iyuuplus-dev/tags
 
 国际：https://github.com/ledccn/iyuuplus-dev/tags
-
-
-# 使用文档
-
-[http://doc.iyuu.cn](http://doc.iyuu.cn)
 
 
 # nginx反向代理配置
