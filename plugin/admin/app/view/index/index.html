@@ -195,7 +195,7 @@
                 dataType: "json",
                 success: function (res) {
                     if (res.code) {
-                        return popup.error(res.msg);
+                        return popup.failure(res.msg);
                     }
                     popup.success("注销成功", function () {
                         location.reload();
