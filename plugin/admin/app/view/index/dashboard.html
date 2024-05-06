@@ -440,10 +440,11 @@
 							url: "/admin/system/pull",
 							dataType: "json",
 							success: function (res) {
+								console.log(res);
 								if (res.code) {
-									return popup.error(res.msg);
+									return layui.popup.failure(res.msg);
 								}
-								popup.success("更新成功", function () {
+								layui.popup.success("更新成功", function () {
 									parent.location.reload();
 								})
 							}
