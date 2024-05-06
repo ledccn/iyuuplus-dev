@@ -26,7 +26,12 @@ function iyuu_token(): string
  */
 function iyuu_version(): string
 {
-    return '8.1.0';
+    $tagDir = base_path() . '/.git/refs/tags/';
+    $tags = glob($tagDir . '*');
+    if (empty($tags)) {
+        return '8.1.0';
+    }
+    return basename(max($tags)) ?? '8.1.0';
 }
 
 /**

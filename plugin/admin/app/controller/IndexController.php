@@ -90,6 +90,7 @@ class IndexController
         return raw_view('index/dashboard', [
             'app_filemtime' => current_git_filemtime(),
             'app_version' => current_git_commit(),
+            'iyuu_version' => iyuu_version(),
             'count_value1' => Reseed::count(),
             'count_value2' => Client::count(),
             'count_value3' => Site::where('disabled', '=', 0)->count(),
