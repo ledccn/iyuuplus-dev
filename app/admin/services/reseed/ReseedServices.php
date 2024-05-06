@@ -82,6 +82,7 @@ class ReseedServices
         if (empty($this->token)) {
             throw new InvalidArgumentException('缺少IYUU_TOKEN');
         }
+        check_iyuu_token($this->token);
         $this->parseCrontab($crontab_id);
         $this->notifyData = new NotifyData(Site::count(), count($this->crontabSites));
     }
