@@ -134,7 +134,7 @@
     const hostname = location.hostname;
     console.log(location);
     <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
-    const WEBSOCKET_PORT = localStorage.getItem('websocket_port') ? ':' + localStorage.getItem('websocket_port') : (location.port ? ':<?=$websocket_port?>' : '');
+    const WEBSOCKET_PORT = localStorage.getItem('websocket_port') ? ':' + localStorage.getItem('websocket_port') : (location.port && location.port !== '8787' ? ':'+location.port : ':<?=$websocket_port?>');
     //接口地址
     const API = {
         push: {
