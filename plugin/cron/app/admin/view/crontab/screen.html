@@ -14,13 +14,16 @@
     const PRIMARY_KEY = "crontab_id";
     const crontab_id = layui.url().search[PRIMARY_KEY] || '';
     const task_type = layui.url().search['task_type'] || '';
+    const hostname = location.hostname;
+    const PROXY_PORT = location.port ? (location.port !== '8787' ? ':' + location.port : ':<?=$websocket_port?>') : '';
+    const WEBSOCKET_PORT = localStorage.getItem('websocket_port') ? ':' + localStorage.getItem('websocket_port') : PROXY_PORT;
     // 终端输出
     let output = [];
     let total = 0;
     <!--新增功能：引入webman/push 2024年3月4日11:40:45 david-->
     //接口地址
     const PUSH_API = {
-        url: (location.protocol === 'http:' ? 'ws://' : 'wss://') + location.hostname + (localStorage.getItem('websocket_port') ? ':' + localStorage.getItem('websocket_port') : (location.port ? ':<?=$websocket_port?>' : '')),
+        url: (location.protocol === 'http:' ? 'ws://' : 'wss://') + hostname + WEBSOCKET_PORT,
         app_key: '<?=$app_key?>',
         auth: '/plugin/webman/push/auth'
     };
