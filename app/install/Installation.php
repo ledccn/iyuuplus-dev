@@ -6,6 +6,7 @@ use plugin\admin\api\Menu;
 use plugin\admin\app\common\Util;
 use plugin\cron\api\Install as CrontabInstall;
 use plugin\email\api\Install as EmailInstall;
+use plugin\netdisk\api\Install as NetDiskInstall;
 use plugin\sms\api\Install as SmsInstall;
 
 /**
@@ -31,6 +32,9 @@ class Installation
             CrontabInstall::install();
             EmailInstall::install();
             SmsInstall::install();
+            if (empty(Util::schema()->hasTable('io_source'))) {
+                NetDiskInstall::install(iyuu_version());
+            }
 
             // 安装数据库
             if (empty(Util::schema()->hasTable('cn_client'))) {
