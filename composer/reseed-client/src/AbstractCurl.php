@@ -2,7 +2,6 @@
 
 namespace Iyuu\ReseedClient;
 
-use Ledc\Container\App;
 use Ledc\Curl\Curl;
 
 /**
@@ -31,7 +30,7 @@ abstract class AbstractCurl
      */
     protected function initCurl(): void
     {
-        $this->curl->setTimeout(8, 8);
+        $this->curl->setTimeout(8, 8)->setSslVerify();
         $this->curl->setHeader('token', $this->token);
     }
 
