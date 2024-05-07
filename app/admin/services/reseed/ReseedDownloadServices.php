@@ -209,7 +209,8 @@ class ReseedDownloadServices
             $markerEnum = $reseedPayload->getMarkerEnum();
             switch ($clientModel->getClientEnums()) {
                 case ClientEnums::qBittorrent:
-                    if (is_string($result) && str_contains(strtolower($result), 'ok')) {
+                    // 仅判断数据类型 str_contains(strtolower($result), 'ok')
+                    if (is_string($result)) {
                         /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $bittorrentClients */
                         // 标记标签 2024年4月25日
                         if (DownloaderMarkerEnums::Tag === $markerEnum) {
