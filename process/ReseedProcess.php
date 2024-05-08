@@ -47,7 +47,7 @@ class ReseedProcess
                 && md5_file($systemNginxConfigPath) !== md5_file($dockerNginxConfigPath)
             ) {
                 if (copy($dockerNginxConfigPath, $systemNginxConfigPath)) {
-                    exec('bash /etc/s6-overlay/s6-rc.d/nginx/finish');
+                    exec('nginx -s reload');
                 }
             }
         }
