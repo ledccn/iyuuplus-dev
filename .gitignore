@@ -1,6 +1,7 @@
 /.idea
 /.vscode
 *.log
+/iyuu_logs
 /.env
 /._.DS_Store
 .DS_Store
