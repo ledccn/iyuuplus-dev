@@ -1,4 +1,4 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
-php /iyuu/start.php stop
+#php /iyuu/start.php stop
