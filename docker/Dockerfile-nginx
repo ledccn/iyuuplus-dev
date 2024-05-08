@@ -90,7 +90,7 @@ RUN set -ex && \
 COPY --chmod=755 ./rootfs ./files /
 
 # 暴露端口
-EXPOSE 80
+EXPOSE 8780
 
 # 文件系统
 VOLUME [ "/iyuu" ]
