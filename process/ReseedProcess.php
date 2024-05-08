@@ -39,15 +39,15 @@ class ReseedProcess
         init_migrate();
 
         if (isDockerEnvironment()) {
-            $systemNginxConfig = file_get_contents('/etc/nginx/nginx.conf');
-            $dockerNginxConfig = file_get_contents('/iyuu/docker/files/etc/nginx/nginx.conf');
+            $systemNginxConfigPath = '/etc/nginx/nginx.conf';
+            $dockerNginxConfigPath = '/iyuu/docker/files/etc/nginx/nginx.conf';
 
-            $systemNginxHash = md5($systemNginxConfig);
-            $dockerNginxHash = md5($dockerNginxConfig);
-
-            if ($systemNginxHash !== $dockerNginxHash) {
-                file_put_contents('/etc/nginx/nginx.conf', $dockerNginxConfig);
-                exec('/etc/s6-overlay/s6-rc.d/nginx/finish');
+            if (file_exists($systemNginxConfigPath) && file_exists($dockerNginxConfigPath)) {
+                if (md5_file($systemNginxConfigPath) !== md5_file($dockerNginxConfigPath)) {
+                    if (copy($dockerNginxConfigPath, $systemNginxConfigPath)) {
+                        exec('/etc/s6-overlay/s6-rc.d/nginx/finish');
+                    }
+                }
             }
         }
 
