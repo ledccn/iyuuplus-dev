@@ -38,15 +38,16 @@ class ReseedProcess
         SitesServices::sync();
         init_migrate();
 
+        // 【兼容性操作】docker s6环境，重写nginx配置 后期统一镜像后可以移除
         if (isDockerEnvironment()) {
             $systemNginxConfigPath = '/etc/nginx/nginx.conf';
             $dockerNginxConfigPath = '/iyuu/docker/files/etc/nginx/nginx.conf';
-
-            if (file_exists($systemNginxConfigPath) && file_exists($dockerNginxConfigPath)) {
-                if (md5_file($systemNginxConfigPath) !== md5_file($dockerNginxConfigPath)) {
-                    if (copy($dockerNginxConfigPath, $systemNginxConfigPath)) {
-                        exec('/etc/s6-overlay/s6-rc.d/nginx/finish');
-                    }
+            if (file_exists($systemNginxConfigPath)
+                && file_exists($dockerNginxConfigPath)
+                && md5_file($systemNginxConfigPath) !== md5_file($dockerNginxConfigPath)
+            ) {
+                if (copy($dockerNginxConfigPath, $systemNginxConfigPath)) {
+                    exec('bash /etc/s6-overlay/s6-rc.d/nginx/finish');
                 }
             }
         }
