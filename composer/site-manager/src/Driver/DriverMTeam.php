@@ -24,7 +24,18 @@ class DriverMTeam extends BaseDriver implements ProcessorXml
     /**
      * 站点名称
      */
-    public const SITE_NAME = 'm-team';
+    public const string SITE_NAME = 'm-team';
+
+    /**
+     * 子类初始化
+     * @return void
+     */
+    protected function initialize(): void
+    {
+        if (empty($this->getConfig()->getOptions('x_api_key'))) {
+            throw new InvalidArgumentException('M-team 缺少 x_api_key 存取令牌');
+        }
+    }
 
     /**
      * 设置Curl的存取令牌
