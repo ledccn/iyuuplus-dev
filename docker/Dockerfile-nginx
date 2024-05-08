@@ -95,5 +95,6 @@ EXPOSE 8780
 # 文件系统
 VOLUME [ "/iyuu" ]
 VOLUME [ "/data" ]
+VOLUME [ "/var/log/nginx"]
 
 ENTRYPOINT ["/init"]
