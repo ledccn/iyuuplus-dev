@@ -38,6 +38,19 @@ class ReseedProcess
         SitesServices::sync();
         init_migrate();
 
+        if (isDockerEnvironment()) {
+            $systemNginxConfig = file_get_contents('/etc/nginx/nginx.conf');
+            $dockerNginxConfig = file_get_contents('/iyuu/docker/files/etc/nginx/nginx.conf');
+
+            $systemNginxHash = md5($systemNginxConfig);
+            $dockerNginxHash = md5($dockerNginxConfig);
+
+            if ($systemNginxHash !== $dockerNginxHash) {
+                file_put_contents('/etc/nginx/nginx.conf', $dockerNginxConfig);
+                exec('/etc/s6-overlay/s6-rc.d/nginx/finish');
+            }
+        }
+
         // 每天执行
         new Crontab('10 10 * * *', function () {
             exec(implode(' ', [PHP_BINARY, base_path('webman'), 'iyuu:backup', 'backup']));
