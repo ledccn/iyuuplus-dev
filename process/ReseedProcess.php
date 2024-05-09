@@ -51,6 +51,25 @@ class ReseedProcess
                 }
             }
         }
+        // 【nginx配置】nginx配置记录访问log保留30天
+        new Crontab('0 0 * * *', function () {
+            // 获取前一天的日期
+            $previousDate = date('Y-m-d', strtotime('-1 day'));
+            // 处理 access.log 文件
+            $accessLogFileName = "/var/log/nginx/access.$previousDate.log";
+            exec("mv /var/log/nginx/access.log $accessLogFileName");
+            exec("gzip $accessLogFileName");
+            // 处理 error.log 文件
+            $errorLogFileName = "/var/log/nginx/error.$previousDate.log";
+            exec("mv /var/log/nginx/error.log $errorLogFileName");
+            exec("gzip $errorLogFileName");
+            // 发送 USR1 信号重新打开日志文件
+            exec('kill -USR1 $(pidof nginx)');
+            // 删除超过30天的日志文件
+            exec("find /var/log/nginx/ -name 'access.*.log.gz' -type f -mtime +30 -delete");
+            exec("find /var/log/nginx/ -name 'error.*.log.gz' -type f -mtime +30 -delete");
+        });
+
 
         // 每天执行
         new Crontab('10 10 * * *', function () {
