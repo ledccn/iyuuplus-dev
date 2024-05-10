@@ -36,9 +36,14 @@ class ReseedProcess
         init_migrate();
 
         // docker s6环境
-        if (isDockerEnvironment()) {
+        if (is_docker_exists_nginx()) {
             // nginx：切割访问log，保留30天
             new Crontab('0 0 * * *', function () {
+                clearstatcache();
+                if (!is_file('/var/log/nginx/access.log')) {
+                    return;
+                }
+
                 // 获取前一天的日期
                 $previousDate = date('Y-m-d', strtotime('-1 day'));
                 // 处理 access.log 文件

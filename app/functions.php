@@ -128,6 +128,19 @@ function isDockerEnvironment(): bool
 }
 
 /**
+ * 检查docker环境是否存在nginx
+ * - 2024年5月10日12:00后 镜像整合nginx
+ * @return bool
+ */
+function is_docker_exists_nginx(): bool
+{
+    clearstatcache();
+    $res1 = is_file('/etc/s6-overlay/s6-rc.d/svc-iyuu/run');
+    $res2 = is_file('/etc/s6-overlay/s6-rc.d/nginx/run');
+    return $res1 && $res2;
+}
+
+/**
  * 开发专用函数，打印变量exit
  * @param mixed $v
  * @param bool $format
