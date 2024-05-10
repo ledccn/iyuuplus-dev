@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: 构建IYUUPlus
+    name: 构建iyuuplus
     env:
       IMAGE_NAME: iyuuplus
     steps:
