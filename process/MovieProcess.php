@@ -188,6 +188,8 @@ class MovieProcess
         } catch (Throwable $throwable) {
             Log::error(__METHOD__ . ' | ' . $throwable->getMessage() . PHP_EOL . json_encode($payload, JSON_UNESCAPED_UNICODE));
             $this->api->update($payload['id'], 2, $throwable->getMessage());
+        } finally {
+            clear_instance_cache();
         }
     }
 

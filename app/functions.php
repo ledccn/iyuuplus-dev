@@ -4,11 +4,33 @@
  * Here is your custom functions.
  */
 
+use Iyuu\BittorrentClient\ClientDownloader;
+use Iyuu\SiteManager\SiteManager;
+use Ledc\Container\App;
 use plugin\admin\app\model\Base;
+use support\Log;
 use support\Model;
 
 if (is_file(runtime_path('Bencode.php'))) {
     require_once runtime_path('Bencode.php');
+}
+
+/**
+ * 清理缓存的驱动实例：防止变更配置后常驻内存未更新
+ * @return void
+ */
+function clear_instance_cache(): void
+{
+    try {
+        /** @var SiteManager $siteManager */
+        $siteManager = App::pull(SiteManager::class);
+        $siteManager->clearDriver();
+        /** @var ClientDownloader $clientDownloader */
+        $clientDownloader = App::pull(ClientDownloader::class);
+        $clientDownloader->clearDriver();
+    } catch (Error|Exception|Throwable $throwable) {
+        Log::error('进程清理缓存驱动实例异常：' . $throwable->getMessage());
+    }
 }
 
 /**

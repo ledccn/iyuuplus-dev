@@ -8,9 +8,6 @@ use app\admin\support\NotifyAdmin;
 use app\model\Site;
 use Error;
 use Exception;
-use Iyuu\BittorrentClient\ClientDownloader;
-use Iyuu\SiteManager\SiteManager;
-use Ledc\Container\App;
 use plugin\cron\api\Install;
 use support\Log;
 use Throwable;
@@ -89,18 +86,8 @@ class ReseedProcess
                 });
             } catch (Error|Exception|Throwable $throwable) {
                 Log::error('ReseedProcess 进程异常：' . $throwable->getMessage());
-            }
-
-            // 清理缓存的驱动实例：防止变更配置后常驻内存未更新
-            try {
-                /** @var SiteManager $siteManager */
-                $siteManager = App::pull(SiteManager::class);
-                $siteManager->clearDriver();
-                /** @var ClientDownloader $clientDownloader */
-                $clientDownloader = App::pull(ClientDownloader::class);
-                $clientDownloader->clearDriver();
-            } catch (Error|Exception|Throwable $throwable) {
-                Log::error('ReseedProcess 进程清理缓存驱动实例异常：' . $throwable->getMessage());
+            } finally {
+                clear_instance_cache();
             }
         });
     }
