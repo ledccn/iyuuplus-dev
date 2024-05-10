@@ -1,7 +1,7 @@
 FROM alpine:3.19
 
 LABEL Maintainer="david <367013672@qq.com>"
-LABEL Description="IYUUPlus-dev container with PHP ^8.3 based on Alpine Linux."
+LABEL Description="IYUUPlus-dev container with PHP ^8.3 + nginx + mysql based on Alpine Linux."
 LABEL Version="8.3"
 
 # 使用国内镜像（mirrors.aliyun.com ｜ mirrors.ustc.edu.cn）
@@ -58,42 +58,37 @@ RUN set -ex && \
         php83-mysqli \
         php83-pdo_mysql \
         php83-pecl-event \
-        php83-xml && \
+        php83-xml \
+        nginx \
+        nginx-mod-http-headers-more && \
     ln -sf /usr/bin/php83 /usr/bin/php && \
     curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
     echo -e "upload_max_filesize=100M\npost_max_size=108M\nmemory_limit=1024M\ndate.timezone=${TZ}\n" > /etc/php83/conf.d/99-overrides.ini && \
     echo -e "[opcache]\nopcache.enable=1\nopcache.enable_cli=1" >> /etc/php83/conf.d/99-overrides.ini && \
-    rm -rf /var/cache/apk/* /tmp/*
+    rm -rf /var/cache/apk/* /tmp/* /etc/nginx/http.d/*
 
 # 安装数据库 mysql mariadb
 RUN set -ex && \
     apk add --no-cache \
-        mysql \
-        mysql-client && \
-    sed -i "s|.*bind-address\s*=.*|bind-address=127.0.0.1|g" /etc/my.cnf.d/mariadb-server.cnf && \
-    sed -i "s|.*skip-networking.*|#skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf && \
-    rm -rf /var/cache/apk/* /tmp/*
+        mariadb \
+        mariadb-client && \
+    rm -rf /var/cache/apk/* /tmp/* /etc/my.cnf.d/mariadb-server.cnf
 
 # 创建目录
 RUN set -ex && \
     mkdir /iyuu && \
-    #git config --global pull.ff only && \
-    git config --global --add safe.directory /iyuu && \
-    mkdir /data && \
-    chown mysql:mysql /data && \
-    chown -R mysql:mysql /data
+    git config --global --add safe.directory /iyuu
 
 # s6配置
-COPY --chmod=755 ./rootfs /
+COPY --chmod=755 ./rootfs ./files /
 
 # 暴露端口
-EXPOSE 8787
-EXPOSE 8788
-EXPOSE 3131
+EXPOSE 8780
 
 # 文件系统
 VOLUME [ "/iyuu" ]
 VOLUME [ "/data" ]
+VOLUME [ "/var/log/nginx"]
 
 ENTRYPOINT ["/init"]
