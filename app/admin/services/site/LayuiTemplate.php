@@ -60,6 +60,7 @@ class LayuiTemplate
             'hitpt',
             'hudbt',
             'joyhd',
+            'kamept',
             'nanyangpt',
             'nicept',
             'opencd',
