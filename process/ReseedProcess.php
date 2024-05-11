@@ -52,18 +52,25 @@ class ReseedProcess
                     return;
                 }
                 $previousDate = date('Y-m-d', strtotime('-1 day'));
-                $previous7DaysDate  = date('Y-m-d', strtotime('-7 day'));
+                $previous7DaysDate = date('Y-m-d', strtotime('-7 day'));
                 $accessLogFileName = "/var/log/nginx/access.$previousDate.log";
                 $errorLogFileName = "/var/log/nginx/error.$previousDate.log";
                 $access7DaysLogFileName = "/var/log/nginx/access.$previous7DaysDate.log";
                 $error7DaysLogFileName = "/var/log/nginx/error.$previous7DaysDate.log";
-                exec("mv /var/log/nginx/access.log $accessLogFileName");
-                exec("mv /var/log/nginx/error.log $errorLogFileName");
-                exec('kill -USR1 $(pidof nginx)');
-                exec("gzip $access7DaysLogFileName");
-                exec("gzip $error7DaysLogFileName");
-                exec("find /var/log/nginx/ -name 'access.*.log.gz' -type f -mtime +30 -delete");
-                exec("find /var/log/nginx/ -name 'error.*.log.gz' -type f -mtime +30 -delete");
+                $commands = [
+                    "mv /var/log/nginx/access.log $accessLogFileName",
+                    "mv /var/log/nginx/error.log $errorLogFileName",
+                    "kill -USR1 $(pidof nginx)",
+                    "gzip $access7DaysLogFileName",
+                    "gzip $error7DaysLogFileName",
+                    "rm -f $access7DaysLogFileName",
+                    "rm -f $error7DaysLogFileName",
+                    "find /var/log/nginx/ -name 'access.*.log.gz' -type f -mtime +30 -delete",
+                    "find /var/log/nginx/ -name 'error.*.log.gz' -type f -mtime +30 -delete"
+                ];
+                foreach ($commands as $command) {
+                    exec($command);
+                }
             });
         }
 
