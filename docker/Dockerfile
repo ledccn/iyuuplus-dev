@@ -66,14 +66,20 @@ RUN set -ex && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
     echo -e "upload_max_filesize=100M\npost_max_size=108M\nmemory_limit=1024M\ndate.timezone=${TZ}\n" > /etc/php83/conf.d/99-overrides.ini && \
     echo -e "[opcache]\nopcache.enable=1\nopcache.enable_cli=1" >> /etc/php83/conf.d/99-overrides.ini && \
-    rm -rf /var/cache/apk/* /tmp/* /etc/nginx/http.d/*
+    rm -rf \
+        /var/cache/apk/* \
+        /tmp/* \
+        /etc/nginx/http.d/*
 
-# 安装数据库 mysql mariadb
+# 安装数据库 mariadb
 RUN set -ex && \
     apk add --no-cache \
         mariadb \
         mariadb-client && \
-    rm -rf /var/cache/apk/* /tmp/* /etc/my.cnf.d/mariadb-server.cnf
+    rm -rf \
+        /var/cache/apk/* \
+        /tmp/* \
+        /etc/my.cnf.d/mariadb-server.cnf
 
 # 创建目录
 RUN set -ex && \
@@ -81,7 +87,7 @@ RUN set -ex && \
     git config --global --add safe.directory /iyuu
 
 # s6配置
-COPY --chmod=755 ./rootfs ./files /
+COPY --chmod=755 ./rootfs /
 
 # 暴露端口
 EXPOSE 8780
@@ -89,6 +95,5 @@ EXPOSE 8780
 # 文件系统
 VOLUME [ "/iyuu" ]
 VOLUME [ "/data" ]
-VOLUME [ "/var/log/nginx"]
 
 ENTRYPOINT ["/init"]

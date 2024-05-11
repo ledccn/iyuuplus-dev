@@ -15,3 +15,7 @@ else
     git fetch --all
     git reset --hard origin/master
 fi
+
+if [ ! -d /var/tmp ]; then
+    mkdir /var/tmp
+fi
