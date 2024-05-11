@@ -37,26 +37,29 @@ class ReseedProcess
 
         // docker s6环境
         if (is_docker_exists_nginx()) {
+            //更新配置文件
+            $systemNginxConfigPath = '/etc/nginx/nginx.conf';
+            $dockerNginxConfigPath = '/iyuu/docker/files/etc/nginx/nginx.conf';
+            if (md5_file($systemNginxConfigPath) !== md5_file($dockerNginxConfigPath)) {
+                if (copy($dockerNginxConfigPath, $systemNginxConfigPath)) {
+                    exec('nginx -s reload');
+                }
+            }
             // nginx：切割访问log，保留30天
             new Crontab('0 0 * * *', function () {
                 clearstatcache();
                 if (!is_file('/var/log/nginx/access.log')) {
                     return;
                 }
-
-                // 获取前一天的日期
                 $previousDate = date('Y-m-d', strtotime('-1 day'));
-                // 处理 access.log 文件
+                $previous7DaysDate  = date('Y-m-d', strtotime('-7 day'));
                 $accessLogFileName = "/var/log/nginx/access.$previousDate.log";
-                exec("mv /var/log/nginx/access.log $accessLogFileName");
-                exec("gzip $accessLogFileName");
-                // 处理 error.log 文件
                 $errorLogFileName = "/var/log/nginx/error.$previousDate.log";
+                exec("mv /var/log/nginx/access.log $accessLogFileName");
                 exec("mv /var/log/nginx/error.log $errorLogFileName");
-                exec("gzip $errorLogFileName");
-                // 发送 USR1 信号重新打开日志文件
                 exec('kill -USR1 $(pidof nginx)');
-                // 删除超过30天的日志文件
+                exec("gzip $previous7DaysDate");
+                exec("gzip $previous7DaysDate");
                 exec("find /var/log/nginx/ -name 'access.*.log.gz' -type f -mtime +30 -delete");
                 exec("find /var/log/nginx/ -name 'error.*.log.gz' -type f -mtime +30 -delete");
             });
