@@ -11,7 +11,7 @@ if [ ! -d /var/tmp ]; then
     mkdir /var/tmp
 fi
 
-chown -R 777 /var/tmp
+chmod -R 777 /var/tmp
 
 if [ ! -d /data/iyuu ]; then
     mysql_install_db \
