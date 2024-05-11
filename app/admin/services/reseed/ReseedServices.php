@@ -12,6 +12,7 @@ use app\model\Reseed;
 use app\model\Site;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\Clients;
+use Iyuu\ReseedClient\InternalServerErrorException;
 use Ledc\Curl\Curl;
 use plugin\cron\app\model\Crontab;
 use RuntimeException;
@@ -90,9 +91,13 @@ class ReseedServices
     /**
      * 执行辅种逻辑
      * @return void
+     * @throws InternalServerErrorException
      */
     public function run(): void
     {
+        $reseedClient = new \Iyuu\ReseedClient\Client(iyuu_token());
+        $sid_sha1 = $this->getSidSha1($reseedClient);
+
         // 第一层循环：辅种下载器
         foreach ($this->crontabClients as $client_id => $on) {
             $this->clientModel = ClientServices::getClient((int)$client_id);
@@ -103,7 +108,7 @@ class ReseedServices
             try {
                 $torrentList = $this->bittorrentClient->getTorrentList();
             } catch (Throwable $throwable) {
-                echo $throwable->getMessage() . PHP_EOL;
+                echo '从下载器获取做种哈希失败：' . $throwable->getMessage() . PHP_EOL;
                 continue;
             }
 
@@ -121,25 +126,13 @@ class ReseedServices
                 foreach ($chunkHash as $info_hash) {
                     sort($info_hash);
                     $hash = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
-                    $data = [
-                        'hash' => $hash,
-                        'sha1' => sha1($hash),
-                        'sign' => $this->token,
-                        'timestamp' => time(),
-                        'version' => iyuu_version(),
-                    ];
-                    $this->requestApi($hashDict, $data);
+                    $result = $reseedClient->reseed($hash, sha1($hash), $sid_sha1, iyuu_version());
+                    $this->currentReseed($hashDict, $result);
                 }
             } else {
                 // all in one
-                $data = [
-                    'hash' => $torrentList['hash'],
-                    'sha1' => $torrentList['sha1'],
-                    'sign' => $this->token,
-                    'timestamp' => time(),
-                    'version' => iyuu_version(),
-                ];
-                $this->requestApi($hashDict, $data);
+                $result = $reseedClient->reseed($torrentList['hash'], $torrentList['sha1'], $sid_sha1, iyuu_version());
+                $this->currentReseed($hashDict, $result);
             }
 
             // 调度事件：当前客户端辅种结束后
@@ -151,37 +144,16 @@ class ReseedServices
     }
 
     /**
-     * 请求服务器API，得到可辅种数据
-     * @param array $hashDict 当前客户端infohash与目录对应的字典
-     * @param array $data
-     * @return void
+     * 获取已开启站点哈希值
+     * @param \Iyuu\ReseedClient\Client $reseedClient
+     * @return string
+     * @throws InternalServerErrorException
      */
-    protected function requestApi(array $hashDict, array $data): void
+    protected function getSidSha1(\Iyuu\ReseedClient\Client $reseedClient): string
     {
-        static $curl;
-        if (!$curl) {
-            $curl = new Curl();
-            $curl->setHeader('token', $this->token)->setSslVerify();
-        }
-        $curl->post('http://api.bolahg.cn/App.Api.Infohash', $data);
-        if (!$curl->isSuccess()) {
-            throw new RuntimeException('请求辅种信息失败，服务器无响应' . ($curl->error_message ?? ''), 500);
-        }
-
-        $response = json_decode($curl->response, true);
-        $result = $response['data'] ?? [];
-        $msg = $response['msg'] ?? '远端服务器无响应，请稍后重试！';
-        $code = $response['ret'] ?? false;
-        if (200 !== $code) {
-            echo '-----辅种失败，原因：' . $msg . PHP_EOL . PHP_EOL;
-            return;
-        }
-        if (empty($result)) {
-            echo '-----没有查询到可辅种数据' . PHP_EOL . PHP_EOL;
-            return;
-        }
-
-        $this->currentReseed($hashDict, $result);
+        $sites = array_keys($this->crontabSites);
+        $sid_list = Site::getEnabled()->whereIn('site', $sites)->pluck('sid')->toArray();
+        return $reseedClient->reportExisting($sid_list);
     }
 
     /**
@@ -195,6 +167,10 @@ class ReseedServices
         // 第二层循环：接口返回的可辅种结果
         foreach ($result as $infohash => $reseed) {
             $downloadDir = $hashDict[$infohash];   // 辅种目录
+            $dirReseedCount = count($reseed['torrent']);
+            $this->notifyData->reseedCount += $dirReseedCount;
+            $_reseedCount = str_pad((string)$dirReseedCount,5);
+            echo "种子哈希：{$infohash} 可辅种数：{$_reseedCount} 做种目录：{$downloadDir}" . PHP_EOL;
             // 第三层循环：单种子infohash可辅种数据
             foreach ($reseed['torrent'] as $id => $value) {
                 $this->notifyData->reseedCount++;
