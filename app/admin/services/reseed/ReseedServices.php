@@ -168,7 +168,6 @@ class ReseedServices
         foreach ($result as $infohash => $reseed) {
             $downloadDir = $hashDict[$infohash];   // 辅种目录
             $dirReseedCount = count($reseed['torrent']);
-            $this->notifyData->reseedCount += $dirReseedCount;
             $_reseedCount = str_pad((string)$dirReseedCount,5);
             echo "种子哈希：{$infohash} 可辅种数：{$_reseedCount} 做种目录：{$downloadDir}" . PHP_EOL;
             // 第三层循环：单种子infohash可辅种数据
