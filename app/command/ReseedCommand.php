@@ -52,6 +52,7 @@ class ReseedCommand extends Command
         } catch (\Error|\Exception|\Throwable $exception) {
             $output->writeln('<error>' . $exception->getMessage() . '</error>');
         } finally {
+            echo_system_info();
             $output->writeln('辅种完毕，感谢使用IYUU自动辅种！');
         }
 

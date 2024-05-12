@@ -50,6 +50,7 @@ class TransferCommand extends Command
         } catch (\Error|\Exception|\Throwable $exception) {
             $output->writeln('<error>' . $exception->getMessage() . '</error>');
         } finally {
+            echo_system_info();
             $output->writeln('转移完毕，感谢使用IYUU！');
         }
         return self::SUCCESS;
