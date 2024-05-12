@@ -30,7 +30,7 @@ class Client extends AbstractCurl
 
         $response = json_decode($curl->response, true);
         $code = $response['code'] ?? 403;
-        $msg = $response['msg'] ?? $defaultMessage . ' 缺失错误信息';
+        $msg = $response['msg'] ?? $defaultMessage . ' 服务器繁忙，请稍后再试。';
         if ($code) {
             throw new RuntimeException($msg, $code);
         }
