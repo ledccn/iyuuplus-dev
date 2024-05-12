@@ -13,9 +13,7 @@ use app\model\Site;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\Clients;
 use Iyuu\ReseedClient\InternalServerErrorException;
-use Ledc\Curl\Curl;
 use plugin\cron\app\model\Crontab;
-use RuntimeException;
 use Throwable;
 use Webman\Event\Event;
 
@@ -168,11 +166,11 @@ class ReseedServices
         foreach ($result as $infohash => $reseed) {
             $downloadDir = $hashDict[$infohash];   // 辅种目录
             $dirReseedCount = count($reseed['torrent']);
-            $_reseedCount = str_pad((string)$dirReseedCount,5);
+            $this->notifyData->reseedCount += $dirReseedCount;
+            $_reseedCount = str_pad((string)$dirReseedCount, 5);
             echo "种子哈希：{$infohash} 可辅种数：{$_reseedCount} 做种目录：{$downloadDir}" . PHP_EOL;
             // 第三层循环：单种子infohash可辅种数据
             foreach ($reseed['torrent'] as $id => $value) {
-                $this->notifyData->reseedCount++;
                 $sid = $value['sid'];   // 站点id
                 $torrent_id = $value['torrent_id'];  // 种子id
                 $reseed_infohash = $value['info_hash'];  // 种子infohash
