@@ -16,7 +16,7 @@ if (is_file(runtime_path('Bencode.php'))) {
 }
 
 /**
- * 显示调试信息
+ * 显示系统信息
  * @return void
  */
 function echo_system_info(): void
@@ -24,7 +24,7 @@ function echo_system_info(): void
     echo implode(PHP_EOL, [
         ' 当前时间：' . date('Y-m-d H:i:s'),
         ' IYUU版本：' . iyuu_version(),
-        ' docker：' . isDockerEnvironment() ? '是' : '否',
+        ' Docker：' . (isDockerEnvironment() ? '是' : '否'),
         ' 操作系统：' . PHP_OS,
         ' 运行环境：' . PHP_OS_FAMILY,
         ' PHP二进制路径：' . PHP_BINARY,
