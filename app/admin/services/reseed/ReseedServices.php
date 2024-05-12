@@ -112,6 +112,7 @@ class ReseedServices
 
             $hashDict = $torrentList['hashString'];   // 哈希目录字典
             $total = count($hashDict);
+            echo "{$this->clientModel->title} 下载器获取到做种哈希总数：{$total}" . PHP_EOL;
 
             // 调度事件：当前客户端辅种开始前
             Event::emit('reseed.current.before', [$hashDict, $this->bittorrentClient, $this->clientModel]);
