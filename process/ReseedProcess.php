@@ -39,7 +39,7 @@ class ReseedProcess
         if (is_docker_exists_nginx()) {
             //更新配置文件
             $systemNginxConfigPath = '/etc/nginx/nginx.conf';
-            $dockerNginxConfigPath = '/iyuu/docker/files/etc/nginx/nginx.conf';
+            $dockerNginxConfigPath = '/iyuu/docker/rootfs/etc/nginx/nginx.conf';
             if (md5_file($systemNginxConfigPath) !== md5_file($dockerNginxConfigPath)) {
                 if (copy($dockerNginxConfigPath, $systemNginxConfigPath)) {
                     exec('nginx -s reload');
