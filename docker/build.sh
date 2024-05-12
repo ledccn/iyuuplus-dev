@@ -1,8 +1,7 @@
 #!/bin/sh
 docker build -f Dockerfile -t iyuuplus-dev:latest .
 docker run -itd \
-    -p 8787:8787 \
-    -p 3131:3131 \
+    -p 8780:8780 \
     --name IYUUPlus \
     --restart=always \
     iyuuplus-dev:latest
