@@ -25,12 +25,12 @@ class Client extends AbstractCurl
     protected function parseResponse(Curl $curl, string $defaultMessage): array
     {
         if (!$curl->isSuccess()) {
-            throw new InternalServerErrorException($curl->error_message ?? '服务器无响应 ' . $defaultMessage, 500);
+            throw new InternalServerErrorException($curl->error_message ?? 'A服务器繁忙，请稍后再试 ' . $defaultMessage, 500);
         }
 
         $response = json_decode($curl->response, true);
         $code = $response['code'] ?? 403;
-        $msg = $response['msg'] ?? $defaultMessage . ' 服务器繁忙，请稍后再试。';
+        $msg = $response['msg'] ?? $defaultMessage . ' B服务器繁忙，请稍后再试。';
         if ($code) {
             throw new RuntimeException($msg, $code);
         }
