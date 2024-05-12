@@ -7,8 +7,7 @@ services:
       - /root/iyuu:/iyuu
       - /root/data:/data
     ports:
-      - "8787:8787"
-      - "3131:3131"
+      - "8780:8780"
     container_name: IYUUPlus
     restart: always
     image: iyuucn/iyuuplus-dev:latest
