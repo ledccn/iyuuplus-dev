@@ -81,7 +81,14 @@ class ReseedController extends Crud
             return $this->fail('没有失败的种子，无需刷新');
         }
 
-        Reseed::getStatusEqFail()->update(['status' => ReseedStatusEnums::Default->value]);
-        return $this->success();
+        if ($ids = $this->deleteInput($request)) {
+            $primary_key = $this->model->getKeyName();
+            $builder = Reseed::getStatusEqFail()->whereIn($primary_key, $ids);
+        } else {
+            $builder = Reseed::getStatusEqFail();
+        }
+        $count = $builder->update(['status' => ReseedStatusEnums::Default->value]);
+
+        return $this->success('ok', ['count' => $count]);
     }
 }
