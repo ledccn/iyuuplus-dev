@@ -24,7 +24,6 @@ class ClientObserver
      */
     public function creating(Client $model): void
     {
-        ClientServices::testBittorrent($model)->status();
         $model->brand = ClientEnums::from($model->brand)->value;
         // 设置为默认下载器
         if ($model->is_default) {
@@ -58,7 +57,6 @@ class ClientObserver
      */
     public function updating(Client $model): void
     {
-        ClientServices::testBittorrent($model)->status();
         $dirty = $model->getDirty();
         $readonly = ['brand', 'created_at'];
         foreach ($readonly as $field) {
@@ -104,6 +102,7 @@ class ClientObserver
     public function saving(Client $model): void
     {
         $model->hostname = rtrim($model->hostname, '/');
+        ClientServices::testBittorrent($model)->status();
     }
 
     /**
