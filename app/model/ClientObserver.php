@@ -62,29 +62,34 @@ class ClientObserver
      */
     public function updating(Client $model): void
     {
-        $dirty = $model->getDirty();
-        $readonly = ['brand', 'created_at'];
-        foreach ($readonly as $field) {
-            if (array_key_exists($field, $dirty)) {
-                throw new RuntimeException("禁止修改只读字段{$field}");
-            }
-        }
-
-        // 设置为默认下载器
-        if (array_key_exists('is_default', $dirty)) {
-            if ($model->is_default) {
-                if (empty($model->enabled)) {
-                    throw new InvalidArgumentException('请启用下载器，再设置为默认');
+        try {
+            ClientServices::testBittorrent($model);
+            $dirty = $model->getDirty();
+            $readonly = ['brand', 'created_at'];
+            foreach ($readonly as $field) {
+                if (array_key_exists($field, $dirty)) {
+                    throw new RuntimeException("禁止修改只读字段{$field}");
                 }
-                Client::cancelDefault($model);
             }
-        }
 
-        // 设置为禁用
-        if (array_key_exists('enabled', $dirty)) {
-            if (empty($model->enabled) && $model->is_default) {
-                throw new InvalidArgumentException('默认下载器必须启用');
+            // 设置为默认下载器
+            if (array_key_exists('is_default', $dirty)) {
+                if ($model->is_default) {
+                    if (empty($model->enabled)) {
+                        throw new InvalidArgumentException('请启用下载器，再设置为默认');
+                    }
+                    Client::cancelDefault($model);
+                }
             }
+
+            // 设置为禁用
+            if (array_key_exists('enabled', $dirty)) {
+                if (empty($model->enabled) && $model->is_default) {
+                    throw new InvalidArgumentException('默认下载器必须启用');
+                }
+            }
+        }catch (RuntimeException $e){
+            throw new RuntimeException($e->getMessage());
         }
     }
 
@@ -117,12 +122,7 @@ class ClientObserver
      */
     public function saved(Client $model): void
     {
-        try {
-            ClientServices::testBittorrent($model);
-            static::onBackupByModel($model);
-        }catch (RuntimeException $e){
-            throw new RuntimeException($e->getMessage());
-        }
+        static::onBackupByModel($model);
     }
 
     /**
