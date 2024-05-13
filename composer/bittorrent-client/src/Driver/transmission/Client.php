@@ -276,7 +276,7 @@ class Client extends Clients
         if ($config->is_debug) {
             var_dump($curl);
         }
-        throw new ServerErrorException('请求错误：' . $curl->error_message);
+        throw new ServerErrorException('下载器错误：' . $curl->error_message);
     }
 
     /**
