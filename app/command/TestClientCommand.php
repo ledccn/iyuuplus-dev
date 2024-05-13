@@ -47,7 +47,7 @@ class TestClientCommand extends Command
             $output->writeln('Hello ClientCommand');
             return self::SUCCESS;
         } catch (Throwable $e) {
-            $output->writeln('客户端不存在' . $e->getMessage());
+            $output->writeln('客户端错误' . $e->getMessage());
             return self::FAILURE;
         }
     }
