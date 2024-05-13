@@ -6,6 +6,7 @@ use app\model\Client;
 use Iyuu\BittorrentClient\ClientDownloader;
 use Iyuu\BittorrentClient\Clients;
 use Iyuu\BittorrentClient\Contracts\ConfigInterface;
+use Iyuu\BittorrentClient\Contracts\ConfigTemporary;
 use Iyuu\BittorrentClient\Contracts\Torrent;
 use Iyuu\SiteManager\Contracts\Response;
 use Ledc\Container\App;
@@ -75,6 +76,18 @@ class ClientServices
         /** @var ClientDownloader $clientDownloader */
         $clientDownloader = App::pull(ClientDownloader::class);
         $name = $clientDownloader->config->encode($client->id, $client->brand);
+        return $clientDownloader->select($name);
+    }
+
+    /**
+     * 测试下载器的连通性
+     * @param Client $client
+     * @return Clients
+     */
+    public static function testBittorrent(Client $client): Clients
+    {
+        $clientDownloader = new ClientDownloader(App::getInstance(), new ConfigTemporary($client->toArray()));
+        $name = $clientDownloader->config->encode(0, $client->brand);
         return $clientDownloader->select($name);
     }
 
