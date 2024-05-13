@@ -383,9 +383,14 @@
             if (obj.event === "add") {
                 add();
             } else if (obj.event === "refresh") {
+                let data = {};
+                let checkIds = common.checkField(obj, PRIMARY_KEY);
+                if (checkIds) {
+                    data[PRIMARY_KEY] = checkIds.split(",");
+                }
                 $.ajax({
                     url: REFRESH_API,
-                    //data: data,
+                    data: data,
                     dataType: "json",
                     type: "post",
                     success: function (res) {
