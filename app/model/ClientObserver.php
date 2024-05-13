@@ -111,7 +111,13 @@ class ClientObserver
      */
     public function saved(Client $model): void
     {
-        static::onBackupByModel($model);
+        try {
+            $Client_id =$model->id;
+            executeCommand("iyuu:test:client $Client_id",'string',true);
+            static::onBackupByModel($model);
+        }catch (RuntimeException $e){
+            throw new RuntimeException($e->getMessage());
+        }
     }
 
     /**
