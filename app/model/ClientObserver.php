@@ -2,6 +2,7 @@
 
 namespace app\model;
 
+use app\admin\services\client\ClientServices;
 use app\common\HasStaticBackup;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\ClientEnums;
@@ -23,18 +24,23 @@ class ClientObserver
      */
     public function creating(Client $model): void
     {
-        $model->brand = ClientEnums::from($model->brand)->value;
-        // 设置为默认下载器
-        if ($model->is_default) {
-            if (empty($model->enabled)) {
-                throw new InvalidArgumentException('默认下载器必须启用');
+        try {
+            ClientServices::testBittorrent($model);
+            $model->brand = ClientEnums::from($model->brand)->value;
+            // 设置为默认下载器
+            if ($model->is_default) {
+                if (empty($model->enabled)) {
+                    throw new InvalidArgumentException('默认下载器必须启用');
+                }
+                Client::cancelDefault($model);
+            } else {
+                // 创建第一个自动设置为默认
+                if (!Client::where('is_default', '=', 1)->exists()) {
+                    $model->is_default = 1;
+                }
             }
-            Client::cancelDefault($model);
-        } else {
-            // 创建第一个自动设置为默认
-            if (!Client::where('is_default', '=', 1)->exists()) {
-                $model->is_default = 1;
-            }
+        }catch (RuntimeException $e){
+            throw new RuntimeException($e->getMessage());
         }
     }
 
@@ -112,8 +118,7 @@ class ClientObserver
     public function saved(Client $model): void
     {
         try {
-            $Client_id =$model->id;
-            executeCommand("iyuu:test:client $Client_id",'string',true);
+            ClientServices::testBittorrent($model);
             static::onBackupByModel($model);
         }catch (RuntimeException $e){
             throw new RuntimeException($e->getMessage());
@@ -128,9 +133,9 @@ class ClientObserver
      */
     public function deleting(Client $model): void
     {
-        if ($model->is_default) {
-            throw new InvalidArgumentException('禁止删除默认下载器');
-        }
+//        if ($model->is_default) {
+//            throw new InvalidArgumentException('禁止删除默认下载器');
+//        }
         Reseed::deleteByClientId($model->id);
         Transfer::deleteByFromClientId($model->id);
         Transfer::deleteByToClientId($model->id);

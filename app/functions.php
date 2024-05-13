@@ -261,30 +261,3 @@ function update_env_value(string $key, string $value): string
     return $value;
 }
 
-/**
- * 执行命令并捕获结果
- *
- * @param string $command 要执行的命令
- * @param string $format 结果格式，可以是 'string' 或 'array'
- * @param bool $webman 是否在 Webman 环境下执行命令
- * @param bool $exception 是否在命令执行失败时抛出异常
- * @return string|array 执行结果，根据 $format 参数返回字符串或数组
- * @throws RuntimeException 当命令执行失败且 $exception 参数为 true 时抛出异常
- */
-function executeCommand($command, $format = 'string', $webman = false, $exception = true): string|array
-{
-    $append = " 2>&1";
-    if (!str_ends_with($command, $append)) {
-        $command .= $append;
-    }
-    if ($webman) {
-        $webRoot = rtrim(base_path(), '/');
-        $command = "php $webRoot/webman $command";
-    }
-    $result = exec($command, $output, $result_code);
-    $outputString = implode("\n", $output);
-    if ($exception && $result_code != 0) {
-        throw new RuntimeException($outputString);
-    }
-    return $format == 'string' ? $outputString : $output;
-}
