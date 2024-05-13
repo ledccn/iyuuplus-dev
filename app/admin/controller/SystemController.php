@@ -45,7 +45,8 @@ class SystemController
      */
     public function pull(Request $request): Response
     {
-        $process = new Process(['git', 'pull'], base_path(), null, null, 10);
+        $command = DIRECTORY_SEPARATOR === '\\' ? ['git', 'pull'] : ['sh', base_path('gg.sh')];
+        $process = new Process($command, base_path(), null, null, 10);
         $process->run();
         $status = $process->getExitCode();
         $output = $process->getOutput();
