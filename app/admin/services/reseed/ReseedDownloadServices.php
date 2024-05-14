@@ -209,12 +209,11 @@ class ReseedDownloadServices
             $markerEnum = $reseedPayload->getMarkerEnum();
             switch ($clientModel->getClientEnums()) {
                 case ClientEnums::qBittorrent:
-                    // 仅判断数据类型 str_contains(strtolower($result), 'ok')
-                    if (is_string($result)) {
+                    if (is_string($result) && str_contains(strtolower($result), 'ok')) {
                         /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $bittorrentClients */
                         // 标记标签 2024年4月25日
                         if (DownloaderMarkerEnums::Tag === $markerEnum) {
-                            $bittorrentClients->torrentRemoveTags($reseed->info_hash, 'IYUU' . ReseedSubtypeEnums::text($reseed->getSubtypeEnums()));
+                            $bittorrentClients->torrentAddTags($reseed->info_hash, 'IYUU' . ReseedSubtypeEnums::text($reseed->getSubtypeEnums()));
                         }
 
                         // 发送校验命令

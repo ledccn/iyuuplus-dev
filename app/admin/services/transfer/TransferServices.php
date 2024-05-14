@@ -243,7 +243,7 @@ class TransferServices
                         /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $toBittorrentClient */
                         // 标记标签 2024年4月25日
                         if (DownloaderMarkerEnums::Tag === $this->downloaderMarkerEnums) {
-                            $toBittorrentClient->torrentRemoveTags($rocket->infohash, 'IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer));
+                            $toBittorrentClient->torrentAddTags($rocket->infohash, 'IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer));
                         }
                     }
                     break;
