@@ -125,13 +125,25 @@ class ReseedServices
                 foreach ($chunkHash as $info_hash) {
                     sort($info_hash);
                     $hash = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
-                    $result = $reseedClient->reseed($hash, sha1($hash), $sid_sha1, iyuu_version());
-                    $this->currentReseed($hashDict, $result);
+                    try {
+                        $result = $reseedClient->reseed($hash, sha1($hash), $sid_sha1, iyuu_version());
+                        $this->currentReseed($hashDict, $result);
+                    } catch (InternalServerErrorException $throwable) {
+                        throw $throwable;
+                    } catch (Throwable $throwable) {
+                        echo $throwable->getMessage() . PHP_EOL;
+                    }
                 }
             } else {
                 // all in one
-                $result = $reseedClient->reseed($torrentList['hash'], $torrentList['sha1'], $sid_sha1, iyuu_version());
-                $this->currentReseed($hashDict, $result);
+                try {
+                    $result = $reseedClient->reseed($torrentList['hash'], $torrentList['sha1'], $sid_sha1, iyuu_version());
+                    $this->currentReseed($hashDict, $result);
+                } catch (InternalServerErrorException $throwable) {
+                    throw $throwable;
+                } catch (Throwable $throwable) {
+                    echo $throwable->getMessage() . PHP_EOL;
+                }
             }
 
             // 调度事件：当前客户端辅种结束后
