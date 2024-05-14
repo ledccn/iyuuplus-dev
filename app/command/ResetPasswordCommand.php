@@ -42,8 +42,9 @@ class ResetPasswordCommand extends Command
     {
         $password = $input->getArgument('password');
         $admin_id = $input->getArgument('admin_id');
-        if (true !== validate_password($password)) {
-            $output->writeln($password);
+        $rs = validate_password($password);
+        if (true !== $rs) {
+            $output->writeln($rs);
             return self::FAILURE;
         }
 
