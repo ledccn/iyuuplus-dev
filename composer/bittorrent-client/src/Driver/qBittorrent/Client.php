@@ -546,7 +546,7 @@ class Client extends Clients
     }
 
     /**
-     * 给种子打标签
+     * 移除种子的标签
      * @param string|array $hashes
      * @param string|array $tags
      * @return false|string|null
