@@ -14,7 +14,7 @@ if (!in_array($argv[1] ?? '', ['start', 'restart', 'stop', 'status', 'reload', '
     if (class_exists('Support\App')) {
         Support\App::loadAllConfig(['route']);
     } else {
-        Config::reload(config_path(), ['route', 'container']);
+        Config::load(config_path(), ['route', 'container']);
     }
 }
 

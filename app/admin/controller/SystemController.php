@@ -7,6 +7,7 @@ use Iyuu\SiteManager\Spider\Params;
 use support\Request;
 use support\Response;
 use Symfony\Component\Process\Process;
+use Workerman\Timer;
 
 /**
  * 系统管理
@@ -32,9 +33,11 @@ class SystemController
             return $this->fail('docker环境存在s6时，才能进行此操作');
         }
 
-        $cmd = implode(' ', [PHP_BINARY, base_path('start.php'), $command]);
-        exec($cmd);
-        sleep(3);
+        Timer::add(1, function () use ($command) {
+            $cmd = implode(' ', [PHP_BINARY, base_path('start.php'), $command]);
+            exec($cmd);
+            sleep(3);
+        });
         return json(['code' => 0, 'msg' => 'ok']);
     }
 

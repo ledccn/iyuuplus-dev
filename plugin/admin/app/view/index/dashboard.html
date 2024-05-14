@@ -445,7 +445,20 @@
 									return layui.popup.failure(res.msg);
 								}
 								layui.popup.success("更新成功", function () {
-									parent.location.reload();
+									$.ajax({
+										url: '/admin/system/action?command=stop',
+										type: "POST",
+										dataType: "json",
+										success: function (res) {
+											if (res.code) {
+												return layui.popup.failure(res.msg);
+											}
+											return layui.notice.success("重启成功");
+										},
+										complete: function () {
+											parent.location.reload();
+										}
+									});
 								})
 							}
 						});
