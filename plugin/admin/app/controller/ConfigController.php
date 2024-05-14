@@ -60,6 +60,7 @@ class ConfigController extends Base
         // 获取环境变量中的值
         $decodedConfig = json_decode($config, true);
         $decodedConfig['iyuu_config']['iyuu_token'] = env('IYUU_TOKEN', '');
+        $decodedConfig['iyuu_config']['listen_ipv6'] = (bool)(getenv('IYUU_LISTEN_IPV6') ?: '');
         $decodedConfig['iyuu_config']['cloud_access_token'] = getenv('CLOUD_ACCESS_TOKEN') ?: '';
         $decodedConfig['iyuu_config']['cloud_sn'] = getenv('CLOUD_SN') ?: '';
 
