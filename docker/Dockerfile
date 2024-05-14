@@ -84,6 +84,7 @@ RUN set -ex && \
 # 创建目录
 RUN set -ex && \
     mkdir /iyuu && \
+    git config --global --add pull.rebase false && \
     git config --global --add safe.directory /iyuu
 
 # s6配置
