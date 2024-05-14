@@ -444,7 +444,12 @@
 								if (res.code) {
 									return layui.popup.failure(res.msg);
 								}
-								layui.popup.success("更新成功", function () {
+
+								setTimeout(function () {
+									parent.location.reload();
+								}, 5000);
+
+								return layui.popup.success("更新成功", function () {
 									$.ajax({
 										url: '/admin/system/action?command=stop',
 										type: "POST",
@@ -454,9 +459,6 @@
 												return layui.popup.failure(res.msg);
 											}
 											return layui.notice.success("重启成功");
-										},
-										complete: function () {
-											parent.location.reload();
 										}
 									});
 								})

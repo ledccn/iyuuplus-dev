@@ -33,7 +33,7 @@ class SystemController
             return $this->fail('docker环境存在s6时，才能进行此操作');
         }
 
-        Timer::add(1, function () use ($command) {
+        Timer::add(2, function () use ($command) {
             $cmd = implode(' ', [PHP_BINARY, base_path('start.php'), $command]);
             exec($cmd);
             sleep(3);
