@@ -190,6 +190,44 @@ function verify_readonly_field(array $readonly, Model|Base $model): void
 }
 
 /**
+ * 验证密码复杂度
+ * @param string $password
+ * @return string|true
+ */
+function validate_password(string $password): string|true
+{
+    $errors = [];
+
+    // 检查长度
+    if (strlen($password) < 8) {
+        $errors[] = "密码长度不能小于8个字符。";
+    }
+
+    // 检查数字
+    if (!preg_match("#[0-9]+#", $password)) {
+        $errors[] = "密码必须包含至少一个数字。";
+    }
+
+    // 检查大写字母
+    if (!preg_match("#[A-Z]+#", $password)) {
+        $errors[] = "密码必须包含至少一个大写字母。";
+    }
+
+    // 检查小写字母
+    if (!preg_match("#[a-z]+#", $password)) {
+        $errors[] = "密码必须包含至少一个小写字母。";
+    }
+
+    // 检查特殊字符
+    if (!preg_match("#[\W_]+#", $password)) {
+        $errors[] = "密码必须包含至少一个特殊字符。";
+    }
+
+    // 返回错误信息
+    return $errors ? implode("\n", $errors) : true;
+}
+
+/**
  * 获取当前版本commit
  * @param string $branch
  * @param bool $short
