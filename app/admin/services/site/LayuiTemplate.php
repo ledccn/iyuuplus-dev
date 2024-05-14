@@ -30,6 +30,8 @@ class LayuiTemplate
         if ($model->cookie_required) {
             $default = new CookieRequired($default);
         }
+
+        $default = new OptionsProxy($default);
         return match ($site) {
             '1ptba',
             '52pt',
