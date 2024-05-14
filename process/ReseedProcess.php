@@ -37,14 +37,6 @@ class ReseedProcess
 
         // docker s6环境
         if (is_docker_exists_nginx()) {
-            //更新配置文件
-            $systemNginxConfigPath = '/etc/nginx/nginx.conf';
-            $dockerNginxConfigPath = '/iyuu/docker/rootfs/etc/nginx/nginx.conf';
-            if (md5_file($systemNginxConfigPath) !== md5_file($dockerNginxConfigPath)) {
-                if (copy($dockerNginxConfigPath, $systemNginxConfigPath)) {
-                    exec('nginx -s reload');
-                }
-            }
             // nginx：切割访问log，保留30天
             new Crontab('0 0 * * *', function () {
                 clearstatcache();
