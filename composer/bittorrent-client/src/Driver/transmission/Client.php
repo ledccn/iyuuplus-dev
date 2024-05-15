@@ -256,7 +256,7 @@ class Client extends Clients
 
         $arguments = $this->cleanRequestData($arguments);
 
-        $curl = $this->curl;
+        $curl = $this->getCurl();
         $config = $this->getConfig();
         $data = [
             'method' => $method,

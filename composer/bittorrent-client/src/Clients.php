@@ -31,7 +31,7 @@ abstract class Clients implements ClientsInterface
     final public function __construct(array $config)
     {
         $this->config = new Config($config);
-        $this->initCurl();
+        $this->curl = $this->initCurl();
         $this->initialize();
     }
 
@@ -45,16 +45,18 @@ abstract class Clients implements ClientsInterface
 
     /**
      * 初始化Curl
-     * @return void
+     * @return Curl
      */
-    final protected function initCurl(): void
+    final protected function initCurl(): Curl
     {
-        $this->curl = new Curl();
-        $this->curl->setTimeout(60, 600);
-        $this->curl->setSslVerify(false, false);
-        $this->curl->setUserAgent(Curl::USER_AGENT);
-        $this->curl->setHeader('Origin', $this->getConfig()->getHostname());
-        $this->curl->setHeader('Referer', $this->getConfig()->getClientUrl());
+        $curl = new Curl();
+        $curl->setTimeout(60, 600);
+        $curl->setSslVerify(false, false);
+        $curl->setUserAgent(Curl::USER_AGENT);
+        $curl->setHeader('Origin', $this->getConfig()->getHostname());
+        $curl->setHeader('Referer', $this->getConfig()->getClientUrl());
+
+        return $curl;
     }
 
     /**

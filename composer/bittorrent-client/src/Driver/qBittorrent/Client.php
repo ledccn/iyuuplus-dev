@@ -6,6 +6,7 @@ use Iyuu\BittorrentClient\Clients;
 use Iyuu\BittorrentClient\Contracts\Torrent;
 use Iyuu\BittorrentClient\Exception\NotFoundException;
 use Iyuu\BittorrentClient\Exception\ServerErrorException;
+use Ledc\Curl\Curl;
 use RuntimeException;
 
 /**
@@ -323,7 +324,7 @@ class Client extends Clients
      */
     public function login(): bool
     {
-        $curl = $this->curl;
+        $curl = $this->getCurl();
         $config = $this->getConfig();
         $curl->post($this->clientUrl . $this->endpoints['login'][$this->api_version], [
             'username' => $config->username ?? '',
@@ -335,7 +336,8 @@ class Client extends Clients
             if (preg_match('/SID=(\S[^;]+)/', $header, $matches)) {
                 $this->session_id = $matches[0];
                 $qb415 = '; QB_' . $this->session_id;   // 兼容qBittorrent v4.1.5[小钢炮等]
-                $curl->setHeader('Cookie', $this->session_id . $qb415);
+                $this->session_id = $this->session_id . $qb415;
+                $curl->setHeader('Cookie', $this->session_id);
                 return true;
             }
         }
@@ -422,10 +424,11 @@ class Client extends Clients
         // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
         $post_data = $this->buildData($extra_options);
         #p($post_data);
+        $curl = $this->initCurl();
         // 设置请求头
         $this->curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
         $this->curl->setHeader('Content-Length', strlen($post_data));
-        return $this->postData('torrent_add', $post_data);
+        return $this->postFormData('torrent_add', $post_data, $curl);
     }
 
     /**
@@ -445,10 +448,11 @@ class Client extends Clients
         #$extra_options['skip_checking'] = 'true';    //跳校验
         // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
         $post_data = $this->buildTorrent($extra_options);
+        $curl = $this->initCurl();
         // 设置请求头
-        $this->curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
-        $this->curl->setHeader('Content-Length', strlen($post_data));
-        return $this->postData('torrent_add', $post_data);
+        $curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
+        $curl->setHeader('Content-Length', strlen($post_data));
+        return $this->postFormData('torrent_add', $post_data, $curl);
     }
 
     /**
@@ -614,6 +618,32 @@ class Client extends Clients
                 var_dump($this->curl->request_headers);
                 var_dump($this->curl->response_headers);
                 var_dump($this->curl->response);
+            }
+            throw new ServerErrorException($curl->error_message);
+        }
+
+        return $curl->response;
+    }
+
+    /**
+     * 基本post方法
+     * @param string $endpoint
+     * @param array|string $data
+     * @param Curl $curl
+     * @return false|string|null
+     * @throws ServerErrorException
+     */
+    private function postFormData(string $endpoint, array|string $data, Curl $curl): false|string|null
+    {
+        $config = $this->getConfig();
+        $curl->setCookies($this->session_id);
+        $curl->post($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
+
+        if ($curl->error) {
+            if ($config->is_debug) {
+                var_dump($curl->request_headers);
+                var_dump($curl->response_headers);
+                var_dump($curl->response);
             }
             throw new ServerErrorException($curl->error_message);
         }
