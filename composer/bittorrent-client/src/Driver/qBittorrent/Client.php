@@ -3,6 +3,7 @@
 namespace Iyuu\BittorrentClient\Driver\qBittorrent;
 
 use Iyuu\BittorrentClient\Clients;
+use Iyuu\BittorrentClient\Config;
 use Iyuu\BittorrentClient\Contracts\Torrent;
 use Iyuu\BittorrentClient\Exception\NotFoundException;
 use Iyuu\BittorrentClient\Exception\ServerErrorException;
@@ -426,8 +427,8 @@ class Client extends Clients
         #p($post_data);
         $curl = $this->initCurl();
         // 设置请求头
-        $this->curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
-        $this->curl->setHeader('Content-Length', strlen($post_data));
+        $curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
+        $curl->setHeader('Content-Length', strlen($post_data));
         return $this->postFormData('torrent_add', $post_data, $curl);
     }
 
@@ -515,12 +516,7 @@ class Client extends Clients
      */
     public function recheck(string $hash): false|string|null
     {
-        // 关键 上传文件流 multipart/form-data【严格按照api文档编写】
-        $post_data = $this->buildData(['hashes' => $hash]);
-        // 设置请求头
-        $this->curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
-        $this->curl->setHeader('Content-Length', strlen($post_data));
-        return $this->postData('torrent_recheck', $post_data);
+        return $this->postData('torrent_recheck', ['hashes' => $hash]);
     }
 
     /**
@@ -768,11 +764,11 @@ class Client extends Clients
      * @param Curl $curl
      * @param string $endpoint
      * @param array|string $data
-     * @param \Iyuu\BittorrentClient\Config $config
+     * @param Config $config
      * @return false|string|null
      * @throws ServerErrorException
      */
-    private function extracted(Curl $curl, string $endpoint, array|string $data, \Iyuu\BittorrentClient\Config $config): string|null|false
+    private function extracted(Curl $curl, string $endpoint, array|string $data, Config $config): string|null|false
     {
         $curl->post($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
 
