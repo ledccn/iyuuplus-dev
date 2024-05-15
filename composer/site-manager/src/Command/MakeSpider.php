@@ -102,6 +102,7 @@ use Iyuu\\SiteManager\\Frameworks\\NexusPhp\\HasRss;
 class $className extends BaseDriver $import
 {
     $used
+
     /**
      * 站点名称
      */
@@ -148,10 +149,11 @@ use Iyuu\\SiteManager\\Spider\\Pagination;
 class $className extends BaseCookie
 {
     use HasCookie, Pagination;
+
     /**
      * 站点名称
      */
-    public const SITE_NAME = '$site';
+    public const string SITE_NAME = '$site';
 
     /**
      * 是否调试当前站点
