@@ -91,10 +91,10 @@ class MakeSpider extends Command
 
 namespace Iyuu\\SiteManager\\Driver;
 
+use Iyuu\\SiteManager\\BaseDriver;
 use Iyuu\\SiteManager\\Contracts\\Processor;
 use Iyuu\\SiteManager\\Contracts\\ProcessorXml;
 use Iyuu\\SiteManager\\Frameworks\\NexusPhp\\HasRss;
-use Iyuu\\SiteManager\\BaseDriver;
 
 /**
  * $site
@@ -105,7 +105,7 @@ class $className extends BaseDriver $import
     /**
      * 站点名称
      */
-    public const SITE_NAME = '$site';
+    public const string SITE_NAME = '$site';
 }
 
 EOF;
@@ -152,6 +152,7 @@ class $className extends BaseCookie
      * 站点名称
      */
     public const SITE_NAME = '$site';
+
     /**
      * 是否调试当前站点
      * @return bool
