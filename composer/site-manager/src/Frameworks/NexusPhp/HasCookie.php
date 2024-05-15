@@ -50,18 +50,14 @@ trait HasCookie
         $items = [];
         foreach ($list as $v) {
             $arr = [];
-            $matches_id = $matches_download = $matches_h1 = [];
+            $matches_id = $matches_download = [];
             if (preg_match('/details.php\?id=(?<id>\d+)/i', $v, $matches_id)) {
                 $details = $matches_id[0];
                 $arr['id'] = $matches_id['id'];
                 if (preg_match('/(?<download>download.php\?.*?)[\'|\"]/i', $v, $matches_download)) {
                     $url = str_replace('&amp;', '&', $matches_download['download']);
                     // 获取主标题
-                    if (preg_match('/<a.*? title=[\'|\"](?<h1>.*?)[\'|\"]/i', $v, $matches_h1)) {
-                        $arr['h1'] = $matches_h1['h1'];
-                    } else {
-                        $arr['h1'] = '';
-                    }
+                    $arr['h1'] = $this->parseH1Node($v);
 
                     try {
                         // 副标题
@@ -112,6 +108,20 @@ trait HasCookie
 
         SpiderTorrents::notify($items, $this->baseDriver, $this->isSpiderDownloadCookieRequired());
         return $items;
+    }
+
+    /**
+     * 获取主标题
+     * @param Crawler|string $node
+     * @return string
+     */
+    protected function parseH1Node(Crawler|string $node): string
+    {
+        if (preg_match('/<a.*? title=[\'|\"](?<h1>.*?)[\'|\"]/i', $node, $matches_h1)) {
+            return $matches_h1['h1'];
+        } else {
+            return  '';
+        }
     }
 
     /**
