@@ -516,7 +516,7 @@ class Client extends Clients
      */
     public function recheck(string $hash): false|string|null
     {
-        return $this->postData('torrent_recheck', ['hashes' => $hash]);
+        return $this->getData('torrent_recheck', ['hashes' => $hash]);
     }
 
     /**
@@ -574,15 +574,16 @@ class Client extends Clients
     /**
      * 基本get方法
      * @param $endpoint
+     * @param array $data
      * @return string|false|null
      * @throws ServerErrorException
      */
-    private function getData($endpoint): string|null|false
+    private function getData($endpoint, array $data = []): string|null|false
     {
         $curl = $this->initCurl();
         $curl->setCookies($this->session_id);
         $config = $this->getConfig();
-        $curl->get($this->clientUrl . $this->endpoints[$endpoint][$this->api_version]);
+        $curl->get($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
 
         if ($curl->error) {
             if ($config->is_debug) {
