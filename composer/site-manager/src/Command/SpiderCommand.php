@@ -52,6 +52,7 @@ class SpiderCommand extends Command
             ->addOption('begin', null, InputOption::VALUE_OPTIONAL, '开始页码', '')
             ->addOption('end', null, InputOption::VALUE_OPTIONAL, '结束页码', '')
             ->addOption('count', null, InputOption::VALUE_OPTIONAL, '进程数量', 1)
+            ->addOption('sleep', null, InputOption::VALUE_OPTIONAL, '每个种子间休眠的秒数', 0)
             ->addOption('daemon', 'd', InputOption::VALUE_NONE, '守护进程');
     }
 

@@ -74,6 +74,10 @@ class ReportObserver implements Observer
             if ($content && !SpiderWorker::getParams()->daemon) {
                 echo $content;
             }
+            if (0 < SpiderWorker::getParams()->sleep) {
+                echo '安全休眠中...' . PHP_EOL;
+                sleep(min(SpiderWorker::getParams()->sleep, 60));
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ use Iyuu\SiteManager\Traits\HasConfig;
  * @property string $begin 开始页码
  * @property string $end 结束页码
  * @property int $count 进程数量
+ * @property int $sleep 每个种子间休眠的秒数
  * @property bool $daemon 守护进程
  */
 class Params implements ArrayAccess
@@ -24,12 +25,12 @@ class Params implements ArrayAccess
     /**
      * 启动时允许的动作
      */
-    const ACTION_LIST = ['start', 'stop', 'restart', 'reload', 'status', 'connections'];
+    const array ACTION_LIST = ['start', 'stop', 'restart', 'reload', 'status', 'connections'];
 
     /**
      * 爬虫类型
      */
-    const TYPE_LIST = ['cookie', 'rss'];
+    const array TYPE_LIST = ['cookie', 'rss'];
 
     /**
      * 创建一个爬取参数对象
