@@ -583,7 +583,8 @@ class Client extends Clients
      */
     private function getData($endpoint): string|null|false
     {
-        $curl = $this->curl;
+        $curl = $this->initCurl();
+        $curl->setCookies($this->session_id);
         $config = $this->getConfig();
         $curl->get($this->clientUrl . $this->endpoints[$endpoint][$this->api_version]);
 
@@ -609,20 +610,10 @@ class Client extends Clients
      */
     private function postData(string $endpoint, array|string $data): false|string|null
     {
-        $curl = $this->curl;
+        $curl = $this->initCurl();
+        $curl->setCookies($this->session_id);
         $config = $this->getConfig();
-        $curl->post($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
-
-        if ($curl->error) {
-            if ($config->is_debug) {
-                var_dump($this->curl->request_headers);
-                var_dump($this->curl->response_headers);
-                var_dump($this->curl->response);
-            }
-            throw new ServerErrorException($curl->error_message);
-        }
-
-        return $curl->response;
+        return $this->extracted($curl, $endpoint, $data, $config);
     }
 
     /**
@@ -637,18 +628,7 @@ class Client extends Clients
     {
         $config = $this->getConfig();
         $curl->setCookies($this->session_id);
-        $curl->post($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
-
-        if ($curl->error) {
-            if ($config->is_debug) {
-                var_dump($curl->request_headers);
-                var_dump($curl->response_headers);
-                var_dump($curl->response);
-            }
-            throw new ServerErrorException($curl->error_message);
-        }
-
-        return $curl->response;
+        return $this->extracted($curl, $endpoint, $data, $config);
     }
 
     /**
@@ -782,5 +762,29 @@ class Client extends Clients
     public function stop()
     {
         // TODO: Implement stop() method.
+    }
+
+    /**
+     * @param Curl $curl
+     * @param string $endpoint
+     * @param array|string $data
+     * @param \Iyuu\BittorrentClient\Config $config
+     * @return false|string|null
+     * @throws ServerErrorException
+     */
+    private function extracted(Curl $curl, string $endpoint, array|string $data, \Iyuu\BittorrentClient\Config $config): string|null|false
+    {
+        $curl->post($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
+
+        if ($curl->error) {
+            if ($config->is_debug) {
+                var_dump($curl->request_headers);
+                var_dump($curl->response_headers);
+                var_dump($curl->response);
+            }
+            throw new ServerErrorException($curl->error_message);
+        }
+
+        return $curl->response;
     }
 }
