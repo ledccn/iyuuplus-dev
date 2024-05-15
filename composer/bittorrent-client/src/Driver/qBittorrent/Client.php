@@ -527,7 +527,7 @@ class Client extends Clients
      */
     public function reannounce(string $hash): false|string|null
     {
-        return $this->postData('torrent_reannounce', ['hashes' => $hash]);
+        return $this->getData('torrent_reannounce', ['hashes' => $hash]);
     }
 
     /**
