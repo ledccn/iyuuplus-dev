@@ -112,4 +112,13 @@ class DriverMTeam extends BaseDriver implements ProcessorXml
         parent::beforeDownload($curl);
         $curl->setFollowLocation(1);
     }
+
+    /**
+     * @param Curl $curl
+     * @return void
+     */
+    protected function beforeRequestXml(Curl $curl): void
+    {
+        $curl->setFollowLocation(1);
+    }
 }
