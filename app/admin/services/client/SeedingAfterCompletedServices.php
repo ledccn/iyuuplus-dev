@@ -22,7 +22,7 @@ class SeedingAfterCompletedServices
     public static function run(): void
     {
         try {
-            $list = Client::getEnabled()->get();
+            $list = Client::getEnabledSeedingAfterCompleted()->get();
             $list->each(function (Client $client) {
                 try {
                     match ($client->getClientEnums()) {

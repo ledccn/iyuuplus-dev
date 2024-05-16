@@ -85,6 +85,15 @@ class Client extends Base implements RecoveryInterface
     }
 
     /**
+     * 获取 启用&校验后做种 的下载器
+     * @return Builder
+     */
+    public static function getEnabledSeedingAfterCompleted(): Builder
+    {
+        return static::where('enabled', '=', 1)->where('seeding_after_completed', 1);
+    }
+
+    /**
      * 获取默认下载器
      * @return self|Builder|null
      */
