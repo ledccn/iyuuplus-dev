@@ -47,6 +47,17 @@ class UninstallCommand extends Command
         }
 
         clearstatcache();
+        // 删除文件
+        $unlinks = [
+            base_path() . '/.env',
+            base_path() . '/config/crontab.php',
+            base_path() . '/plugin/admin/config/database.php',
+            base_path() . '/plugin/admin/config/thinkorm.php',
+        ];
+        foreach ($unlinks as $filename) {
+            is_file($filename) and unlink($filename);
+        }
+
         // 删除数据表
         $database = getenv('DB_DATABASE');
 
@@ -57,21 +68,9 @@ class UninstallCommand extends Command
             foreach ($table_names as $table) {
                 Util::db()->statement('DROP TABLE IF EXISTS ' . $table);
             }
+            Util::db()->statement('SET FOREIGN_KEY_CHECKS = 1');
         } catch (Error|Exception|Throwable $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
-        } finally {
-            Util::db()->statement('SET FOREIGN_KEY_CHECKS = 1');
-        }
-
-        // 删除文件
-        $unlinks = [
-            base_path() . '/.env',
-            base_path() . '/config/crontab.php',
-            base_path() . '/plugin/admin/config/database.php',
-            base_path() . '/plugin/admin/config/thinkorm.php',
-        ];
-        foreach ($unlinks as $filename) {
-            is_file($filename) and unlink($filename);
         }
 
         $output->writeln('重置完成！');
