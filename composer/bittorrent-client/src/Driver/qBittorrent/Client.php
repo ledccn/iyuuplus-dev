@@ -515,7 +515,7 @@ class Client extends Clients
      */
     public function recheck(string|array $hash): false|string|null
     {
-        return $this->getData('torrent_recheck', [
+        return $this->postData('torrent_recheck', [
             'hashes' => is_string($hash) ? $hash : implode('|', $hash),
         ]);
     }
@@ -693,11 +693,7 @@ class Client extends Clients
      */
     public function getTorrentList(): array
     {
-        $result = $this->getData('torrent_list');
-        $res = json_decode($result, true);
-        if (empty($res)) {
-            throw new NotFoundException("从下载器获取种子列表失败，可能qBittorrent暂时无响应，请稍后重试！" . PHP_EOL);
-        }
+        $res = $this->getList();
         // 过滤，只保留正常做种
         $res = array_filter($res, function ($v) {
             if (isset($v['state']) && in_array($v['state'], array('uploading', 'stalledUP', 'pausedUP', 'queuedUP', 'checkingUP', 'forcedUP'))) {
@@ -725,6 +721,22 @@ class Client extends Clients
         // 转移做种使用
         $hashArray[static::TORRENT_LIST] = array_column($res, null, 'hash');
         return $hashArray;
+    }
+
+    /**
+     * 获取全部种子列表
+     * @return array
+     * @throws NotFoundException
+     * @throws ServerErrorException
+     */
+    public function getList(): array
+    {
+        $result = $this->getData('torrent_list');
+        $res = json_decode($result, true);
+        if (empty($res)) {
+            throw new NotFoundException("从下载器获取种子列表失败，可能qBittorrent暂时无响应，请稍后重试！" . PHP_EOL);
+        }
+        return $res;
     }
 
     /**

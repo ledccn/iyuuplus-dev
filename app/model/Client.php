@@ -24,6 +24,7 @@ use plugin\admin\app\model\Base;
  * @property int $root_folder 创建多文件子目录
  * @property int $is_debug 调试
  * @property int $is_default 默认
+ * @property int $seeding_after_completed 校验后做种（辅种的种子在校验完成后自动做种）
  * @property int $enabled 启用
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
@@ -72,6 +73,15 @@ class Client extends Base implements RecoveryInterface
     public function getClientEnums(): ClientEnums
     {
         return ClientEnums::from($this->getAttribute('brand'));
+    }
+
+    /**
+     * 构造器：获取启用的下载器
+     * @return Builder
+     */
+    public static function getEnabled(): Builder
+    {
+        return static::where('enabled', '=', 1);
     }
 
     /**

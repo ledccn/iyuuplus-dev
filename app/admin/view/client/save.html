@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
     <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
 </head>
+<style>
+    .layui-input-wrap60 {
+        width: 60px !important;
+        line-height: 20px !important;
+    }
+</style>
 <body>
 
 <form class="layui-form" action="">
@@ -126,9 +132,18 @@
                 </div>
             </div>
 
+            <div class="layui-form-item">
+                <label class="layui-form-label">校验后做种</label>
+                <div class="layui-input-inline layui-input-wrap60">
+                    <input type="checkbox" id="seeding_after_completed" lay-filter="enabled" lay-skin="switch"/>
+                    <input type="text" style="display:none" name="seeding_after_completed" value="1"/>
+                </div>
+                <div class="layui-form-mid layui-text-em layui-word-aux">辅种的种子在校验完成后自动做种</div>
+            </div>
+
             <div class="layui-form-item" id="support_root_folder">
                 <label class="layui-form-label">创建多文件子目录</label>
-                <div class="layui-input-inline layui-input-wrap">
+                <div class="layui-input-inline layui-input-wrap60">
                     <input type="checkbox" id="root_folder" lay-filter="root_folder" lay-skin="switch"/>
                     <input type="text" style="display:none" name="root_folder" value="1"/>
                 </div>
@@ -331,6 +346,15 @@
                 layui.form.render();
                 layui.form.on("switch(enabled)", function (data) {
                     layui.$('input[name="enabled"]').val(this.checked ? 1 : 0);
+                });
+            })
+
+            // 字段 校验后做种 seeding_after_completed
+            layui.use(["form"], function () {
+                layui.$("#seeding_after_completed").attr("checked", layui.$('input[name="seeding_after_completed"]').val() != 0);
+                layui.form.render();
+                layui.form.on("switch(seeding_after_completed)", function (data) {
+                    layui.$('input[name="seeding_after_completed"]').val(this.checked ? 1 : 0);
                 });
             })
         }

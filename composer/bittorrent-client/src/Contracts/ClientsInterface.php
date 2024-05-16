@@ -38,9 +38,16 @@ interface ClientsInterface
 
     /**
      * 获取种子列表
+     * - 正常做种的
      * @return array
      */
     public function getTorrentList(): array;
+
+    /**
+     * 获取全部种子列表
+     * @return array
+     */
+    public function getList(): array;
 
     /**
      * 开始做种

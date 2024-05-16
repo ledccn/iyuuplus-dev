@@ -16,6 +16,10 @@ use Ledc\Curl\Curl;
 class Client extends Clients
 {
     /**
+     * 获取的种子字段
+     */
+    public const array TORRENT_GET_FIELDS = ["id", "name", "status", "hashString", "totalSize", "percentDone", "addedDate", "trackerStats", "leftUntilDone", "rateDownload", "rateUpload", "recheckProgress", "rateDownload", "rateUpload", "peersGettingFromUs", "peersSendingToUs", "uploadRatio", "uploadedEver", "downloadedEver", "downloadDir", "error", "errorString", "doneDate", "queuePosition", "activityDate"];
+    /**
      * @var string
      */
     protected string $session_id = '';
@@ -77,6 +81,38 @@ class Client extends Clients
         }
         $extra['filename'] = $filename;
         return $this->request("torrent-add", $extra);
+    }
+
+    /**
+     * 获取全部种子列表
+     * @param array $fields
+     * @return array
+     * @throws NotFoundException
+     * @throws ServerErrorException
+     * @throws UnauthorizedException
+     */
+    public function getList(array $fields = []): array
+    {
+        if (empty($fields)) {
+            $fields = static::TORRENT_GET_FIELDS;
+        }
+
+        $request = ["fields" => $fields];
+        $json = $this->request("torrent-get", $request);
+        if (empty($json)) {
+            throw new NotFoundException('从下载器获取种子列表失败，可能transmission暂时无响应，请稍后重试！' . PHP_EOL);
+        }
+        $res = json_decode($json, true);
+        $result = $res['result'] ?? '';
+        $torrents = $res['arguments']['torrents'] ?? [];
+        if ('success' !== $result) {
+            throw new NotFoundException("解析下载器返回结果时失败：" . $result . PHP_EOL);
+        }
+        if (empty($torrents)) {
+            throw new NotFoundException("解析下载器种子数据为空" . PHP_EOL);
+        }
+
+        return $torrents;
     }
 
     /**
