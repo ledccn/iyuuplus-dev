@@ -509,13 +509,13 @@ class Client extends Clients
 
     /**
      * 重新校验种子
-     * @param string $hash info_hash可以|分隔，删除多个种子；也可以传入all，删除所有种子
+     * @param string|array $hash info_hash可以|分隔，删除多个种子；也可以传入all，删除所有种子
      * @return false|string|null
      * @throws ServerErrorException
      */
     public function recheck(string|array $hash): false|string|null
     {
-        return $this->postData('torrent_recheck', [
+        return $this->getData('torrent_recheck', [
             'hashes' => is_string($hash) ? $hash : implode('|', $hash),
         ]);
     }
