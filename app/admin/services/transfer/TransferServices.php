@@ -305,18 +305,15 @@ class TransferServices
         $move = $rocket->move;
         $help_msg = implode(PHP_EOL, IyuuDocuments::get('transfer.help', [])) . PHP_EOL;
 
-        $extra_options = [
-            // 添加分类标签
-            'category' => 'IYUU自动转移'
-        ];
+        $extra_options = [];
+        $extra_options['autoTMM'] = 'false'; // 关闭自动种子管理
+        $extra_options['root_folder'] = $this->to_client->root_folder ? "true" : 'false';
+
         if ($this->paused) {
             $extra_options['paused'] = 'true';
         }
         if ($this->skip_check) {
             $extra_options['skip_checking'] = "true";    //转移成功，跳校验
-        }
-        if ($this->to_client->root_folder) {
-            $extra_options['skip_checking'] = "true";
         }
 
         if (empty($path)) {
