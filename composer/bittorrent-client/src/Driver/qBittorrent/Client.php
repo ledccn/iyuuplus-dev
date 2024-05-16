@@ -513,9 +513,11 @@ class Client extends Clients
      * @return false|string|null
      * @throws ServerErrorException
      */
-    public function recheck(string $hash): false|string|null
+    public function recheck(string|array $hash): false|string|null
     {
-        return $this->getData('torrent_recheck', ['hashes' => $hash]);
+        return $this->postData('torrent_recheck', [
+            'hashes' => is_string($hash) ? $hash : implode('|', $hash),
+        ]);
     }
 
     /**
