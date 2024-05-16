@@ -182,6 +182,9 @@ class ReseedDownloadServices
         switch ($clientModel->getClientEnums()) {
             case ClientEnums::transmission:
                 $contractsTorrent->parameters['paused'] = true;     // 添加任务校验后是否暂停
+                if (DownloaderMarkerEnums::Empty !== $markerEnum) {
+                    $contractsTorrent->parameters['labels'] = ['IYUU' . ReseedSubtypeEnums::text($reseed->getSubtypeEnums())];   // 添加分类标签
+                }
                 break;
             case ClientEnums::qBittorrent;
                 $contractsTorrent->parameters['autoTMM'] = 'false'; // 关闭自动种子管理

@@ -99,6 +99,7 @@ class Client extends Clients
             throw new NotFoundException("下载器种子数据为空" . PHP_EOL);
         }
         $res = $res['arguments']['torrents'];
+        //file_put_contents(runtime_path('torrents.txt'), print_r($res, true));
         // 过滤，只保留正常做种
         $res = array_filter($res, function ($v) {
             return isset($v['status']) && $v['status'] === 6;
@@ -554,7 +555,7 @@ class Client extends Clients
      */
     public function get($ids = [], $fields = []): bool|string|null
     {
-        $default = ["id", "name", "status", "doneDate", "haveValid", "totalSize"];
+        $default = ["id", "name", "status", "doneDate", "haveValid", "totalSize", 'labels', 'peers', 'group'];
         if (!is_array($ids)) {
             $ids = array($ids);
         }

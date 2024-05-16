@@ -289,6 +289,9 @@ class TransferServices
         $metadata = file_get_contents($torrentFile);
         $contractsTorrent = new TorrentContract($metadata, true);
         $contractsTorrent->parameters = $extra_options;
+        if (DownloaderMarkerEnums::Empty !== $this->downloaderMarkerEnums) {
+            $contractsTorrent->parameters['labels'] = ['IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer)];   // 添加分类标签
+        }
         return $contractsTorrent;
     }
 
