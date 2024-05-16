@@ -3,7 +3,6 @@
 namespace Iyuu\BittorrentClient\Driver\qBittorrent;
 
 use Iyuu\BittorrentClient\Clients;
-use Iyuu\BittorrentClient\Config;
 use Iyuu\BittorrentClient\Contracts\Torrent;
 use Iyuu\BittorrentClient\Exception\NotFoundException;
 use Iyuu\BittorrentClient\Exception\ServerErrorException;
@@ -429,7 +428,7 @@ class Client extends Clients
         // 设置请求头
         $curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
         $curl->setHeader('Content-Length', strlen($post_data));
-        return $this->postFormData('torrent_add', $post_data, $curl);
+        return $this->postData('torrent_add', $post_data, $curl);
     }
 
     /**
@@ -453,7 +452,7 @@ class Client extends Clients
         // 设置请求头
         $curl->setHeader('Content-Type', 'multipart/form-data; boundary=' . $this->delimiter);
         $curl->setHeader('Content-Length', strlen($post_data));
-        return $this->postFormData('torrent_add', $post_data, $curl);
+        return $this->postData('torrent_add', $post_data, $curl);
     }
 
     /**
@@ -602,30 +601,27 @@ class Client extends Clients
      * 基本post方法
      * @param string $endpoint
      * @param array|string $data
+     * @param Curl|null $curl
      * @return false|string|null
      * @throws ServerErrorException
      */
-    private function postData(string $endpoint, array|string $data): false|string|null
+    private function postData(string $endpoint, array|string $data, Curl $curl = null): false|string|null
     {
-        $curl = $this->initCurl();
+        $curl = $curl ?: $this->initCurl();
         $curl->setCookies($this->session_id);
         $config = $this->getConfig();
-        return $this->extracted($curl, $endpoint, $data, $config);
-    }
+        $curl->post($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
 
-    /**
-     * 基本post方法
-     * @param string $endpoint
-     * @param array|string $data
-     * @param Curl $curl
-     * @return false|string|null
-     * @throws ServerErrorException
-     */
-    private function postFormData(string $endpoint, array|string $data, Curl $curl): false|string|null
-    {
-        $config = $this->getConfig();
-        $curl->setCookies($this->session_id);
-        return $this->extracted($curl, $endpoint, $data, $config);
+        if ($curl->error) {
+            if ($config->is_debug) {
+                var_dump($curl->request_headers);
+                var_dump($curl->response_headers);
+                var_dump($curl->response);
+            }
+            throw new ServerErrorException($curl->error_message);
+        }
+
+        return $curl->response;
     }
 
     /**
@@ -759,29 +755,5 @@ class Client extends Clients
     public function stop()
     {
         // TODO: Implement stop() method.
-    }
-
-    /**
-     * @param Curl $curl
-     * @param string $endpoint
-     * @param array|string $data
-     * @param Config $config
-     * @return false|string|null
-     * @throws ServerErrorException
-     */
-    private function extracted(Curl $curl, string $endpoint, array|string $data, Config $config): string|null|false
-    {
-        $curl->post($this->clientUrl . $this->endpoints[$endpoint][$this->api_version], $data);
-
-        if ($curl->error) {
-            if ($config->is_debug) {
-                var_dump($curl->request_headers);
-                var_dump($curl->response_headers);
-                var_dump($curl->response);
-            }
-            throw new ServerErrorException($curl->error_message);
-        }
-
-        return $curl->response;
     }
 }
