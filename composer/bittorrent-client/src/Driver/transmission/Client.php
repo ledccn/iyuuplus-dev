@@ -7,6 +7,7 @@ use Iyuu\BittorrentClient\Contracts\Torrent;
 use Iyuu\BittorrentClient\Exception\NotFoundException;
 use Iyuu\BittorrentClient\Exception\ServerErrorException;
 use Iyuu\BittorrentClient\Exception\UnauthorizedException;
+use Ledc\Curl\Curl;
 
 /**
  * transmission
@@ -130,7 +131,7 @@ class Client extends Clients
      */
     public function login(): string
     {
-        $curl = $this->curl;
+        $curl = $this->getCurl();
         $config = $this->getConfig();
         $curl->setBasicAuthentication($config->username ?? '', $config->password ?? '');
         $curl->get($config->getClientUrl());
@@ -141,9 +142,7 @@ class Client extends Clients
             }
         }
 
-        // 修复 409 Conflict （2024年3月8日10:41:51）
-        if (409 === $curl->getHttpStatus() && $curl->getResponseHeaders('X-Transmission-Session-Id')) {
-            $this->session_id = $curl->getResponseHeaders('X-Transmission-Session-Id');
+        if ($this->session_id = $this->fix409Conflict($curl)) {
             return $this->session_id;
         }
 
@@ -151,6 +150,21 @@ class Client extends Clients
             var_dump($curl);
         }
         throw new ServerErrorException('下载器登录失败：' . $curl->error_message);
+    }
+
+    /**
+     * 修复 409 Conflict （2024年3月8日10:41:51）
+     * @param Curl $curl
+     * @return string
+     */
+    private function fix409Conflict(Curl $curl): string
+    {
+        if (409 === $curl->getHttpStatus()) {
+            if ($sid = $curl->getResponseHeaders('X-Transmission-Session-Id')) {
+                return $sid;
+            }
+        }
+        return '';
     }
 
     /**
@@ -248,28 +262,38 @@ class Client extends Clients
      */
     protected function request(string $method, array $arguments = []): string
     {
-        if (!$this->session_id) {
-            if (!$this->login()) {
-                throw new UnauthorizedException('无法获得 X-Transmission-Session-Id');
-            }
-        }
-
         $arguments = $this->cleanRequestData($arguments);
-
-        $curl = $this->getCurl();
-        $config = $this->getConfig();
         $data = [
             'method' => $method,
             'arguments' => $arguments
         ];
-        $header = array(
-            'Content-Type' => 'application/json',
-            'X-Transmission-Session-Id' => $this->session_id
-        );
-        foreach ($header as $key => $value) {
-            $curl->setHeader($key, $value);
-        }
-        $curl->post($config->getClientUrl(), $data, true);
+
+        $retry = 1;
+        do {
+            if (!$this->session_id) {
+                if (!$this->login()) {
+                    throw new UnauthorizedException('无法获得 X-Transmission-Session-Id');
+                }
+            }
+            $config = $this->getConfig();
+            $curl = $this->initCurl();
+            $curl->setBasicAuthentication($config->username ?? '', $config->password ?? '');
+            $curl->setXRequestedWith();
+            $header = array(
+                'Referer' => $this->getConfig()->getHostname() . '/transmission/web/',
+                'X-Transmission-Session-Id' => $this->session_id
+            );
+            foreach ($header as $key => $value) {
+                $curl->setHeader($key, $value);
+            }
+            $curl->post($config->getClientUrl(), $data, true);
+            if ($sid = $this->fix409Conflict($curl)) {
+                $this->session_id = $sid;
+            } else {
+                $retry = 0;
+            }
+        } while (0 < $retry--);
+
         if ($curl->isSuccess()) {
             return $curl->response;
         }
