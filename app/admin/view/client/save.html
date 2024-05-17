@@ -113,6 +113,16 @@
             </div>
 
             <div class="layui-form-item">
+                <label class="layui-form-label">校验后做种</label>
+                <div class="layui-input-inline layui-input-wrap60">
+                    <input type="checkbox" id="seeding_after_completed" lay-filter="seeding_after_completed"
+                           lay-skin="switch"/>
+                    <input type="text" style="display:none" name="seeding_after_completed" value="1"/>
+                </div>
+                <div class="layui-form-mid layui-text-em layui-word-aux">辅种的种子在校验完成后自动做种</div>
+            </div>
+
+            <div class="layui-form-item">
                 <label class="layui-form-label">调试</label>
                 <div class="layui-input-block">
                     <input type="checkbox" id="is_debug" lay-filter="is_debug" lay-skin="switch"/>
@@ -134,16 +144,6 @@
                     <input type="checkbox" id="enabled" lay-filter="enabled" lay-skin="switch"/>
                     <input type="text" style="display:none" name="enabled" value="1"/>
                 </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">校验后做种</label>
-                <div class="layui-input-inline layui-input-wrap60">
-                    <input type="checkbox" id="seeding_after_completed" lay-filter="seeding_after_completed"
-                           lay-skin="switch"/>
-                    <input type="text" style="display:none" name="seeding_after_completed" value="1"/>
-                </div>
-                <div class="layui-form-mid layui-text-em layui-word-aux">辅种的种子在校验完成后自动做种</div>
             </div>
 
             <div class="layui-form-item" id="support_root_folder">
