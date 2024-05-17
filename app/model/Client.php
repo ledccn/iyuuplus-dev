@@ -18,9 +18,9 @@ use plugin\admin\app\model\Base;
  * @property string $endpoint 接入点
  * @property string $username 用户名
  * @property string $password 密码
- * @property string $watch_path 监控目录
- * @property string $save_path 资源保存路径
- * @property string $torrent_path 种子目录
+ * @property string $watch_path 监控文件夹
+ * @property string $save_path 资源文件夹
+ * @property string $torrent_path 种子文件夹
  * @property int $root_folder 创建多文件子目录
  * @property int $is_debug 调试
  * @property int $is_default 默认
