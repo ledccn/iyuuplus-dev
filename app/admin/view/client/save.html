@@ -48,7 +48,8 @@
                     </a>
                 </label>
                 <div class="layui-input-block">
-                    <input type="text" name="endpoint" value="" required lay-verify="required" class="layui-input" id="endpoint">
+                    <input type="text" name="endpoint" value="" required lay-verify="required" class="layui-input"
+                           id="endpoint">
                 </div>
             </div>
 
@@ -76,7 +77,8 @@
                     <input type="text" name="watch_path" value="" class="layui-input"
                            placeholder="通过放入.torrent创建任务">
                     <div class="layui-input-suffix">
-                        <a href="https://doc.iyuu.cn/guide/downloader#监控文件夹" target="_blank" rel="noopener noreferrer">
+                        <a href="https://doc.iyuu.cn/guide/downloader#监控文件夹" target="_blank"
+                           rel="noopener noreferrer">
                             <i class="layui-icon layui-icon-help layui-font-red"></i>
                         </a>
                     </div>
@@ -88,7 +90,8 @@
                 <div class="layui-input-group">
                     <input type="text" name="save_path" value="" class="layui-input" placeholder="即保存路径、保存目录">
                     <div class="layui-input-suffix">
-                        <a href="https://doc.iyuu.cn/guide/transfer-torrent#资源文件夹" target="_blank" rel="noopener noreferrer">
+                        <a href="https://doc.iyuu.cn/guide/transfer-torrent#资源文件夹" target="_blank"
+                           rel="noopener noreferrer">
                             <i class="layui-icon layui-icon-help layui-font-red"></i>
                         </a>
                     </div>
@@ -101,7 +104,8 @@
                     <input type="text" name="torrent_path" value="" class="layui-input"
                            placeholder=".torrent存放的目录">
                     <div class="layui-input-suffix">
-                        <a href="https://doc.iyuu.cn/guide/transfer-torrent#种子文件夹" target="_blank" rel="noopener noreferrer">
+                        <a href="https://doc.iyuu.cn/guide/transfer-torrent#种子文件夹" target="_blank"
+                           rel="noopener noreferrer">
                             <i class="layui-icon layui-icon-help layui-font-red"></i>
                         </a>
                     </div>
@@ -135,7 +139,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">校验后做种</label>
                 <div class="layui-input-inline layui-input-wrap60">
-                    <input type="checkbox" id="seeding_after_completed" lay-filter="enabled" lay-skin="switch"/>
+                    <input type="checkbox" id="seeding_after_completed" lay-filter="seeding_after_completed"
+                           lay-skin="switch"/>
                     <input type="text" style="display:none" name="seeding_after_completed" value="1"/>
                 </div>
                 <div class="layui-form-mid layui-text-em layui-word-aux">辅种的种子在校验完成后自动做种</div>
@@ -173,7 +178,7 @@
 <script src="/app/admin/admin/js/permission.js"></script>
 <script>
     // 点击帮助按钮跳转到新页面
-    document.getElementById("helpButton").addEventListener("click", function() {
+    document.getElementById("helpButton").addEventListener("click", function () {
         var helpPageUrl = "https://doc.iyuu.cn/guide/downloader";
         window.open(helpPageUrl, "_blank");
     });
