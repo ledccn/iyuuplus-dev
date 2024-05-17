@@ -75,6 +75,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
             'Symfony\\Component\\Translation\\' => 30,
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Process\\' => 26,
+            'Symfony\\Component\\OptionsResolver\\' => 34,
             'Symfony\\Component\\Lock\\' => 23,
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\DomCrawler\\' => 29,
@@ -292,6 +293,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         'Symfony\\Component\\Process\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
+        ),
+        'Symfony\\Component\\OptionsResolver\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
         'Symfony\\Component\\Lock\\' => 
         array (
