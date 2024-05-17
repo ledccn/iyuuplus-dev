@@ -2,6 +2,7 @@
 
 namespace plugin\admin\app\controller;
 
+use app\admin\services\client\TotalSeedingServices;
 use app\model\Client;
 use app\model\Reseed;
 use app\model\Site;
@@ -87,6 +88,7 @@ class IndexController
                 ->where('created_at', '<', "$date 23:59:59")->count();
         }
 
+        [$total_seeding, $total_seeding_time] = TotalSeedingServices::get();
         return raw_view('index/dashboard', [
             'app_filemtime' => current_git_filemtime(),
             'app_commit_id' => current_git_commit(),
@@ -95,7 +97,7 @@ class IndexController
             'count_value2' => Client::count(),
             'count_value3' => Site::where('disabled', '=', 0)->count(),
             'count_value4' => Site::count(),
-            'count_value5' => 'NaN',
+            'count_value5' => $total_seeding,
             'count_value6' => Crontab::count(),
             'count_value7' => Crontab::sum('running_count'),
             'count_value8' => 'NaN',
