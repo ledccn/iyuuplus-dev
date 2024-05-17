@@ -299,3 +299,17 @@ function update_env_value(string $key, string $value): string
     return $value;
 }
 
+/**
+ * 安全的调用匿名函数
+ * @param Closure $fn
+ * @return mixed
+ */
+function safe_run(Closure $fn): mixed
+{
+    try {
+        return $fn();
+    } catch (Error|Exception|Throwable $throwable) {
+        Log::error('safe_run 异常：' . $throwable->getMessage());
+    }
+    return null;
+}
