@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<psalm
+  cacheDirectory="./build/psalm/"
+  errorBaseline="psalm-baseline.xml"
+  errorLevel="4"
+  findUnusedBaselineEntry="true"
+  findUnusedCode="false"
+  findUnusedVariablesAndParams="true"
+  resolveFromConfigFile="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="https://getpsalm.org/schema/config"
+  xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+  <projectFiles>
+    <directory name="src"/>
+    <ignoreFiles>
+      <directory name="vendor"/>
+      <!--<file name="src/Foundation/Testing/MockHandler.php"/>-->
+    </ignoreFiles>
+  </projectFiles>
+  <issueHandlers>
+    <PropertyNotSetInConstructor errorLevel="info"/>
+    <UndefinedThisPropertyFetch>
+      <errorLevel type="suppress">
+        <!--<directory name="src/Foundation/Concerns"/>-->
+        <file name="src/Foundation/Concerns/HasOptions.php"/>
+      </errorLevel>
+    </UndefinedThisPropertyFetch>
+    <InaccessibleProperty>
+      <errorLevel type="suppress">
+        <file name="src/Foundation/Response.php"/>
+      </errorLevel>
+    </InaccessibleProperty>
+  </issueHandlers>
+  <plugins>
+    <!--<pluginClass class="Psalm\LaravelPlugin\Plugin"/>-->
+  </plugins>
+  <!--<file src="src/Clients/PushDeerClient.php">
+    <UnusedClosureParam occurrences="1">
+      <code>$optionsResolver</code>
+    </UnusedClosureParam>
+  </file>-->
+</psalm>

@@ -804,6 +804,168 @@
             "install-path": "../graham-campbell/result-type"
         },
         {
+            "name": "guanguans/notify",
+            "version": "2.8.0",
+            "version_normalized": "2.8.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guanguans/notify.git",
+                "reference": "9f0ec594fa423277fc7be43b97c438dc0115f818"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guanguans/notify/zipball/9f0ec594fa423277fc7be43b97c438dc0115f818",
+                "reference": "9f0ec594fa423277fc7be43b97c438dc0115f818",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "ext-simplexml": "*",
+                "guzzlehttp/guzzle": "^7.8",
+                "guzzlehttp/uri-template": "^1.0",
+                "php": ">=7.4",
+                "symfony/options-resolver": "^5.4 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.8",
+                "brainmaestro/composer-git-hooks": "^2.8",
+                "ergebnis/composer-normalize": "^2.42",
+                "ergebnis/license": "^2.4",
+                "ergebnis/php-cs-fixer-config": "dev-main",
+                "ergebnis/rector-rules": "^1.0",
+                "friendsofphp/php-cs-fixer": "^3.56",
+                "guanguans/ai-commit": "dev-main",
+                "guanguans/monorepo-builder-worker": "^1.4",
+                "icanhazstring/composer-unused": "^0.8",
+                "illuminate/collections": "^8.83 || ^9.0 || ^10.0 || ^11.0",
+                "infection/extension-installer": "^0.1",
+                "infection/infection": "^0.26",
+                "maglnet/composer-require-checker": "^3.8 || ^4.0",
+                "mockery/mockery": "^1.6",
+                "pestphp/pest": "^1.23 || ^2.0",
+                "pestphp/pest-plugin-faker": "^1.0 || ^2.0",
+                "php-mock/php-mock-phpunit": "^2.10",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan-deprecation-rules": "^1.1",
+                "rector/rector": "^1.0",
+                "symfony/var-dumper": "^5.4 || ^6.0 || ^7.0",
+                "vimeo/psalm": "^5.24"
+            },
+            "suggest": {
+                "illuminate/collections": "Required to use the method [Response::collect()].",
+                "symfony/var-dumper": "Required to use the the trait [WithDumpable]."
+            },
+            "time": "2024-05-10T10:29:30+00:00",
+            "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": true,
+                    "target-directory": "vendor-bin"
+                },
+                "branch-alias": {
+                    "dev-main": "2.x-dev"
+                },
+                "composer-normalize": {
+                    "indent-size": 4,
+                    "indent-style": "space"
+                },
+                "hooks": {
+                    "post-merge": [
+                        "composer checks"
+                    ],
+                    "pre-commit": [
+                        "composer checks"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src/Foundation/Support/helpers.php"
+                ],
+                "psr-4": {
+                    "Guanguans\\Notify\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "guanguans",
+                    "email": "ityaozm@gmail.com",
+                    "homepage": "https://www.guanguans.cn",
+                    "role": "developer"
+                }
+            ],
+            "description": "Push notification SDK(AnPush、Bark、Chanify、DingTalk、Discord、Gitter、GoogleChat、IGot、Lark、Mattermost、MicrosoftTeams、NowPush、Ntfy、Push、Pushback、PushBullet、PushDeer、Pushover、PushPlus、QQ、RocketChat、ServerChan、ShowdocPush、SimplePush、Slack、Telegram、WeWork、WPush、XiZhi、YiFengChuanHua、Zulip).",
+            "homepage": "https://github.com/guanguans/notify",
+            "keywords": [
+                "AnPush",
+                "Bark",
+                "Mattermost",
+                "MicrosoftTeams",
+                "NowPush",
+                "Ntfy",
+                "PushDeer",
+                "QQ 频道机器人",
+                "Server酱",
+                "ShowdocPush",
+                "WPush",
+                "YiFengChuanHua",
+                "bot",
+                "chanify",
+                "dingtalk",
+                "discord",
+                "gitter",
+                "googleChat",
+                "iGot",
+                "lark",
+                "notification",
+                "notifier",
+                "notify",
+                "push",
+                "pushBack",
+                "pushPlus",
+                "pushbullet",
+                "pushover",
+                "qq",
+                "rocketchat",
+                "sdk",
+                "serverChan",
+                "simplepush",
+                "slack",
+                "telegram",
+                "wework",
+                "xiZhi",
+                "zulip",
+                "一封传话",
+                "企业微信",
+                "企业微信群机器人",
+                "微信",
+                "息知",
+                "钉钉",
+                "钉钉群机器人",
+                "飞书",
+                "飞书群机器人"
+            ],
+            "support": {
+                "issues": "https://github.com/guanguans/notify/issues",
+                "source": "https://github.com/guanguans/notify"
+            },
+            "funding": [
+                {
+                    "url": "https://www.guanguans.cn/images/wechat.jpeg",
+                    "type": "wechat"
+                }
+            ],
+            "install-path": "../guanguans/notify"
+        },
+        {
             "name": "guzzlehttp/guzzle",
             "version": "7.8.1",
             "version_normalized": "7.8.1.0",
@@ -1136,6 +1298,95 @@
                 }
             ],
             "install-path": "../guzzlehttp/psr7"
+        },
+        {
+            "name": "guzzlehttp/uri-template",
+            "version": "v1.0.3",
+            "version_normalized": "1.0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/uri-template.git",
+                "reference": "ecea8feef63bd4fef1f037ecb288386999ecc11c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/uri-template/zipball/ecea8feef63bd4fef1f037ecb288386999ecc11c",
+                "reference": "ecea8feef63bd4fef1f037ecb288386999ecc11c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5 || ^8.0",
+                "symfony/polyfill-php80": "^1.24"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.8.2",
+                "phpunit/phpunit": "^8.5.36 || ^9.6.15",
+                "uri-template/tests": "1.0.0"
+            },
+            "time": "2023-12-03T19:50:20+00:00",
+            "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": false
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\UriTemplate\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https://github.com/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
+                }
+            ],
+            "description": "A polyfill class for uri_template of PHP",
+            "keywords": [
+                "guzzlehttp",
+                "uri-template"
+            ],
+            "support": {
+                "issues": "https://github.com/guzzle/uri-template/issues",
+                "source": "https://github.com/guzzle/uri-template/tree/v1.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/uri-template",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "../guzzlehttp/uri-template"
         },
         {
             "name": "illuminate/bus",

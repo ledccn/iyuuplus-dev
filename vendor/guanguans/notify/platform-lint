@@ -1,0 +1,118 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Copyright (c) 2021-2024 guanguans<ityaozm@gmail.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/guanguans/notify
+ */
+
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+
+require __DIR__.'/vendor/autoload.php';
+
+(static function (): void {
+    $echo = static function ($messages, int $color = 0): void {
+        echo sprintf("\033[{$color}m%s\033[0m\n", implode(\PHP_EOL, (array) $messages).\PHP_EOL);
+    };
+
+    $success = static function ($messages) use ($echo): void {
+        $echo($messages, 32);
+
+        exit(0);
+    };
+
+    $error = static function ($messages) use ($echo): void {
+        $echo($messages, 31);
+
+        exit(1);
+    };
+
+    $platforms = array_values(array_map(
+        static fn (SplFileInfo $splFileInfo): string => $splFileInfo->getBasename(),
+        iterator_to_array(
+            Finder::create()
+                ->in(__DIR__.'/src')
+                ->exclude('Foundation')
+                ->depth(0)
+                // ->sortByName()
+                // ->sort(static fn (
+                //     SplFileInfo $a,
+                //     SplFileInfo $b
+                // ) => strcmp(strtolower($a->getFilename()), strtolower($b->getFilename())))
+                ->sort(static fn (
+                    SplFileInfo $a,
+                    SplFileInfo $b
+                ): int => strtolower($a->getFilename()) <=> strtolower($b->getFilename()))
+                ->directories(),
+        ),
+    ));
+
+    $deprecatedPlatforms = [
+        'Gitter',
+        'NowPush',
+    ];
+
+    $platformsDescriptionContents = implode('、', $platforms);
+
+    $platformsKeywordContents = trim(
+        array_reduce(
+            $platforms,
+            static fn (string $carry, string $platform): string => $carry."        \"$platform\",\n",
+            ''
+        ),
+        ",\n"
+    );
+
+    $platformsLinkContents = trim(
+        array_reduce(
+            $platforms,
+            static function (string $carry, string $platform) use ($deprecatedPlatforms): string {
+                return $carry.(
+                    \in_array($platform, $deprecatedPlatforms, true)
+                        ? "* [~~$platform~~](./src/$platform/README.md)\n"
+                        : "* [$platform](./src/$platform/README.md)\n"
+                );
+            },
+            ''
+        ),
+        "\n"
+    );
+
+    file_put_contents(
+        __DIR__.'/tests.platforms',
+        implode(\PHP_EOL, [
+            $platformsDescriptionContents,
+            $platformsKeywordContents,
+            $platformsLinkContents,
+        ])
+    );
+
+    $composerContents = file_get_contents(__DIR__.'/composer.json');
+
+    if (!str_contains($composerContents, $platformsDescriptionContents)) {
+        $error("The description of composer.json must contain: \n```\n$platformsDescriptionContents\n```");
+    }
+
+    if (!str_contains($composerContents, $platformsKeywordContents)) {
+        $error("The keywords of composer.json must contain: \n```\n$platformsKeywordContents\n```");
+    }
+
+    $readmeContents = file_get_contents(__DIR__.'/README.md');
+
+    if (!str_contains($readmeContents, $platformsDescriptionContents)) {
+        $error("The description of README.md must contain: \n```\n$platformsDescriptionContents\n```");
+    }
+
+    if (!str_contains($readmeContents, $platformsLinkContents)) {
+        $error("The links of README.md must contain: \n```\n$platformsLinkContents\n```");
+    }
+
+    $success('Platforms lint successfully.');
+})();

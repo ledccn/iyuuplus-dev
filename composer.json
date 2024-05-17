@@ -65,7 +65,8 @@
     "phpmailer/phpmailer": "^6.9",
     "overtrue/easy-sms": "^2.5",
     "chrome-php/chrome": "^1.11",
-    "robmorgan/phinx": "^0.16.0"
+    "robmorgan/phinx": "^0.16.0",
+    "guanguans/notify": "^2.8"
   },
   "autoload": {
     "psr-4": {

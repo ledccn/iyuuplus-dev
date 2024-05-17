@@ -1,0 +1,80 @@
+{
+    "ignoreMsiWithNoMutations": true,
+    "logs": {
+        "github": false,
+        "html": "build/infection/infection.html",
+        "text": "build/infection/infection.text"
+    },
+    "minCoveredMsi": 80,
+    "minMsi": 80,
+    "mutators": {
+        "@default": true,
+        "@function_signature": true,
+        "global-ignore": [
+            "Client::__construct"
+        ],
+        "global-ignoreSourceCodeByRegex": [
+            "Assert::.*"
+        ],
+        "IncrementInteger": {
+            "ignore": [
+                "Guanguans\\Notify\\Foundation\\Concerns\\Dumpable::dd"
+            ],
+            "ignoreSourceCodeByRegex": [
+                ".*"
+            ]
+        },
+        "ArrayItem": false,
+        "ArrayItemRemoval": false,
+        "ArrayOneItem": false,
+        "AssignCoalesce": false,
+        "Assignment": false,
+        "BitwiseOr": false,
+        "CastString": false,
+        "Coalesce": false,
+        "Concat": false,
+        "ConcatOperandRemoval": false,
+        "DecrementInteger": false,
+        "FalseValue": false,
+        "Foreach_": false,
+        "FunctionCallRemoval": false,
+        "GreaterThanOrEqualTo": false,
+        "Identical": false,
+        "InstanceOf_": false,
+        "LessThan": false,
+        "LessThanNegotiation": false,
+        "LogicalAnd": false,
+        "LogicalNot": false,
+        "LogicalOr": false,
+        "MethodCallRemoval": false,
+        "NotIdentical": false,
+        "Plus": false,
+        "ProtectedVisibility": false,
+        "PublicVisibility": false,
+        "Ternary": false,
+        "This": false,
+        "TrueValue": false,
+        "UnwrapArrayMerge": false,
+        "UnwrapArrayPad": false,
+        "UnwrapArrayReduce": false,
+        "UnwrapArrayUnique": false,
+        "UnwrapLtrim": false,
+        "UnwrapStrToLower": false,
+        "UnwrapSubstr": false,
+        "While_": false
+    },
+    "phpUnit": {
+        "configDir": "./"
+    },
+    "source": {
+        "directories": [
+            "src/Foundation"
+        ],
+        "excludes": [
+            "Rectors",
+            "Support"
+        ]
+    },
+    "testFramework": "pest",
+    "timeout": 10
+}

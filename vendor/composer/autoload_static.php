@@ -8,8 +8,8 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
@@ -18,13 +18,14 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '948ad5488880985ff1c06721a4e447fe' => __DIR__ . '/..' . '/cakephp/utility/bootstrap.php',
         'ef65a1626449d89d0811cf9befce46f0' => __DIR__ . '/..' . '/illuminate/events/functions.php',
         'f88f8987adfe3f7cf9978fa9a9d148bc' => __DIR__ . '/..' . '/workerman/psr7/src/functions_include.php',
+        '18595f7b40b6d37f49bea1abc47e745b' => __DIR__ . '/..' . '/guanguans/notify/src/Foundation/Support/helpers.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '950818617bd7dfe7017a2cd7db4a96d7' => __DIR__ . '/../..' . '/support/helpers.php',
     );
@@ -145,9 +146,11 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         ),
         'G' => 
         array (
+            'GuzzleHttp\\UriTemplate\\' => 23,
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+            'Guanguans\\Notify\\' => 17,
             'GrahamCampbell\\ResultType\\' => 26,
         ),
         'F' => 
@@ -482,6 +485,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         array (
             0 => __DIR__ . '/..' . '/chrome-php/chrome/src',
         ),
+        'GuzzleHttp\\UriTemplate\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/uri-template/src',
+        ),
         'GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
@@ -493,6 +500,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Guanguans\\Notify\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guanguans/notify/src',
         ),
         'GrahamCampbell\\ResultType\\' => 
         array (
