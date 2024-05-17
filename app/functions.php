@@ -46,7 +46,7 @@ function clear_instance_cache(): void
         $clientDownloader = App::pull(ClientDownloader::class);
         $clientDownloader->clearDriver();
     } catch (Error|Exception|Throwable $throwable) {
-        Log::error('进程清理缓存驱动实例异常：' . $throwable->getMessage());
+        Log::error('清理缓存驱动实例异常：' . $throwable->getMessage());
     }
 }
 

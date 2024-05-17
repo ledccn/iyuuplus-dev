@@ -50,6 +50,19 @@ class Reseed extends Base
     protected $guarded = [];
 
     /**
+     * 获取成功的辅种构造器
+     * @param int $client_id
+     * @param array $infohash_list
+     * @return Builder
+     */
+    public static function getSuccessByClientIdInfoHash(int $client_id, array $infohash_list): Builder
+    {
+        return static::where('client_id', $client_id)
+            ->where('status', ReseedStatusEnums::Success->value)
+            ->whereIn('info_hash', $infohash_list);
+    }
+
+    /**
      * 获取状态枚举对象
      * @return ReseedStatusEnums
      */

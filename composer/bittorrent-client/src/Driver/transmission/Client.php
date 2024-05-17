@@ -15,6 +15,8 @@ use Ledc\Curl\Curl;
  */
 class Client extends Clients
 {
+    use TraitVersion;
+
     /**
      * 获取的种子字段
      */

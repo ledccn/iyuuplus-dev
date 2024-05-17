@@ -2,6 +2,7 @@
 
 namespace process;
 
+use app\admin\services\client\SeedingAfterCompletedServices;
 use app\admin\services\reseed\ReseedDownloadServices;
 use app\admin\services\SitesServices;
 use app\admin\support\NotifyAdmin;
@@ -69,6 +70,11 @@ class ReseedProcess
         // 每天执行
         new Crontab('10 10 * * *', function () {
             exec(implode(' ', [PHP_BINARY, base_path('webman'), 'iyuu:backup', 'backup']));
+        });
+
+        // 每6小时执行
+        new Crontab('0 */4 * * *', function () {
+            SeedingAfterCompletedServices::run();
         });
 
         // 每60秒执行

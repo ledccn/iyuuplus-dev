@@ -16,6 +16,10 @@ use RuntimeException;
 class Client extends Clients
 {
     /**
+     * 暂停上传
+     */
+    public const string STATE_pausedUP = 'pausedUP';
+    /**
      * API主版本号
      * @var string
      */
@@ -485,13 +489,13 @@ class Client extends Clients
 
     /**
      * 恢复做种
-     * @param string $hash info_hash可以|分隔，删除多个种子；也可以传入all，删除所有种子
+     * @param string|array $hash info_hash可以|分隔，删除多个种子；也可以传入all，删除所有种子
      * @return false|string|null
      * @throws ServerErrorException
      */
-    public function resume(string $hash): false|string|null
+    public function resume(string|array $hash): false|string|null
     {
-        return $this->postData('torrent_resume', ['hashes' => $hash]);
+        return $this->postData('torrent_resume', ['hashes' => is_string($hash) ? $hash : implode('|', $hash)]);
     }
 
     /**
@@ -579,7 +583,7 @@ class Client extends Clients
      * @return string|false|null
      * @throws ServerErrorException
      */
-    private function getData($endpoint, array $data = []): string|null|false
+    public function getData($endpoint, array $data = []): string|null|false
     {
         $curl = $this->initCurl();
         $curl->setCookies($this->session_id);
@@ -607,7 +611,7 @@ class Client extends Clients
      * @return false|string|null
      * @throws ServerErrorException
      */
-    private function postData(string $endpoint, array|string $data, Curl $curl = null): false|string|null
+    public function postData(string $endpoint, array|string $data, Curl $curl = null): false|string|null
     {
         $curl = $curl ?: $this->initCurl();
         $curl->setCookies($this->session_id);
@@ -725,13 +729,15 @@ class Client extends Clients
 
     /**
      * 获取全部种子列表
+     * @param array $data
      * @return array
      * @throws NotFoundException
      * @throws ServerErrorException
+     * @link https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-4.1)#get-torrent-list
      */
-    public function getList(): array
+    public function getList(array $data = []): array
     {
-        $result = $this->getData('torrent_list');
+        $result = $this->getData('torrent_list', $data);
         $res = json_decode($result, true);
         if (empty($res)) {
             throw new NotFoundException("从下载器获取种子列表失败，可能qBittorrent暂时无响应，请稍后重试！" . PHP_EOL);
