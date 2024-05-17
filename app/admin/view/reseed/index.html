@@ -222,6 +222,7 @@
                 title: "站点名字", align: "center",
                 field: "site",
                 width: 140,
+                sort: true,
                 templet: function (d) {
                     let field = "site";
                     if (typeof d[field] == "undefined") return "";
@@ -234,6 +235,7 @@
             }, {
                 title: "站点ID", align: "center",
                 field: "sid",
+                sort: true,
                 hide: isWidthLessThan(),
                 width: 80,
             }, {
@@ -253,6 +255,7 @@
             }, {
                 title: "目标文件夹",
                 field: "directory",
+                sort: true,
                 hide: isWidthLessThan(),
             }, {
                 title: "调度时间", align: "center",
