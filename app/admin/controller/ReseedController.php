@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use app\common\HasDelete;
 use app\model\enums\ReseedStatusEnums;
 use app\model\Reseed;
+use plugin\admin\app\common\Util;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
 use support\Request;
@@ -66,6 +67,19 @@ class ReseedController extends Crud
             return parent::update($request);
         }
         return view('reseed/update');
+    }
+
+    /**
+     * 更新
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function clear(Request $request): Response
+    {
+        $request->isPost();
+        $rs = Util::db()->statement('TRUNCATE TABLE ' . $this->model->getTable());
+        return $rs ? $this->success() : $this->fail('清理失败');
     }
 
     /**

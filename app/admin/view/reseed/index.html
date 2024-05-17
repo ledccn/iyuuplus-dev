@@ -74,6 +74,9 @@
     <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="admin.reseed.delete">
         <i class="layui-icon layui-icon-delete"></i>删除
     </button>
+    <button class="pear-btn pear-btn-warming pear-btn-md" lay-event="batchClear" permission="admin.reseed.clear" title="清空自动辅种数据表内的数据">
+        <i class="layui-icon layui-icon-delete"></i>清除辅种缓存
+    </button>
 </script>
 
 <!-- 表格行工具栏 -->
@@ -94,6 +97,7 @@
     const SELECT_API = "/admin/reseed/select";
     const UPDATE_API = "/admin/reseed/update";
     const DELETE_API = "/admin/reseed/delete";
+    const CLEAR_API = "/admin/reseed/clear";
     const INSERT_URL = "/admin/reseed/insert";
     const UPDATE_URL = "/admin/reseed/update";
     const REFRESH_API = "/admin/reseed/refresh";
@@ -174,12 +178,13 @@
     });
 
     // 表格渲染
-    layui.use(["table", "form", "common", "popup", "util"], function () {
+    layui.use(["table", "form", "common", "popup", "util", "layer"], function () {
         let table = layui.table;
         let form = layui.form;
         let $ = layui.$;
         let common = layui.common;
         let util = layui.util;
+        let layer = layui.layer;
 
         /**
          * 屏幕宽度小于指定值
@@ -402,6 +407,22 @@
                 })
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
+            } else if (obj.event === "batchClear") {
+                layer.confirm('清理后会导致校验后做种功能失效，您需要手动开始做种；<br>是否继续清理辅种缓存的操作？', {icon: 3}, function() {
+                    $.ajax({
+                        url: CLEAR_API,
+                        dataType: "json",
+                        type: "post",
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success("清理成功", refreshTable);
+                        }
+                    })
+                }, function(){
+                    //layer.msg('点击取消的回调');
+                });
             }
         });
 
