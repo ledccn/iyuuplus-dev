@@ -43,11 +43,11 @@ class Client implements Contracts\Client
     }
 
     /**
-     * @throws GuzzleException
-     *
+     * @param Message $message
      * @return Response|ResponseInterface
+     * @throws GuzzleException
      */
-    public function send(Message $message): ResponseInterface
+    public function send(Message $message): Response|ResponseInterface
     {
         return $this->getHttpClient()->request(
             $message->toHttpMethod(),

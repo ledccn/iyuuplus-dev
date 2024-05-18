@@ -241,21 +241,21 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
 
         switch (strtolower($type)) {
             case 'json':
-                return false !== strpos($contentType, '/json');
+                return str_contains($contentType, '/json');
             case 'xml':
-                return false !== strpos($contentType, '/xml');
+                return str_contains($contentType, '/xml');
             case 'html':
-                return false !== strpos($contentType, '/html');
+                return str_contains($contentType, '/html');
             case 'image':
-                return false !== strpos($contentType, 'image/');
+                return str_contains($contentType, 'image/');
             case 'audio':
-                return false !== strpos($contentType, 'audio/');
+                return str_contains($contentType, 'audio/');
             case 'video':
-                return false !== strpos($contentType, 'video/');
+                return str_contains($contentType, 'video/');
             case 'text':
-                return false !== strpos($contentType, 'text/')
-                    || false !== strpos($contentType, '/json')
-                    || false !== strpos($contentType, '/xml');
+                return str_contains($contentType, 'text/')
+                    || str_contains($contentType, '/json')
+                    || str_contains($contentType, '/xml');
             default:
                 return false;
         }

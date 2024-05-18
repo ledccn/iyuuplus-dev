@@ -25,10 +25,8 @@ class Arr
 
     /**
      * Determine if the given key exists in the provided array.
-     *
-     * @param array-key|float $key
      */
-    public static function exists(array|\ArrayAccess $array, $key): bool
+    public static function exists(array|\ArrayAccess $array, float|int|string $key): bool
     {
         if ($array instanceof \ArrayAccess) {
             return $array->offsetExists($key);
@@ -82,10 +80,8 @@ class Arr
      * Get an item from an array using "dot" notation.
      *
      * @noinspection MultipleReturnStatementsInspection
-     *
-     * @param null|array-key $key
      */
-    public static function get(array|\ArrayAccess $array, $key, mixed $default = null): mixed
+    public static function get(array|\ArrayAccess $array, null|float|int|string $key, mixed $default = null): mixed
     {
         if (!static::accessible($array)) {
             return value($default);
@@ -99,7 +95,7 @@ class Arr
             return $array[$key];
         }
 
-        if (false === strpos($key, '.')) {
+        if (!str_contains($key, '.')) {
             return $array[$key] ?? value($default);
         }
 

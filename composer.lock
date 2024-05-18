@@ -2118,16 +2118,16 @@
         },
         {
             "name": "ledc/notify",
-            "version": "v8.0.1",
+            "version": "v8.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ledccn/notify.git",
-                "reference": "3e88ff32f5063fb079058e3fbfa8f6f353648ed0"
+                "reference": "3528c94c8967e00eaa56338961317e9ca630e6e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ledccn/notify/zipball/3e88ff32f5063fb079058e3fbfa8f6f353648ed0",
-                "reference": "3e88ff32f5063fb079058e3fbfa8f6f353648ed0",
+                "url": "https://api.github.com/repos/ledccn/notify/zipball/3528c94c8967e00eaa56338961317e9ca630e6e7",
+                "reference": "3528c94c8967e00eaa56338961317e9ca630e6e7",
                 "shasum": ""
             },
             "require": {
@@ -2274,7 +2274,7 @@
                     "type": "wechat"
                 }
             ],
-            "time": "2024-05-18T12:21:47+00:00"
+            "time": "2024-05-18T15:44:47+00:00"
         },
         {
             "name": "ledc/pipeline",

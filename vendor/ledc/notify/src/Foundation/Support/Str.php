@@ -127,10 +127,10 @@ class Str
     /**
      * Replace the given value in the given string.
      *
-     * @param iterable<string>|string $search
-     * @param iterable<string>|string $replace
-     * @param iterable<string>|string $subject
-     *
+     * @param iterable|string $search
+     * @param iterable|string $replace
+     * @param iterable|string $subject
+     * @param bool $caseSensitive
      * @return list<string>|string
      */
     public static function replace(iterable|string $search, iterable|string $replace, iterable|string $subject, bool $caseSensitive = true): array|string
