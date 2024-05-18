@@ -5,9 +5,8 @@ namespace app\command;
 use plugin\admin\app\common\Util;
 use plugin\admin\app\model\Admin;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -48,15 +47,18 @@ class ResetPasswordCommand extends Command
             return self::FAILURE;
         }
 
-        $update_data = [
-            'password' => Util::passwordHash($password)
-        ];
         if (ctype_digit((string)$admin_id)) {
-            Admin::where('id', $admin_id)->update($update_data);
+            $admin = Admin::find($admin_id);
         } else {
-            Admin::first()->update($update_data);
+            $admin = Admin::first();
         }
-        $output->writeln('密码重置成功');
+
+        if (!$admin) {
+            $output->writeln('<error>账号不存在</error>');
+        }
+        $admin->password = Util::passwordHash($password);
+        $admin->save();
+        $output->writeln($admin->username . ' 密码重置成功');
         return self::SUCCESS;
     }
 }
