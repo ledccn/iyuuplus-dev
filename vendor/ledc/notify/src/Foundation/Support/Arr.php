@@ -17,10 +17,8 @@ class Arr
 {
     /**
      * Determine whether the given value is array accessible.
-     *
-     * @param mixed $value
      */
-    public static function accessible($value): bool
+    public static function accessible(mixed $value): bool
     {
         return \is_array($value) || $value instanceof \ArrayAccess;
     }
@@ -28,10 +26,9 @@ class Arr
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param array|\ArrayAccess $array
      * @param array-key|float $key
      */
-    public static function exists($array, $key): bool
+    public static function exists(array|\ArrayAccess $array, $key): bool
     {
         if ($array instanceof \ArrayAccess) {
             return $array->offsetExists($key);
@@ -48,11 +45,8 @@ class Arr
      * Set an array item to a given value using "dot" notation.
      *
      * If no key is given to the method, the entire array will be replaced.
-     *
-     * @param null|int|string $key
-     * @param mixed $value
      */
-    public static function set(array &$array, $key, $value): array
+    public static function set(array &$array, null|int|string $key, mixed $value): array
     {
         if (null === $key) {
             return $array = $value;
@@ -89,13 +83,9 @@ class Arr
      *
      * @noinspection MultipleReturnStatementsInspection
      *
-     * @param array|\ArrayAccess $array
      * @param null|array-key $key
-     * @param mixed $default
-     *
-     * @return mixed
      */
-    public static function get($array, $key, $default = null)
+    public static function get(array|\ArrayAccess $array, $key, mixed $default = null): mixed
     {
         if (!static::accessible($array)) {
             return value($default);
@@ -142,20 +132,16 @@ class Arr
 
     /**
      * Get a subset of the items from the given array.
-     *
-     * @param array|string $keys
      */
-    public static function only(array $array, $keys): array
+    public static function only(array $array, array|string $keys): array
     {
         return array_intersect_key($array, array_flip((array) $keys));
     }
 
     /**
      * Get all keys of the given array except for a specified array of keys.
-     *
-     * @param array|float|int|string $keys
      */
-    public static function except(array $array, $keys): array
+    public static function except(array $array, array|float|int|string $keys): array
     {
         static::forget($array, $keys);
 
@@ -164,10 +150,8 @@ class Arr
 
     /**
      * Remove one or many array items from a given array using "dot" notation.
-     *
-     * @param array|float|int|string $keys
      */
-    public static function forget(array &$array, $keys): void
+    public static function forget(array &$array, array|float|int|string $keys): void
     {
         $original = &$array;
 

@@ -1,6 +1,6 @@
 {
-    "name": "guanguans/notify",
-    "description": "Push notification SDK(AnPush、Bark、Chanify、DingTalk、Discord、Gitter、GoogleChat、IGot、Lark、Mattermost、MicrosoftTeams、NowPush、Ntfy、Push、Pushback、PushBullet、PushDeer、Pushover、PushPlus、QQ、RocketChat、ServerChan、ShowdocPush、SimplePush、Slack、Telegram、WeWork、WPush、XiZhi、YiFengChuanHua、Zulip).",
+    "name": "ledc/notify",
+    "description": "Push notification SDK(AnPush、Bark、Chanify、DingTalk、Discord、Gitter、GoogleChat、IGot、Iyuu、Lark、Mattermost、MicrosoftTeams、NowPush、Ntfy、Push、Pushback、PushBullet、PushDeer、Pushover、PushPlus、QQ、RocketChat、ServerChan、ShowdocPush、SimplePush、Slack、Telegram、WeWork、WPush、XiZhi、YiFengChuanHua、Zulip).",
     "license": "MIT",
     "type": "library",
     "keywords": [
@@ -29,6 +29,7 @@
         "Gitter",
         "GoogleChat",
         "IGot",
+        "Iyuu",
         "Lark",
         "Mattermost",
         "MicrosoftTeams",
@@ -73,13 +74,13 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.2",
         "ext-json": "*",
         "ext-openssl": "*",
         "ext-simplexml": "*",
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/uri-template": "^1.0",
-        "symfony/options-resolver": "^5.4 || ^6.0 || ^7.0"
+        "symfony/options-resolver": "^7.0"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.8",
@@ -104,7 +105,7 @@
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "rector/rector": "^1.0",
-        "symfony/var-dumper": "^5.4 || ^6.0 || ^7.0",
+        "symfony/var-dumper": "^7.0",
         "vimeo/psalm": "^5.24"
     },
     "suggest": {
@@ -197,8 +198,6 @@
         "composer-updater": "@php ./composer-updater --highest-php-binary=/opt/homebrew/opt/php@8.3/bin/php --except-packages=pestphp/pest-plugin-laravel --ansi",
         "composer-updater-dry-run": "@composer-updater --dry-run",
         "composer-validate": "@composer validate --check-lock --strict --ansi -v",
-        "infection": "@php ./vendor/bin/infection --configuration=infection.json --show-mutations --threads=8 --ansi -v",
-        "infection-dirty": "@infection --git-diff-filter=AM",
         "json-lint": "@php ./vendor/bin/jsonlint *.json .*rc",
         "lint": [
             "for DIR in .; do find $DIR -maxdepth 1 -type f -name '*.php' -type f ! -name 'xxx.php' -exec php -l {} \\; 2>&1 | (! grep -v '^No syntax errors detected'); done",
@@ -209,11 +208,6 @@
         "mark-start": "printf '\\n!\\n!\\t\\033[0;36m%s\\033[0m\\n!\\n\\n' \"Started\"",
         "md-fix": "@md-lint --fix",
         "md-lint": "lint-md --config .lintmdrc ./*.md ./.github/ ./docs/ ./src/*/*.md",
-        "pest": "@php ./vendor/bin/pest --coverage",
-        "pest-coverage": "@pest --coverage-html=./build/phpunit/ --coverage-clover=./clover.xml",
-        "pest-migrate-configuration": "@pest --migrate-configuration",
-        "pest-profile": "@pest --profile",
-        "pest-type-coverage": "@pest --type-coverage",
         "phpstan": "@php ./vendor/bin/phpstan analyse --ansi -v",
         "phpstan-baseline": "@phpstan --generate-baseline --allow-empty-baseline",
         "platform-lint": "@php platform-lint",
@@ -222,8 +216,6 @@
         ],
         "psalm": "@php ./vendor/bin/psalm",
         "psalm-baseline": "@psalm --update-baseline",
-        "rector": "@php ./vendor/bin/rector --clear-cache --ansi -v",
-        "rector-dry-run": "@rector --dry-run",
         "release": "@php ./vendor/bin/monorepo-builder release --ansi -v",
         "release-major": "@release major",
         "release-major-dry-run": "@release-major --dry-run",

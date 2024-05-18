@@ -61,12 +61,8 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
      */
     protected ?TransferStats $transferStats = null;
 
-    /**
-     * The decoded JSON response.
-     *
-     * @var null|array|scalar
-     */
-    protected $decoded;
+    /** The decoded JSON response. */
+    protected mixed $decoded = null;
 
     /**
      * Provide debug information about the response.
@@ -122,15 +118,8 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
 
     /**
      * Get the JSON decoded body of the response as an array or scalar value.
-     *
-     * @noinspection JsonEncodingApiUsageInspection
-     *
-     * @param null|array-key $key
-     * @param mixed $default
-     *
-     * @return mixed
      */
-    public function json($key = null, $default = null)
+    public function json(mixed $key = null, mixed $default = null): mixed
     {
         if (null === $this->decoded) {
             $this->decoded = json_decode($this->body(), true);
@@ -145,11 +134,8 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
 
     /**
      * Alias of json().
-     *
-     * @param null|array-key $key
-     * @param null|mixed $default
      */
-    public function array($key = null, $default = null)
+    public function array(mixed $key = null, mixed $default = null)
     {
         return $this->json($key, $default);
     }
@@ -177,7 +163,7 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
      *
      * @return false|\SimpleXMLElement
      */
-    public function xml(...$arguments)
+    public function xml(...$arguments): bool|\SimpleXMLElement
     {
         return simplexml_load_string($this->body(), ...$arguments);
     }
@@ -464,11 +450,9 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
     /**
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
-     * @param bool|\Closure $condition
-     *
      * @throws RequestException
      */
-    public function throwIf($condition): self
+    public function throwIf(bool|\Closure $condition): self
     {
         return value($condition, $this) ? $this->throw(\func_get_args()[1] ?? null) : $this;
     }
@@ -476,11 +460,9 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
     /**
      * Throw an exception if the response status code matches the given code.
      *
-     * @param callable|int $statusCode
-     *
      * @throws RequestException
      */
-    public function throwIfStatus($statusCode): self
+    public function throwIfStatus(callable|int $statusCode): self
     {
         if (\is_callable($statusCode) && $statusCode($this->status(), $this)) {
             return $this->throw();
@@ -492,11 +474,9 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
     /**
      * Throw an exception unless the response status code matches the given code.
      *
-     * @param callable|int $statusCode
-     *
      * @throws RequestException
      */
-    public function throwUnlessStatus($statusCode): self
+    public function throwUnlessStatus(callable|int $statusCode): self
     {
         if (\is_callable($statusCode)) {
             return $statusCode($this->status(), $this) ? $this : $this->throw();
@@ -527,22 +507,16 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
 
     /**
      * Determine if the given offset exists.
-     *
-     * @param mixed|string $offset
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->json()[$offset]);
     }
 
     /**
      * Get the value for a given offset.
-     *
-     * @param mixed|string $offset
-     *
-     * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->json()[$offset] ?? null;
     }
@@ -550,12 +524,9 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
     /**
      * Set the value at the given offset.
      *
-     * @param mixed|string $offset
-     * @param mixed $value
-     *
      * @throws \LogicException
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new LogicException('Response data may not be mutated using array access.');
     }
@@ -563,11 +534,9 @@ class Response extends \GuzzleHttp\Psr7\Response implements \ArrayAccess
     /**
      * Unset the value at the given offset.
      *
-     * @param mixed|string $offset
-     *
      * @throws \LogicException
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         throw new LogicException('Response data may not be mutated using array access.');
     }

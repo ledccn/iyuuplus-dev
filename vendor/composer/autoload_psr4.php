@@ -84,7 +84,7 @@ return array(
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
-    'Guanguans\\Notify\\' => array($vendorDir . '/guanguans/notify/src'),
+    'Guanguans\\Notify\\' => array($vendorDir . '/ledc/notify/src'),
     'GrahamCampbell\\ResultType\\' => array($vendorDir . '/graham-campbell/result-type/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Evenement\\' => array($vendorDir . '/evenement/evenement/src'),

@@ -25,7 +25,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         '948ad5488880985ff1c06721a4e447fe' => __DIR__ . '/..' . '/cakephp/utility/bootstrap.php',
         'ef65a1626449d89d0811cf9befce46f0' => __DIR__ . '/..' . '/illuminate/events/functions.php',
         'f88f8987adfe3f7cf9978fa9a9d148bc' => __DIR__ . '/..' . '/workerman/psr7/src/functions_include.php',
-        '18595f7b40b6d37f49bea1abc47e745b' => __DIR__ . '/..' . '/guanguans/notify/src/Foundation/Support/helpers.php',
+        'f716c9d0b070426654dd8fc2efbd8901' => __DIR__ . '/..' . '/ledc/notify/src/Foundation/Support/helpers.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '950818617bd7dfe7017a2cd7db4a96d7' => __DIR__ . '/../..' . '/support/helpers.php',
     );
@@ -503,7 +503,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         ),
         'Guanguans\\Notify\\' => 
         array (
-            0 => __DIR__ . '/..' . '/guanguans/notify/src',
+            0 => __DIR__ . '/..' . '/ledc/notify/src',
         ),
         'GrahamCampbell\\ResultType\\' => 
         array (

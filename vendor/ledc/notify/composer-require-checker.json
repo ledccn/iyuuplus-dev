@@ -28,6 +28,7 @@
         "string",
         "true",
         "void",
+        "mixed",
         "HHVM_VERSION",
         "curl_version",
         "Composer\\InstalledVersions",

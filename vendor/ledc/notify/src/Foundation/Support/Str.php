@@ -93,7 +93,7 @@ class Str
      *
      * @param iterable<string>|string $patterns
      */
-    public static function is($patterns, string $value): bool
+    public static function is(iterable|string $patterns, string $value): bool
     {
         if (!is_iterable($patterns)) {
             $patterns = [$patterns];
@@ -133,7 +133,7 @@ class Str
      *
      * @return list<string>|string
      */
-    public static function replace($search, $replace, $subject, bool $caseSensitive = true)
+    public static function replace(iterable|string $search, iterable|string $replace, iterable|string $subject, bool $caseSensitive = true): array|string
     {
         if ($search instanceof \Traversable) {
             $search = iterator_to_array($search);

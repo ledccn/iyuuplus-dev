@@ -43,12 +43,8 @@ if (!\function_exists('error_silencer')) {
 if (!\function_exists('value')) {
     /**
      * Return the default value of the given value.
-     *
-     * @param mixed $value
-     *
-     * @return mixed
      */
-    function value($value, ...$args)
+    function value(mixed $value, ...$args): mixed
     {
         return $value instanceof Closure ? $value(...$args) : $value;
     }
@@ -68,11 +64,9 @@ if (!\function_exists('tap')) {
     /**
      * Call the given Closure with the given value then return the value.
      *
-     * @param mixed $value
-     *
      * @see https://github.com/laravel/framework
      */
-    function tap($value, ?callable $callback = null)
+    function tap(mixed $value, ?callable $callback = null)
     {
         if (null === $callback) {
             return new class($value) {

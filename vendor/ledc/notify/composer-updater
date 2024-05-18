@@ -234,14 +234,13 @@ $status = (new SingleCommandApplication)
              * @noinspection MissingParameterTypeDeclarationInspection
              * @noinspection PhpSameParameterValueInspection
              *
-             * @param array|string $command
              * @param mixed $input The input as stream resource, scalar or \Traversable, or null for no input
              */
             private function mustRunCommand(
-                $command,
+                array|string $command,
                 ?string $cwd = null,
                 ?array $env = null,
-                $input = null,
+                mixed $input = null,
                 ?float $timeout = 300
             ): Process {
                 $process = \is_string($command)
@@ -272,10 +271,8 @@ $status = (new SingleCommandApplication)
              * @noinspection SuspiciousLoopInspection
              * @noinspection ComparisonScalarOrderInspection
              * @noinspection MissingParameterTypeDeclarationInspection
-             *
-             * @param array|string $pattern
              */
-            private function strIs($pattern, string $value): bool
+            private function strIs(array|string $pattern, string $value): bool
             {
                 $patterns = (array) $pattern;
 

@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="2.8.0"></a>
+## [2.8.0] - 2024-05-10
+### Feat
+- **WPush:** Add WPush package with Authenticator, Client, Message classes and README.md file
+- **tests:** add ClientTest for WPush
+
+
 <a name="2.7.0"></a>
 ## [2.7.0] - 2024-05-10
 ### Docs
@@ -829,7 +836,8 @@ All notable changes to this project will be documented in this file.
 - Finish tests
 
 
-[Unreleased]: https://github.com/guanguans/notify/compare/2.7.0...HEAD
+[Unreleased]: https://github.com/guanguans/notify/compare/2.8.0...HEAD
+[2.8.0]: https://github.com/guanguans/notify/compare/2.7.0...2.8.0
 [2.7.0]: https://github.com/guanguans/notify/compare/2.6.1...2.7.0
 [2.6.1]: https://github.com/guanguans/notify/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/guanguans/notify/compare/2.5.1...2.6.0

@@ -1,7 +1,7 @@
 # notify
 
 > [!NOTE]
-> Push notification SDK(AnPush、Bark、Chanify、DingTalk、Discord、Gitter、GoogleChat、IGot、Lark、Mattermost、MicrosoftTeams、NowPush、Ntfy、Push、Pushback、PushBullet、PushDeer、Pushover、PushPlus、QQ、RocketChat、ServerChan、ShowdocPush、SimplePush、Slack、Telegram、WeWork、WPush、XiZhi、YiFengChuanHua、Zulip).
+> Push notification SDK(AnPush、Bark、Chanify、DingTalk、Discord、Gitter、GoogleChat、IGot、Iyuu、Lark、Mattermost、MicrosoftTeams、NowPush、Ntfy、Push、Pushback、PushBullet、PushDeer、Pushover、PushPlus、QQ、RocketChat、ServerChan、ShowdocPush、SimplePush、Slack、Telegram、WeWork、WPush、XiZhi、YiFengChuanHua、Zulip).
 
 [![tests](https://github.com/guanguans/notify/actions/workflows/tests.yml/badge.svg)](https://github.com/guanguans/notify/actions/workflows/tests.yml)
 [![check & fix styling](https://github.com/guanguans/notify/actions/workflows/php-cs-fixer.yml/badge.svg)](https://github.com/guanguans/notify/actions/workflows/php-cs-fixer.yml)
@@ -22,6 +22,7 @@
 * [~~Gitter~~](./src/Gitter/README.md)
 * [GoogleChat](./src/GoogleChat/README.md)
 * [IGot](./src/IGot/README.md)
+* [Iyuu](./src/Iyuu/README.md)
 * [Lark](./src/Lark/README.md)
 * [Mattermost](./src/Mattermost/README.md)
 * [MicrosoftTeams](./src/MicrosoftTeams/README.md)
@@ -53,12 +54,12 @@
 
 ## Requirement
 
-* PHP >= 7.4
+* PHP >= 8.2
 
 ## Installation
 
 ```bash
-composer require guanguans/notify -v
+composer require ledc/notify -v
 ```
 
 ## Usage example

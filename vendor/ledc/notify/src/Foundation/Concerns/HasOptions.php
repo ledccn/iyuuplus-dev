@@ -42,12 +42,9 @@ trait HasOptions
     protected array $options = [];
 
     /**
-     * @param mixed $name
-     * @param mixed $arguments
-     *
      * @throws \ReflectionException
      */
-    public function __call($name, $arguments)
+    public function __call(mixed $name, mixed $arguments)
     {
         $defined = Utils::definedFor($this);
 
@@ -110,7 +107,7 @@ trait HasOptions
         return isset($this->options[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->getOption($offset);
     }

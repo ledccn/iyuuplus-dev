@@ -195,7 +195,7 @@ final class HasOptionsDocCommentRector extends AbstractRector implements Configu
     /**
      * @param list<string>|string $optionAllowedTypes
      */
-    private function createMethodPhpDocTagNode(string $option, $optionAllowedTypes): PhpDocTagNode
+    private function createMethodPhpDocTagNode(string $option, array|string $optionAllowedTypes): PhpDocTagNode
     {
         $option = Str::camel($option);
 
