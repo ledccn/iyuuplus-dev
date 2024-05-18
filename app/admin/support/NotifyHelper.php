@@ -35,6 +35,7 @@ class NotifyHelper
         $token = $config['token'] ?? '';
         $token = $token ?: iyuu_token();
         $client = new IyuuClient(new IyuuAuthenticator($token));
+        $client->verify(false);
         $message = IyuuMessage::make([
             'text' => $text,
             'desp' => $desp
@@ -53,6 +54,7 @@ class NotifyHelper
         $config = ConfigEnums::getConfig(ConfigEnums::notify_server_chan);
         $token = $config['key'] ?? '';
         $client = new ServerChanClient(new ServerChanAuthenticator($token));
+        $client->verify(false);
         $message = ServerChanMessage::make([
             'title' => $title,
             'desp' => $desp
@@ -74,6 +76,7 @@ class NotifyHelper
         $server = $config['server'] ?? '';
         $group = $group ?: ($config['group'] ?? '');
         $client = new BarkClient(new BarkAuthenticator($token));
+        $client->verify(false);
         if ($server) {
             $client->baseUri($server);
         }
@@ -98,6 +101,7 @@ class NotifyHelper
         parse_str($parse, $result);
         $token = $result['key'] ?? '';
         $client = new WeWorkClient(new WeWorkAuthenticator($token));
+        $client->verify(false);
         $message = WeWorkMarkdownMessage::make([
             'content' => $content
         ]);
