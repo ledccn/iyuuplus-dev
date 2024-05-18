@@ -75,6 +75,13 @@ update_render_callable.push(
                                 });
                             }
 
+                            // 渲染通知渠道
+                            if (parameter['notify_channel']) {
+                                $('input[name="parameter[notify_channel]').each(function () {
+                                    $(this).prop('checked', $(this).val() === parameter['notify_channel']);
+                                });
+                            }
+
                             // 渲染标记规则
                             if (parameter['marker']) {
                                 $('input[name="parameter[marker]').each(function () {

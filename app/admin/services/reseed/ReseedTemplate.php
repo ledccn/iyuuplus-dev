@@ -3,6 +3,7 @@
 namespace app\admin\services\reseed;
 
 use app\command\ReseedCommand;
+use app\model\enums\ConfigEnums;
 use app\model\enums\DownloaderMarkerEnums;
 use Error;
 use Exception;
@@ -111,6 +112,10 @@ class ReseedTemplate extends CrontabAbstract
         $markerEmpty = DownloaderMarkerEnums::Empty->value;
         $markerTag = DownloaderMarkerEnums::Tag->value;
         $markerCategory = DownloaderMarkerEnums::Category->value;
+        $notify_iyuu = ConfigEnums::notify_iyuu->value;
+        $notify_server_chan = ConfigEnums::notify_server_chan->value;
+        $notify_bark = ConfigEnums::notify_bark->value;
+        $notify_qy_weixin = ConfigEnums::notify_qy_weixin->value;
         return PHP_EOL . <<<EOF
 <style>
 .layui-input-wrap {
@@ -135,6 +140,16 @@ class ReseedTemplate extends CrontabAbstract
     <label class="layui-form-label required">辅种下载器</label>
     <div class="layui-input-block">
         <div name="clients" id="clients" value=""></div>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label required">通知渠道</label>
+    <div class="layui-input-block">
+        <input type="radio" name="parameter[notify_channel]" value="" title="不通知" checked>
+        <input type="radio" name="parameter[notify_channel]" value="$notify_iyuu" title="爱语飞飞">
+        <input type="radio" name="parameter[notify_channel]" value="$notify_server_chan" title="Server酱">
+        <input type="radio" name="parameter[notify_channel]" value="$notify_bark" title="Bark">
+        <input type="radio" name="parameter[notify_channel]" value="$notify_qy_weixin" title="企业微信群机器人">
     </div>
 </div>
 <div class="layui-form-item">

@@ -3,17 +3,22 @@
 namespace app\admin\services\reseed;
 
 use app\admin\services\client\ClientServices;
+use app\admin\support\NotifyAdmin;
+use app\admin\support\NotifyHelper;
 use app\model\Client;
+use app\model\enums\ConfigEnums;
 use app\model\enums\DownloaderMarkerEnums;
 use app\model\enums\ReseedStatusEnums;
 use app\model\enums\ReseedSubtypeEnums;
 use app\model\payload\ReseedPayload;
 use app\model\Reseed;
 use app\model\Site;
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\Clients;
 use Iyuu\ReseedClient\InternalServerErrorException;
 use plugin\cron\app\model\Crontab;
+use support\Log;
 use Throwable;
 use Webman\Event\Event;
 
@@ -41,6 +46,11 @@ class ReseedServices
      * @var array
      */
     protected array $crontabClients;
+    /**
+     * 计划任务：通知渠道
+     * @var ConfigEnums|null
+     */
+    protected ?ConfigEnums $notifyEnum;
     /**
      * 计划任务：标记规则
      * @var DownloaderMarkerEnums
@@ -151,7 +161,43 @@ class ReseedServices
         }
 
         // 调度事件：全部客户端辅种结束
-        Event::emit('reseed.all.done', [$this->notifyData, $this->clientModel, $this->crontabClients]);
+        Event::emit('reseed.all.done', [$this->notifyData, $this->crontabModel, $this->crontabClients]);
+
+        try {
+            $this->sendNotify();
+        } catch (Throwable $throwable) {
+            Log::error('辅种后发送通知时异常：' . $throwable->getMessage());
+            NotifyAdmin::error($throwable->getMessage());
+        }
+    }
+
+    /**
+     * 发送通知
+     * @return void
+     * @throws GuzzleException
+     */
+    protected function sendNotify(): void
+    {
+        $br = PHP_EOL;
+        $text = 'IYUU自动辅种-统计报表';
+        $desp = '### 版本号：' . iyuu_version() . $br;
+        $desp .= '**支持站点：' . $this->notifyData->supportSitesCount . '**  [当前支持自动辅种的站点数量]' . $br;
+        $desp .= '**辅种站点：' . $this->notifyData->userSitesCount . '**  [勾选辅种的站点数量]' . $br;
+        $desp .= '**总做种：' . $this->notifyData->hashCount . '**  [客户端做种的hash总数]' . $br;
+        $desp .= '**返回数据：' . $this->notifyData->reseedCount . '**  [服务器返回的可辅种数据]' . $br;
+        $desp .= '**重复：' . $this->notifyData->reseedRepeat . '**  [客户端已做种]' . $br;
+        $desp .= '**跳过：' . $this->notifyData->reseedSkip . '**  [未设置passkey]' . $br;
+
+        $response = match ($this->notifyEnum) {
+            ConfigEnums::notify_iyuu => NotifyHelper::iyuu($text, $desp),
+            ConfigEnums::notify_server_chan => NotifyHelper::serverChan($text, $desp),
+            ConfigEnums::notify_bark => NotifyHelper::bark($text, $desp),
+            ConfigEnums::notify_qy_weixin => NotifyHelper::weWork($text . $br . $desp),
+            default => null
+        };
+        if ($response) {
+            Log::info('辅种结束发送通知后的响应：' . $response->getBody());
+        }
     }
 
     /**
@@ -288,12 +334,14 @@ class ReseedServices
         }
         $sites = $parameter['sites'];
         $clients = $parameter['clients'];
+        $notify_channel = $parameter['notify_channel'] ?? '';
         $marker = DownloaderMarkerEnums::from($parameter['marker'] ?? DownloaderMarkerEnums::Empty->value);
         $auto_check = $parameter['auto_check'] ?? '';
 
         $this->crontabModel = $crontabModel;
         $this->crontabSites = $sites;
         $this->crontabClients = $clients;
+        $this->notifyEnum = ConfigEnums::tryFrom($notify_channel);
         $this->downloaderMarkerEnums = $marker;
         $this->auto_check = $auto_check;
     }
