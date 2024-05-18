@@ -182,7 +182,7 @@ class Utils
         $defaults = [];
 
         if (class_exists(InstalledVersions::class)) {
-            $defaults['notify'] = InstalledVersions::getPrettyVersion('guanguans/notify');
+            $defaults['notify'] = InstalledVersions::getPrettyVersion('ledc/notify');
             $defaults['guzzle'] = InstalledVersions::getPrettyVersion('guzzlehttp/guzzle');
         }
 

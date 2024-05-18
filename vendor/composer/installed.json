@@ -2211,17 +2211,17 @@
         },
         {
             "name": "ledc/notify",
-            "version": "v8.0.0",
-            "version_normalized": "8.0.0.0",
+            "version": "v8.0.1",
+            "version_normalized": "8.0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ledccn/notify.git",
-                "reference": "421dc4a549b4eae6b610a3a8fc588cabf6be8191"
+                "reference": "3e88ff32f5063fb079058e3fbfa8f6f353648ed0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ledccn/notify/zipball/421dc4a549b4eae6b610a3a8fc588cabf6be8191",
-                "reference": "421dc4a549b4eae6b610a3a8fc588cabf6be8191",
+                "url": "https://api.github.com/repos/ledccn/notify/zipball/3e88ff32f5063fb079058e3fbfa8f6f353648ed0",
+                "reference": "3e88ff32f5063fb079058e3fbfa8f6f353648ed0",
                 "shasum": ""
             },
             "require": {
@@ -2263,7 +2263,7 @@
                 "illuminate/collections": "Required to use the method [Response::collect()].",
                 "symfony/var-dumper": "Required to use the the trait [WithDumpable]."
             },
-            "time": "2024-05-18T11:54:18+00:00",
+            "time": "2024-05-18T12:21:47+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
