@@ -6,8 +6,8 @@ use app\admin\services\client\ClientServices;
 use app\admin\support\NotifyAdmin;
 use app\admin\support\NotifyHelper;
 use app\model\Client;
-use app\model\enums\ConfigEnums;
 use app\model\enums\DownloaderMarkerEnums;
+use app\model\enums\NotifyChannelEnums;
 use app\model\enums\ReseedStatusEnums;
 use app\model\enums\ReseedSubtypeEnums;
 use app\model\payload\ReseedPayload;
@@ -48,9 +48,9 @@ class ReseedServices
     protected array $crontabClients;
     /**
      * 计划任务：通知渠道
-     * @var ConfigEnums|null
+     * @var NotifyChannelEnums|null
      */
-    protected ?ConfigEnums $notifyEnum;
+    protected ?NotifyChannelEnums $notifyEnum;
     /**
      * 计划任务：标记规则
      * @var DownloaderMarkerEnums
@@ -189,10 +189,10 @@ class ReseedServices
         $desp .= '**跳过：' . $this->notifyData->reseedSkip . '**  [未设置passkey]' . $br;
 
         $response = match ($this->notifyEnum) {
-            ConfigEnums::notify_iyuu => NotifyHelper::iyuu($text, $desp),
-            ConfigEnums::notify_server_chan => NotifyHelper::serverChan($text, $desp),
-            ConfigEnums::notify_bark => NotifyHelper::bark($text, $desp),
-            ConfigEnums::notify_qy_weixin => NotifyHelper::weWork($text . $br . $desp),
+            NotifyChannelEnums::notify_iyuu => NotifyHelper::iyuu($text, $desp),
+            NotifyChannelEnums::notify_server_chan => NotifyHelper::serverChan($text, $desp),
+            NotifyChannelEnums::notify_bark => NotifyHelper::bark($text, $desp),
+            NotifyChannelEnums::notify_qy_weixin => NotifyHelper::weWork($text . $br . $desp),
             default => null
         };
         if ($response) {
@@ -341,7 +341,7 @@ class ReseedServices
         $this->crontabModel = $crontabModel;
         $this->crontabSites = $sites;
         $this->crontabClients = $clients;
-        $this->notifyEnum = ConfigEnums::tryFrom($notify_channel);
+        $this->notifyEnum = NotifyChannelEnums::tryFrom($notify_channel);
         $this->downloaderMarkerEnums = $marker;
         $this->auto_check = $auto_check;
     }

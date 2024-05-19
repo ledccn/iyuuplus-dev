@@ -3,8 +3,8 @@
 namespace app\admin\services\reseed;
 
 use app\command\ReseedCommand;
-use app\model\enums\ConfigEnums;
 use app\model\enums\DownloaderMarkerEnums;
+use app\model\enums\NotifyChannelEnums;
 use Error;
 use Exception;
 use Ledc\Element\GenerateInterface;
@@ -112,10 +112,10 @@ class ReseedTemplate extends CrontabAbstract
         $markerEmpty = DownloaderMarkerEnums::Empty->value;
         $markerTag = DownloaderMarkerEnums::Tag->value;
         $markerCategory = DownloaderMarkerEnums::Category->value;
-        $notify_iyuu = ConfigEnums::notify_iyuu->value;
-        $notify_server_chan = ConfigEnums::notify_server_chan->value;
-        $notify_bark = ConfigEnums::notify_bark->value;
-        $notify_qy_weixin = ConfigEnums::notify_qy_weixin->value;
+        $notify_iyuu = NotifyChannelEnums::notify_iyuu->value;
+        $notify_server_chan = NotifyChannelEnums::notify_server_chan->value;
+        $notify_bark = NotifyChannelEnums::notify_bark->value;
+        $notify_qy_weixin = NotifyChannelEnums::notify_qy_weixin->value;
         return PHP_EOL . <<<EOF
 <style>
 .layui-input-wrap {

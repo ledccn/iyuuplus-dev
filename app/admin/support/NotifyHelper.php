@@ -2,7 +2,7 @@
 
 namespace app\admin\support;
 
-use app\model\enums\ConfigEnums;
+use app\model\enums\NotifyChannelEnums;
 use Guanguans\Notify\Bark\Authenticator as BarkAuthenticator;
 use Guanguans\Notify\Bark\Client as BarkClient;
 use Guanguans\Notify\Bark\Messages\Message as BarkMessage;
@@ -31,7 +31,7 @@ class NotifyHelper
      */
     public static function iyuu(string $text, string $desp = ''): Response
     {
-        $config = ConfigEnums::getConfig(ConfigEnums::notify_iyuu);
+        $config = NotifyChannelEnums::getConfig(NotifyChannelEnums::notify_iyuu);
         $token = $config['token'] ?? '';
         $token = $token ?: iyuu_token();
         $client = new IyuuClient(new IyuuAuthenticator($token));
@@ -51,7 +51,7 @@ class NotifyHelper
      */
     public static function serverChan(string $title, string $desp = ''): Response
     {
-        $config = ConfigEnums::getConfig(ConfigEnums::notify_server_chan);
+        $config = NotifyChannelEnums::getConfig(NotifyChannelEnums::notify_server_chan);
         $token = $config['key'] ?? '';
         $client = new ServerChanClient(new ServerChanAuthenticator($token));
         $client->verify(false);
@@ -71,7 +71,7 @@ class NotifyHelper
      */
     public static function bark(string $title, string $body = '', string $group = ''): Response
     {
-        $config = ConfigEnums::getConfig(ConfigEnums::notify_bark);
+        $config = NotifyChannelEnums::getConfig(NotifyChannelEnums::notify_bark);
         $token = $config['device_key'] ?? '';
         $server = $config['server'] ?? '';
         $group = $group ?: ($config['group'] ?? '');
@@ -95,7 +95,7 @@ class NotifyHelper
      */
     public static function weWork(string $content): Response
     {
-        $config = ConfigEnums::getConfig(ConfigEnums::notify_qy_weixin);
+        $config = NotifyChannelEnums::getConfig(NotifyChannelEnums::notify_qy_weixin);
         $url = $config['url'] ?? '';
         $parse = parse_url(trim($url), PHP_URL_QUERY);
         parse_str($parse, $result);

@@ -2,7 +2,7 @@
 
 namespace app\admin\controller;
 
-use app\model\enums\ConfigEnums;
+use app\model\enums\NotifyChannelEnums;
 use plugin\admin\app\controller\Base;
 use support\Request;
 use support\Response;
@@ -28,11 +28,11 @@ class NotifyController extends Base
     public function index(Request $request): Response
     {
         $vars = [
-            'notify_iyuu' => ConfigEnums::notify_iyuu->value,
-            'notify_server_chan' => ConfigEnums::notify_server_chan->value,
-            'notify_bark' => ConfigEnums::notify_bark->value,
-            'notify_email' => ConfigEnums::notify_email->value,
-            'notify_qy_weixin' => ConfigEnums::notify_qy_weixin->value,
+            'notify_iyuu' => NotifyChannelEnums::notify_iyuu->value,
+            'notify_server_chan' => NotifyChannelEnums::notify_server_chan->value,
+            'notify_bark' => NotifyChannelEnums::notify_bark->value,
+            'notify_email' => NotifyChannelEnums::notify_email->value,
+            'notify_qy_weixin' => NotifyChannelEnums::notify_qy_weixin->value,
         ];
         return raw_view('notify/index', array_merge($vars, ['support_list' => json_encode(array_values($vars))]));
     }
@@ -50,8 +50,8 @@ class NotifyController extends Base
         }
 
         try {
-            $notifyEnum = ConfigEnums::from($name);
-            return $this->success('ok', ConfigEnums::getConfig($notifyEnum));
+            $notifyEnum = NotifyChannelEnums::from($name);
+            return $this->success('ok', NotifyChannelEnums::getConfig($notifyEnum));
         } catch (Throwable $throwable) {
             return $this->fail('获取配置异常：' . $throwable->getMessage());
         }
@@ -72,8 +72,8 @@ class NotifyController extends Base
         try {
             $data = $request->post();
             unset($data['PRIMARY_KEY']);
-            $notifyEnum = ConfigEnums::from($name);
-            ConfigEnums::saveConfig($notifyEnum, $data);
+            $notifyEnum = NotifyChannelEnums::from($name);
+            NotifyChannelEnums::saveConfig($notifyEnum, $data);
             return $this->success('ok');
         } catch (Throwable $throwable) {
             return $this->fail('保存配置异常：' . $throwable->getMessage());

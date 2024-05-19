@@ -5,9 +5,9 @@ namespace app\model\enums;
 use plugin\admin\app\model\Option;
 
 /**
- * 配置枚举类
+ * 通知渠道配置枚举类
  */
-enum ConfigEnums: string
+enum NotifyChannelEnums: string
 {
     /**
      * 通知渠道，iyuu
@@ -41,7 +41,7 @@ enum ConfigEnums: string
 
     /**
      * 获取配置项名称
-     * @param ConfigEnums $enum
+     * @param NotifyChannelEnums $enum
      * @return string
      */
     private static function getConfigName(self $enum): string
@@ -51,7 +51,7 @@ enum ConfigEnums: string
 
     /**
      * 获取配置
-     * @param ConfigEnums $enum
+     * @param NotifyChannelEnums $enum
      * @return array
      */
     public static function getConfig(self $enum): array
@@ -68,7 +68,7 @@ enum ConfigEnums: string
 
     /**
      * 保存配置
-     * @param ConfigEnums $enum
+     * @param NotifyChannelEnums $enum
      * @param array $data
      * @return void
      */

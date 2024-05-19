@@ -4,7 +4,7 @@ namespace app\admin\controller;
 
 use app\common\HasFormatEnum;
 use app\common\HasJsonResponse;
-use app\model\enums\ConfigEnums;
+use app\model\enums\NotifyChannelEnums;
 use app\model\enums\ReseedStatusEnums;
 use Iyuu\BittorrentClient\ClientEnums;
 use support\Request;
@@ -28,13 +28,13 @@ class EnumsController
     }
 
     /**
-     * 自定义配置枚举
+     * 通知渠道配置枚举
      * @param Request $request
      * @return Response
      */
-    public function config(Request $request): Response
+    public function notifyConfig(Request $request): Response
     {
-        return $this->data($this->formatSelectEnum(ConfigEnums::toArray()));
+        return $this->data($this->formatSelectEnum(NotifyChannelEnums::toArray()));
     }
 
     /**
