@@ -164,15 +164,19 @@
 									<td title="<?=$app_filemtime?> <?=$app_commit_id?>"><a href="https://gitee.com/ledc/iyuuplus-dev/tags" target="_blank" rel="noreferrer"><?=$iyuu_version?></a><span class="layui-badge layui-bg-green" lay-on="git_pull" title="通过git拉取最新代码" style="margin-left: 5px">更新</span></td>
 								</tr>
 								<tr>
-									<td>Workerman版本</td>
+									<td title="<?=$app_filemtime?>">IYUU提交记录</td>
+									<td><a href="https://gitee.com/ledc/iyuuplus-dev/commits/master" target="_blank" rel="noreferrer" title="<?=$app_filemtime?>"><?=$app_commit_id?></a></td>
+								</tr>
+								<tr>
+									<td>Workerman</td>
 									<td><?=$workerman_version?></td>
 								</tr>
 								<tr>
-									<td>Webman版本</td>
+									<td>Webman</td>
 									<td><?=$webman_version?></td>
 								</tr>
 								<tr>
-									<td>WebmanAdmin版本</td>
+									<td>WebmanAdmin</td>
 									<td><?=$admin_version?></td>
 								</tr>
 								<tr>
@@ -186,10 +190,6 @@
 								<tr>
 									<td>操作系统</td>
 									<td><?=$os?></td>
-								</tr>
-								<tr>
-									<td>Layui</td>
-									<td>v2.8.12</td>
 								</tr>
 								</tbody>
 							</table>
