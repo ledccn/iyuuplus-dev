@@ -102,9 +102,7 @@ class NotifyHelper
         $token = $result['key'] ?? '';
         $client = new WeWorkClient(new WeWorkAuthenticator($token));
         $client->verify(false);
-        $message = WeWorkMarkdownMessage::make([
-            'content' => $content
-        ]);
+        $message = WeWorkMarkdownMessage::make()->content($content);
         return $client->send($message);
     }
 }
