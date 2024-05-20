@@ -2,12 +2,15 @@
 
 namespace app\admin\controller;
 
+use app\admin\services\client\ClientServices;
+use app\admin\services\download\DownloaderServices;
 use app\admin\services\site\LayuiTemplate;
 use app\admin\services\SitesServices;
 use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\common\HasValidate;
 use app\model\Site;
+use Ledc\Container\App;
 use Ledc\Curl\Curl;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
@@ -174,6 +177,50 @@ class SiteController extends Crud
         }
 
         return view('site/bind');
+    }
+
+    /**
+     * 合作站绑定
+     * @param Request $request
+     * @return Response
+     */
+    public function test_sid(Request $request): Response
+    {
+        if ($request->method() === 'POST') {
+            try {
+                $rule = [
+                    'token|IYUU_TOKEN' => 'require|max:60',
+                    'torrent_id|站点种子ID' => 'require|number',
+                    'group_id|站点种子分组ID' => 'require|number',
+                    'site|站点' => 'require',
+                ];
+                $data = [
+                    'token' => iyuu_token(),
+                    'torrent_id' => $request->post('torrent_id'),
+                    'group_id' => $request->post('group_id'),
+                    'site' => $request->post('site'),
+                ];
+                $this->validate($data, $rule);
+
+                // 新版验证依赖的sid字段 2024年4月24日
+                $siteModel = Site::uniqueSite($data['site']);
+                if (!$siteModel) {
+                    return $this->fail('客户端未查询到站点数据');
+                }
+
+                $data['sid'] = $siteModel->sid;
+                /** @var DownloaderServices $downloadServices */
+                $downloadServices = App::pull(DownloaderServices::class);
+                $response = $downloadServices->download($data);
+                $model = ClientServices::getDefaultClient();
+                $result = ClientServices::sendClientDownloader($response, $model);
+                return $this->success("站点 $data[site] 种子： $data[torrent_id] 添加下载成功");
+            } catch (Throwable $throwable) {
+                return $this->fail($throwable->getMessage());
+            }
+        }
+
+        return view('site/test-sid');
     }
 
     /**

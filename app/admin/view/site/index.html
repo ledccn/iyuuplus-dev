@@ -62,6 +62,9 @@
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="bind" permission="admin.site.bind">
         <i class="layui-icon layui-icon-user"></i>绑定合作站点
     </button>
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="test_sid" permission="admin.site.test_sid">
+        <i class="layui-icon layui-icon-user"></i>验证站点配置
+    </button>
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="sync" permission="admin.site.sync">
         <i class="layui-icon layui-icon-refresh"></i>同步新站点
     </button>
@@ -91,6 +94,7 @@
     const UPDATE_API = "/admin/site/update";
     const DELETE_API = "/admin/site/delete";
     const BIND_URL = "/admin/site/bind";
+    const TEST_SID_URL = "/admin/site/test_sid";
     const UPDATE_URL = "/admin/site/update";
 
     // 字段 站点名称 site
@@ -379,6 +383,8 @@
                 batchRemove(obj);
             } else if (obj.event === "bind") {
                 bind(obj);
+            } else if (obj.event === "test_sid") {
+                test_sid(obj);
             } else if (obj.event === "backup") {
                 window.open('/admin/site/backup')
             } else if (obj.event === "sync") {
@@ -456,6 +462,20 @@
                 maxmin: true,
                 area: [common.isModile() ? "100%" : "500px", common.isModile() ? "100%" : "450px"],
                 content: BIND_URL
+            });
+        }
+
+        /**
+         * 测试站点配置
+         */
+        function test_sid() {
+            layer.open({
+                type: 2,
+                title: "验证站点配置",
+                shade: 0.1,
+                maxmin: true,
+                area: [common.isModile() ? "100%" : "500px", common.isModile() ? "100%" : "450px"],
+                content: TEST_SID_URL
             });
         }
 
