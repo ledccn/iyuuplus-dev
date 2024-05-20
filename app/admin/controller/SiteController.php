@@ -189,32 +189,20 @@ class SiteController extends Crud
         if ($request->method() === 'POST') {
             try {
                 $rule = [
-                    'token|IYUU_TOKEN' => 'require|max:60',
+                    'sid|站点ID' => 'require',
                     'torrent_id|站点种子ID' => 'require|number',
                     'group_id|站点种子分组ID' => 'require|number',
-                    'site|站点' => 'require',
                 ];
-                $data = [
-                    'token' => iyuu_token(),
-                    'torrent_id' => $request->post('torrent_id'),
-                    'group_id' => $request->post('group_id'),
-                    'site' => $request->post('site'),
-                ];
+                $data = $request->post();
                 $this->validate($data, $rule);
+                $torrent_id = $data['torrent_id'];
 
-                // 新版验证依赖的sid字段 2024年4月24日
-                $siteModel = Site::uniqueSite($data['site']);
-                if (!$siteModel) {
-                    return $this->fail('客户端未查询到站点数据');
-                }
-
-                $data['sid'] = $siteModel->sid;
                 /** @var DownloaderServices $downloadServices */
                 $downloadServices = App::pull(DownloaderServices::class);
                 $response = $downloadServices->download($data);
                 $model = ClientServices::getDefaultClient();
                 $result = ClientServices::sendClientDownloader($response, $model);
-                return $this->success("站点 $data[site] 种子： $data[torrent_id] 添加下载成功");
+                return $this->success("站点种子：{$torrent_id} 添加下载成功，返回值：" . json_encode($result, JSON_UNESCAPED_UNICODE));
             } catch (Throwable $throwable) {
                 return $this->fail($throwable->getMessage());
             }

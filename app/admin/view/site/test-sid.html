@@ -16,21 +16,24 @@
             <div class="layui-form-item">
                 <label class="layui-form-label required">站点</label>
                 <div class="layui-input-block">
-                    <div name="site" id="site" required value=""></div>
+                    <div name="sid" id="sid" required value=""></div>
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label ">站点种子ID</label>
                 <div class="layui-input-block">
-                    <input type="text" name="torrent_id" value="" required lay-verify="required" placeholder="请输入站点种子id" lay-vertype="tips" lay-reqtext="站点内种子ID必填" class="layui-input" >
+                    <input type="number" name="torrent_id" value="" required lay-verify="required"
+                           placeholder="请输入站点种子id" lay-vertype="tips" lay-reqtext="站点内种子ID必填"
+                           class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label ">站点种子分组ID</label>
                 <div class="layui-input-block">
-                    <input type="text" name="group_id" value="" placeholder="请输入站点内种子分组ID（特有字段：海豚、海报、皮等）" class="layui-input">
+                    <input type="number" name="group_id" value="0"
+                           placeholder="请输入站点内种子分组ID（特有字段：海豚、海报、皮等）" class="layui-input">
                 </div>
             </div>
 
@@ -61,14 +64,14 @@
     // 字段 合作站点
     layui.use(["jquery", "xmSelect", "popup"], function () {
         layui.$.ajax({
-            url: RECOMMEND_API + '?format=select&limit=1000',
+            url: RECOMMEND_API + '?format=select&value=sid&limit=1000',
             dataType: "json",
             success: function (res) {
-                let value = layui.$("#site").attr("value");
+                let value = layui.$("#sid").attr("value");
                 let initValue = value ? value.split(",") : [];
                 layui.xmSelect.render({
-                    el: "#site",
-                    name: "site",
+                    el: "#sid",
+                    name: "sid",
                     initValue: initValue,
                     filterable: true,
                     data: res.data,
@@ -91,8 +94,8 @@
     //提交事件
     layui.use(["form", "popup"], function () {
         layui.form.on("submit(save)", function (data) {
-            if (data.field.group_id === "") {
-                data.field.group_id = "0"; // 将空字符串设置为 "0"
+            if (!data.field.group_id) {
+                data.field.group_id = 0; // 将空字符串设置为 "0"
             }
             console.log(data.field)
             layui.$.ajax({
@@ -101,6 +104,7 @@
                 dateType: "json",
                 data: data.field,
                 success: function (res) {
+                    console.log(res)
                     if (res.code) {
                         return layui.popup.failure(res.msg);
                     }
