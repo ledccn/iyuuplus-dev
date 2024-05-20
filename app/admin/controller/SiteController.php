@@ -205,6 +205,8 @@ class SiteController extends Crud
                 return $this->success("站点种子：{$torrent_id} 添加下载成功，返回值：" . json_encode($result, JSON_UNESCAPED_UNICODE));
             } catch (Throwable $throwable) {
                 return $this->fail($throwable->getMessage());
+            } finally {
+                clear_instance_cache();
             }
         }
 
