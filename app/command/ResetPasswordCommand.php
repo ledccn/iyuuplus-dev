@@ -55,6 +55,7 @@ class ResetPasswordCommand extends Command
 
         if (!$admin) {
             $output->writeln('<error>账号不存在</error>');
+            return self::FAILURE;
         }
         $admin->password = Util::passwordHash($password);
         $admin->save();
