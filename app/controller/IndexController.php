@@ -34,6 +34,15 @@ class IndexController
      */
     public function json(Request $request): Response
     {
-        return json(['code' => 0, 'msg' => 'ok']);
+        return json([
+            'code' => 0,
+            'msg' => 'ok',
+            'data' => [
+                'get' => $request->get(),
+                'post' => $request->post(),
+                'header' => $request->header(),
+                'cookie' => $request->cookie(),
+            ]
+        ]);
     }
 }

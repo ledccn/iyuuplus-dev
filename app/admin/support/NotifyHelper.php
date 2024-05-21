@@ -19,6 +19,7 @@ use Guanguans\Notify\WeWork\Authenticator as WeWorkAuthenticator;
 use Guanguans\Notify\WeWork\Client as WeWorkClient;
 use Guanguans\Notify\WeWork\Messages\MarkdownMessage as WeWorkMarkdownMessage;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
 
 /**
  * 通知助手
@@ -121,7 +122,7 @@ class NotifyHelper
         $client = new Client();
 
         // 请求头
-        $headers =  [];
+        $headers = [];
         if (!empty($config['header'])) {
             $_headers = explode("\n", $config['header']);
             foreach ($_headers as $_header) {
@@ -140,17 +141,16 @@ class NotifyHelper
             '{{title}}' => $title,
             '{{content}}' => $content
         ]);
+        $config['body'] = $body;
 
         $parse = parse_url(trim($url));
         $config['_parse'] = $parse;
         $port = ($parse['port'] ?? null) ? ':' . $parse['port'] : '';
         $client->baseUri($parse['scheme'] . '://' . $parse['host'] . $port . '/')
             ->verify(false)
-            ->headers($headers)
-            ->body($body);
+            ->headers($headers);
 
-        $message = new class ($config) extends Message
-        {
+        $message = new class ($config) extends Message {
             /**
              * 请求uri
              * @return string
@@ -169,6 +169,14 @@ class NotifyHelper
             public function toHttpMethod(): string
             {
                 return $this->getOption('method');
+            }
+
+            /**
+             * @return array
+             */
+            public function toHttpOptions(): array
+            {
+                return [RequestOptions::BODY => $this->getOption('body')];
             }
         };
 
