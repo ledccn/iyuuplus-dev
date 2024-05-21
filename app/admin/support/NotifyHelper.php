@@ -6,6 +6,8 @@ use app\model\enums\NotifyChannelEnums;
 use Guanguans\Notify\Bark\Authenticator as BarkAuthenticator;
 use Guanguans\Notify\Bark\Client as BarkClient;
 use Guanguans\Notify\Bark\Messages\Message as BarkMessage;
+use Guanguans\Notify\Foundation\Client;
+use Guanguans\Notify\Foundation\Message;
 use Guanguans\Notify\Foundation\Response;
 use Guanguans\Notify\Iyuu\Authenticator as IyuuAuthenticator;
 use Guanguans\Notify\Iyuu\Client as IyuuClient;
@@ -103,6 +105,73 @@ class NotifyHelper
         $client = new WeWorkClient(new WeWorkAuthenticator($token));
         $client->verify(false);
         $message = WeWorkMarkdownMessage::make()->content($content);
+        return $client->send($message);
+    }
+
+    /**
+     * @param string $title
+     * @param string $content
+     * @return Response
+     * @throws GuzzleException
+     */
+    public static function webhook(string $title, string $content): Response
+    {
+        $config = NotifyChannelEnums::getConfig(NotifyChannelEnums::notify_webhook);
+        $url = $config['url'] ?? '';
+        $client = new Client();
+
+        // 请求头
+        $headers =  [];
+        if (!empty($config['headers'])) {
+            $_headers = explode("\n", $config['headers']);
+            foreach ($_headers as $_header) {
+                if (!empty($_header)) {
+                    [$key, $value] = explode(':', trim($_header), 2);
+                    $headers[trim($key)] = trim($value);
+                }
+            }
+        }
+
+        // 文档类型
+        $headers['Content-Type'] = $config['content_type'];
+
+        // 请求body
+        $body = strtr($config['body'], [
+            '{{title}}' => $title,
+            '{{content}}' => $content
+        ]);
+
+        $parse = parse_url(trim($url));
+        $config['_parse'] = $parse;
+        $port = ($parse['port'] ?? null) ? ':' . $parse['port'] : '';
+        $client->baseUri($parse['scheme'] . '://' . $parse['host'] . $port . '/')
+            ->verify(false)
+            ->headers($headers)
+            ->body($body);
+
+        $message = new class ($config) extends Message
+        {
+            /**
+             * 请求uri
+             * @return string
+             */
+            public function toHttpUri(): string
+            {
+                $parse = $this->getOption('_parse');
+                $query = $parse['query'] ?? '';
+                return trim($parse['path'] ?? '') . ($query ? '?' . $query : '');
+            }
+
+            /**
+             * 请求方法
+             * @return string
+             */
+            public function toHttpMethod(): string
+            {
+                return $this->getOption('method');
+            }
+        };
+
         return $client->send($message);
     }
 }

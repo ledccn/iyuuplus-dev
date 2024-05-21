@@ -193,6 +193,7 @@ class ReseedServices
             NotifyChannelEnums::notify_server_chan => NotifyHelper::serverChan($text, $desp),
             NotifyChannelEnums::notify_bark => NotifyHelper::bark($text, $desp),
             NotifyChannelEnums::notify_qy_weixin => NotifyHelper::weWork($text . $br . $desp),
+            NotifyChannelEnums::notify_webhook => NotifyHelper::webhook($text, $desp),
             default => null
         };
         if ($response) {

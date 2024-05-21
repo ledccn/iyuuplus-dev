@@ -116,6 +116,7 @@ class ReseedTemplate extends CrontabAbstract
         $notify_server_chan = NotifyChannelEnums::notify_server_chan->value;
         $notify_bark = NotifyChannelEnums::notify_bark->value;
         $notify_qy_weixin = NotifyChannelEnums::notify_qy_weixin->value;
+        $notify_webhook = NotifyChannelEnums::notify_webhook->value;
         return PHP_EOL . <<<EOF
 <style>
 .layui-input-wrap {
@@ -150,6 +151,7 @@ class ReseedTemplate extends CrontabAbstract
         <input type="radio" name="parameter[notify_channel]" value="$notify_server_chan" title="Server酱">
         <input type="radio" name="parameter[notify_channel]" value="$notify_bark" title="Bark">
         <input type="radio" name="parameter[notify_channel]" value="$notify_qy_weixin" title="企业微信群机器人">
+        <input type="radio" name="parameter[notify_channel]" value="$notify_webhook" title="自定义通知">
     </div>
 </div>
 <div class="layui-form-item">

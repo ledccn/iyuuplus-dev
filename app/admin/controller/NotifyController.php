@@ -34,6 +34,7 @@ class NotifyController extends Base
             'notify_email' => NotifyChannelEnums::notify_email->value,
             'notify_qy_weixin' => NotifyChannelEnums::notify_qy_weixin->value,
             'notify_synology_chat' => NotifyChannelEnums::notify_synology_chat->value,
+            'notify_webhook' => NotifyChannelEnums::notify_webhook->value,
         ];
         return raw_view('notify/index', array_merge($vars, ['support_list' => json_encode(array_values($vars))]));
     }

@@ -40,6 +40,11 @@ enum NotifyChannelEnums: string
     case notify_synology_chat = 'notify_synology_chat';
 
     /**
+     * 通知渠道，自定义通知
+     */
+    case notify_webhook = 'notify_webhook';
+
+    /**
      * 配置项前缀
      */
     private const string PREFIX = 'sys_config_';

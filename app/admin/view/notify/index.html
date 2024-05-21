@@ -19,6 +19,7 @@
                 <li lay-id="<?=$notify_bark?>">Bark</li>
                 <li lay-id="<?=$notify_qy_weixin?>">企业微信机器人</li>
                 <li lay-id="<?=$notify_synology_chat?>">Synology Chat</li>
+                <li lay-id="<?=$notify_webhook?>">自定义通知</li>
             </ul>
             <div class="layui-tab-content">
 
@@ -140,7 +141,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required">机器人令牌</label>
                             <div class="layui-input-block">
-                                <input type="password" name="token" required lay-verify="required|token"
+                                <input type="password" name="token" required lay-verify="required"
                                        placeholder="请输入群晖机器人token" autocomplete="off" class="layui-input" lay-affix="eye">
                             </div>
                         </div>
@@ -149,6 +150,60 @@
                             <div class="layui-input-block">
                                 <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
                                         lay-filter="save_<?=$notify_synology_chat?>">
+                                    提交
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 自定义通知 -->
+                <div class="layui-tab-item">
+                    <form class="layui-form" lay-filter="<?=$notify_webhook?>">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">通知URL</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="url" required lay-verify="required|url"
+                                       placeholder="请输入机器人URL" lay-reqtext="机器人URL格式错误" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">请求方法</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="method" value="POST" title="POST" checked>
+                                <input type="radio" name="method" value="GET" title="GET" disabled>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required" title="Content-Type">文档类型</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="content_type" value="text/html" title="text/html" checked>
+                                <input type="radio" name="content_type" value="application/x-www-form-urlencoded" title="application/x-www-form-urlencoded">
+                                <input type="radio" name="content_type" value="application/json" title="application/json">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">请求头</label>
+                            <div class="layui-input-block">
+                                <textarea name="header" placeholder="请求头，一行一个" class="layui-textarea" autocomplete="off"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">请求Body</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="body" required lay-verify="required" value="title:{{title}} <br>{{content}}"
+                                       placeholder="请求Body" lay-reqtext="请求Body" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                                        lay-filter="save_<?=$notify_webhook?>">
                                     提交
                                 </button>
                             </div>
