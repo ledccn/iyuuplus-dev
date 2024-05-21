@@ -122,8 +122,8 @@ class NotifyHelper
 
         // 请求头
         $headers =  [];
-        if (!empty($config['headers'])) {
-            $_headers = explode("\n", $config['headers']);
+        if (!empty($config['header'])) {
+            $_headers = explode("\n", $config['header']);
             foreach ($_headers as $_header) {
                 if (!empty($_header)) {
                     [$key, $value] = explode(':', trim($_header), 2);
