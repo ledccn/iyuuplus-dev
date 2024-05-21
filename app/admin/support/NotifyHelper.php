@@ -138,10 +138,34 @@ class NotifyHelper
         $headers['Content-Type'] = $config['content_type'];
 
         // 请求body
-        $config['body'] = strtr($config['body'], [
+        $replace = [
             '{{title}}' => $title,
             '{{content}}' => $content
-        ]);
+        ];
+        switch ($config['content_type']) {
+            case 'application/json':
+                $result = json_decode($config['body'], true);
+                foreach ($result as $key => &$value) {
+                    if (isset($replace[$value])) {
+                        $value = $replace[$value];
+                    }
+                }
+                $body = json_encode($result, JSON_UNESCAPED_UNICODE);
+                break;
+            case 'application/x-www-form-urlencoded':
+                parse_str($config['body'], $result);
+                foreach ($result as $key => &$value) {
+                    if (isset($replace[$value])) {
+                        $value = $replace[$value];
+                    }
+                }
+                $body = http_build_query($result);
+                break;
+            default:
+                $body = strtr($config['body'], $replace);
+                break;
+        }
+        $config['body'] = $body;
 
         $parse = parse_url(trim($url));
         $config['_parse'] = $parse;
@@ -180,6 +204,6 @@ class NotifyHelper
             }
         };
 
-        return $client->send($message);
+        return $client->send($message)->dump();
     }
 }
