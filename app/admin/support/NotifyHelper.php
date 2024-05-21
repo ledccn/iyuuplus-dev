@@ -204,6 +204,6 @@ class NotifyHelper
             }
         };
 
-        return $client->send($message)->dump();
+        return $client->send($message);
     }
 }
