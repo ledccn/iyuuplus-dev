@@ -110,6 +110,7 @@ class NotifyHelper
     }
 
     /**
+     * 自定义通知
      * @param string $title
      * @param string $content
      * @return Response
@@ -137,11 +138,10 @@ class NotifyHelper
         $headers['Content-Type'] = $config['content_type'];
 
         // 请求body
-        $body = strtr($config['body'], [
+        $config['body'] = strtr($config['body'], [
             '{{title}}' => $title,
             '{{content}}' => $content
         ]);
-        $config['body'] = $body;
 
         $parse = parse_url(trim($url));
         $config['_parse'] = $parse;

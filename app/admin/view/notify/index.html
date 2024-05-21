@@ -179,16 +179,16 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required" title="Content-Type">文档类型</label>
                             <div class="layui-input-block">
-                                <input type="radio" name="content_type" value="text/html" title="text/html" checked>
-                                <input type="radio" name="content_type" value="application/x-www-form-urlencoded" title="application/x-www-form-urlencoded">
-                                <input type="radio" name="content_type" value="application/json" title="application/json">
+                                <input type="radio" name="content_type" lay-filter="content_type_filter" value="text/html" title="text/html" checked>
+                                <input type="radio" name="content_type" lay-filter="content_type_filter" value="application/x-www-form-urlencoded" title="application/x-www-form-urlencoded">
+                                <input type="radio" name="content_type" lay-filter="content_type_filter" value="application/json" title="application/json">
                             </div>
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label required">请求头</label>
+                            <label class="layui-form-label">请求头</label>
                             <div class="layui-input-block">
-                                <textarea name="header" placeholder="请求头，一行一个" class="layui-textarea" autocomplete="off"></textarea>
+                                <textarea name="header" placeholder="请求头，一行一个；例如：X-Requested-With: XMLHttpRequest" class="layui-textarea" autocomplete="off">X-Requested-With: XMLHttpRequest</textarea>
                             </div>
                         </div>
 
@@ -196,7 +196,8 @@
                             <label class="layui-form-label required">请求Body</label>
                             <div class="layui-input-block">
                                 <input type="text" name="body" required lay-verify="required" value="title:{{title}} <br>{{content}}"
-                                       placeholder="请求Body" lay-reqtext="请求Body" autocomplete="off" class="layui-input">
+                                       placeholder="请求Body" lay-reqtext="请求Body" autocomplete="off" class="layui-input" id="webhook_body">
+                                <div class="layui-form-mid layui-text-em">可用变量：标题{{title}}，正文{{content}}</div>
                             </div>
                         </div>
 
@@ -228,6 +229,12 @@
     const GET_API = '/admin/notify/get';
     const SUPPORT_LIST = <?=$support_list?>;
 
+    const TEMPLATE = {
+        'text/html': 'title:{{title}} <br>{{content}}',
+        'application/x-www-form-urlencoded': 'title={{title}}&content={{content}}',
+        'application/json': '{"title":"{{title}}","content":"{{content}}}"',
+    };
+
     /**
      * 初始化表单
      */
@@ -252,6 +259,17 @@
                 }
             });
         }
+
+        // 文档类型联动请求body
+        form.on('radio(content_type_filter)', function(data){
+            const elem = data.elem; // 获得 radio 原始 DOM 对象
+            const checked = elem.checked; // 获得 radio 选中状态
+            const value = elem.value; // 获得 radio 值
+            const othis = data.othis; // 获得 radio 元素被替换后的 jQuery 对象
+
+            document.getElementById('webhook_body').value = TEMPLATE[value];
+            form.render();
+        });
 
         // 初始值
         let self_tab = document.getElementById('support_list').getElementsByClassName('layui-this');
