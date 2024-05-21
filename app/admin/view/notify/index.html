@@ -18,6 +18,7 @@
                 <li lay-id="<?=$notify_server_chan?>">Server酱</li>
                 <li lay-id="<?=$notify_bark?>">Bark</li>
                 <li lay-id="<?=$notify_qy_weixin?>">企业微信机器人</li>
+                <li lay-id="<?=$notify_synology_chat?>">Synology Chat</li>
             </ul>
             <div class="layui-tab-content">
 
@@ -118,6 +119,36 @@
                             <div class="layui-input-block">
                                 <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
                                         lay-filter="save_<?=$notify_qy_weixin?>">
+                                    提交
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 群晖机器人Synology Chat -->
+                <div class="layui-tab-item">
+                    <form class="layui-form" lay-filter="<?=$notify_synology_chat?>">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">机器人URL</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="url" required lay-verify="required|url"
+                                       placeholder="请输入群晖机器人URL" lay-reqtext="机器人URL格式错误" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">机器人令牌</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="token" required lay-verify="required|token"
+                                       placeholder="请输入群晖机器人token" autocomplete="off" class="layui-input" lay-affix="eye">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                                        lay-filter="save_<?=$notify_synology_chat?>">
                                     提交
                                 </button>
                             </div>

@@ -35,6 +35,11 @@ enum NotifyChannelEnums: string
     case notify_qy_weixin = 'notify_qy_weixin';
 
     /**
+     * 通知渠道，群晖机器人Synology Chat
+     */
+    case notify_synology_chat = 'notify_synology_chat';
+
+    /**
      * 配置项前缀
      */
     private const string PREFIX = 'sys_config_';
