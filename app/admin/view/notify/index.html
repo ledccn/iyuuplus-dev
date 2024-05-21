@@ -188,7 +188,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">请求头</label>
                             <div class="layui-input-block">
-                                <textarea name="header" placeholder="请求头，一行一个；例如：X-Requested-With: XMLHttpRequest" class="layui-textarea" autocomplete="off">X-Requested-With: XMLHttpRequest</textarea>
+                                <textarea name="header" placeholder="请求头，一行一个；例如：X-Requested-With: XMLHttpRequest" class="layui-textarea" autocomplete="off"></textarea>
                             </div>
                         </div>
 
@@ -232,7 +232,7 @@
     const TEMPLATE = {
         'text/html': 'title:{{title}} <br>{{content}}',
         'application/x-www-form-urlencoded': 'title={{title}}&content={{content}}',
-        'application/json': '{"title":"{{title}}","content":"{{content}}}"',
+        'application/json': '{"title":"{{title}}","content":"{{content}}"}',
     };
 
     /**
