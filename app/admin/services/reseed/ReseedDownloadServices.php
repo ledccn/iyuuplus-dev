@@ -213,16 +213,25 @@ class ReseedDownloadServices
             switch ($clientModel->getClientEnums()) {
                 case ClientEnums::qBittorrent:
                     if (is_string($result) && str_contains(strtolower($result), 'ok')) {
-                        /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $bittorrentClients */
-                        // 标记标签 2024年4月25日
-                        if (DownloaderMarkerEnums::Tag === $markerEnum) {
-                            $bittorrentClients->torrentAddTags($reseed->info_hash, 'IYUU' . ReseedSubtypeEnums::text($reseed->getSubtypeEnums()));
-                        }
+                        $retry = 5;
+                        do {
+                            try {
+                                sleep(5);
+                                /** @var \Iyuu\BittorrentClient\Driver\qBittorrent\Client $bittorrentClients */
+                                // 标记标签 2024年4月25日
+                                if (DownloaderMarkerEnums::Tag === $markerEnum) {
+                                    $bittorrentClients->torrentAddTags($reseed->info_hash, 'IYUU' . ReseedSubtypeEnums::text($reseed->getSubtypeEnums()));
+                                }
 
-                        // 发送校验命令
-                        if ($reseedPayload->isAutoCheck()) {
-                            $bittorrentClients->recheck($reseed->info_hash);
-                        }
+                                // 发送校验命令
+                                if ($reseedPayload->isAutoCheck()) {
+                                    $bittorrentClients->recheck($reseed->info_hash);
+                                }
+                                $retry = 0;
+                            } catch (Throwable $throwable) {
+                                Log::debug('自动辅种 标记标签和校验指令 发送失败，正在重试 | 递减值' . $retry . ' | ' . $throwable->getMessage());
+                            }
+                        } while (0 < $retry--);
                     }
                     break;
                 default:
