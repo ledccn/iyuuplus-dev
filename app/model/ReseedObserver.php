@@ -72,7 +72,9 @@ class ReseedObserver
         $dirty = $model->getDirty();
         if (array_key_exists('status', $dirty)) {
             $statusEnums = ReseedStatusEnums::tryFrom($model->status);
-            $msg = "客户端:{$model->client_id} 站点:{$model->site} 种子:{$model->torrent_id}";
+            $client = Client::find($model->client_id);
+            $title = $client ? $client->title : $model->client_id;
+            $msg = "客户端:{$title} 站点:{$model->site} 种子:{$model->torrent_id}";
             match ($statusEnums) {
                 ReseedStatusEnums::Success => NotifyAdmin::success($msg),
                 ReseedStatusEnums::Fail => NotifyAdmin::error($msg),
