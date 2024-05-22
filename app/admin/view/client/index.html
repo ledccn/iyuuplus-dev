@@ -80,6 +80,7 @@
     const DELETE_API = "/admin/client/delete";
     const INSERT_URL = "/admin/client/insert";
     const UPDATE_URL = "/admin/client/update";
+    const TABLE_COLS_HIDE = 'admin_client_select';
 
     // 字段 下载器品牌 brand
     layui.use(["jquery", "xmSelect", "popup"], function () {
@@ -306,6 +307,14 @@
             }
         ];
 
+        // 初始化筛选状态
+        let local = layui.data(TABLE_COLS_HIDE); // 获取对应的本地记录
+        layui.each(cols, function(index, item){
+            if(item.field in local){
+                item.hide = local[item.field];
+            }
+        });
+
         // 渲染表格
         function render() {
             table.render({
@@ -333,13 +342,24 @@
                         url: '/admin/client/recovery',
                         accept: 'file',
                         exts: 'json',
-                        dataType : 'json',
-                        done: function(res){
+                        dataType: 'json',
+                        done: function (res) {
                             if (res.code) {
                                 return layui.popup.failure(res.msg);
                             }
                             return layui.popup.success("操作成功", refreshTable);
                         }
+                    });
+
+                    // 记录筛选状态
+                    const that = this;
+                    that.elem.next().on('mousedown', 'input[lay-filter="LAY_TABLE_TOOL_COLS"]+', function () {
+                        let input = $(this).prev()[0];
+                        // 此处表名可任意定义
+                        layui.data(TABLE_COLS_HIDE, {
+                            key: input.name
+                            ,value: input.checked
+                        })
                     });
                 }
             });
