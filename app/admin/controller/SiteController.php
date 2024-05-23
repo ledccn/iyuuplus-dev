@@ -10,8 +10,8 @@ use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\common\HasValidate;
 use app\model\Site;
+use Iyuu\ReseedClient\Client;
 use Ledc\Container\App;
-use Ledc\Curl\Curl;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
 use support\Request;
@@ -111,14 +111,10 @@ class SiteController extends Crud
         try {
             check_iyuu_token(iyuu_token());
 
-            $curl = new Curl();
-            $curl->setSslVerify();
-            $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.getRecommendSites'));
-            $result = $curl->response ? json_decode($curl->response, true) : [];
-            $recommend = $result['data']['recommend'] ?? [];
+            $reseedClient = new Client(iyuu_token());
+            $recommend = $reseedClient->recommend();
 
-            return $recommend ? $this->success('ok', $recommend) : $this->fail('IYUU服务器无响应');
-
+            return $recommend ? $this->success('ok', $recommend['list']) : $this->fail('IYUU服务器无响应');
         } catch (Throwable $exception) {
             return $this->fail($exception->getMessage());
         }
@@ -154,23 +150,9 @@ class SiteController extends Crud
                 }
 
                 $data['sid'] = $siteModel->sid;
-                $curl = new Curl();
-                $curl->setSslVerify()->setTimeout(5);
-                $curl->get(config('iyuu.base_url') . config('iyuu.endpoint.bind'), $data);
-                $result = $curl->response ? json_decode($curl->response, true) : [];
-                if (empty($result)) {
-                    return $this->fail("用户绑定出错，无法访问IYUU接口，请检查本地网络或稍后重试");
-                }
-
-                // 响应码200表示请求成功
-                $code = $result['ret'] ?? 400;
-                $success = $result['data']['success'] ?? false;
-                if (200 === $code && $success) {
-                    return $this->success('绑定成功');
-                }
-
-                $msg = $result['msg'] ?? ($rs['data']['errmsg'] ?? 'IYUU服务器无响应，请稍后重试！');
-                return $this->fail("绑定失败，code：{$code} msg：{$msg}");
+                $reseedClient = new Client(iyuu_token());
+                $reseedClient->bind($data);
+                return $this->success('绑定成功');
             } catch (Throwable $throwable) {
                 return $this->fail($throwable->getMessage());
             }

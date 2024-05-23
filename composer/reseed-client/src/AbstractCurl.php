@@ -31,14 +31,16 @@ abstract class AbstractCurl
     protected function initCurl(): void
     {
         $this->curl->setTimeout(8, 8)->setSslVerify();
-        $this->curl->setHeader('token', $this->token);
+        if ($this->token) {
+            $this->curl->setHeader('token', $this->token);
+        }
     }
 
     /**
      * 重置当前类和curl
      * @return void
      */
-    public function reset(): void
+    final public function reset(): void
     {
         $this->curl->reset();
         $this->initCurl();

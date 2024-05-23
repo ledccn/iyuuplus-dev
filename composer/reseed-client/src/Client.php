@@ -52,6 +52,19 @@ class Client extends AbstractCurl
     }
 
     /**
+     * 获取推荐站点列表
+     * @return array
+     * @throws InternalServerErrorException
+     */
+    public function recommend(): array
+    {
+        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/sites/recommend');
+        $response = $this->parseResponse($curl, '获取推荐站点列表');
+
+        return $response['data'];
+    }
+
+    /**
      * 汇报持有的站点
      * @param array $data
      * @return string
@@ -89,5 +102,17 @@ class Client extends AbstractCurl
         $curl = $this->getCurl()->post(self::BASE_API . '/reseed/index/index', $data);
         $response = $this->parseResponse($curl, '获取可辅种数据失败');
         return $response['data'];
+    }
+
+    /**
+     * 绑定合作站点
+     * @param array $data
+     * @return array
+     * @throws InternalServerErrorException
+     */
+    public function bind(array $data): array
+    {
+        $curl = $this->getCurl()->post(self::BASE_API . '/reseed/users/bind', $data);
+        return $this->parseResponse($curl, '绑定合作站点失败');
     }
 }
