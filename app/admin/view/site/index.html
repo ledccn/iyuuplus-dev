@@ -251,8 +251,10 @@
                             return layui.popup.success(data.elem.checked ? '禁用成功' : "启用成功");
                         })
                     });
-                    let checked = d[field] === 1 ? "checked" : "";
-                    return '<input type="checkbox" title="已禁用|已启用" value="' + util.escape(d[PRIMARY_KEY]) + '" lay-filter="' + util.escape(field) + '" lay-skin="switch" lay-text="' + util.escape('') + '" ' + checked + '/>';
+                    let checked = d[field] === 1 ? "" : "checked";
+					//let checked = d[field] === 1 ? "" : "checked";
+					return '<input type="checkbox" title="已启用|已禁用" value="' + util.escape(d[PRIMARY_KEY]) + '" lay-filter="' + util.escape(field) + '" lay-skin="switch" lay-text="' + util.escape('') + '" ' + checked + '/>';
+                   // return '<input type="checkbox" title="已禁用|已启用" value="' + util.escape(d[PRIMARY_KEY]) + '" lay-filter="' + util.escape(field) + '" lay-skin="switch" lay-text="' + util.escape('') + '" ' + checked + '/>';
                 }
             }, {
                 title: "创建时间", align: "center",
