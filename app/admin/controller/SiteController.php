@@ -14,6 +14,7 @@ use Iyuu\ReseedClient\Client;
 use Ledc\Container\App;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
+use support\Log;
 use support\Request;
 use support\Response;
 use Throwable;
@@ -150,6 +151,7 @@ class SiteController extends Crud
                 }
 
                 $data['sid'] = $siteModel->sid;
+                Log::info('合作站绑定：', $data);
                 $reseedClient = new Client(iyuu_token());
                 $reseedClient->bind($data);
                 return $this->success('绑定成功');
