@@ -31,7 +31,7 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">禁用</label>
+                <label class="layui-form-label">启用</label>
                 <div class="layui-input-block">
                     <input type="checkbox" id="disabled" lay-filter="disabled" lay-skin="switch"/>
                     <input type="text" style="display:none" name="disabled" value="0"/>
@@ -155,10 +155,10 @@
 
                 // 字段 禁用 disabled
                 layui.use(["form"], function () {
-                    layui.$("#disabled").attr("checked", layui.$('input[name="disabled"]').val() != 0);
+                    layui.$("#disabled").attr("checked", layui.$('input[name="disabled"]').val() != 1);
                     layui.form.render();
                     layui.form.on("switch(disabled)", function (data) {
-                        layui.$('input[name="disabled"]').val(this.checked ? 1 : 0);
+                        layui.$('input[name="disabled"]').val(this.checked ? 0 : 1);
                     });
                 })
 
