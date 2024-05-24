@@ -160,12 +160,14 @@ class TransferTemplate extends CrontabAbstract
     <label class="layui-form-label" title="不转移此目录内的种子">路径过滤器</label>
     <div class="layui-input-block">
         <div name="parameter[path_filter]" id="path_filter" value=""></div>
+        <div class="layui-form-mid layui-text-em">排除目录内的资源，不执行操作</div>
     </div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label" title="仅转移此目录内的种子">路径选择器</label>
     <div class="layui-input-block">
         <div name="parameter[path_selector]" id="path_selector" value=""></div>
+        <div class="layui-form-mid layui-text-em">仅转移选中目录内的资源，其他都不执行操作</div>
     </div>
 </div>
 <div class="layui-form-item">

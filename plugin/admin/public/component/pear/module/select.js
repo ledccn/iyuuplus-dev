@@ -1593,7 +1593,6 @@
 			filter: options.filter,
 			maxTips: options.maxTips,
 			on: options.on,
-			on: options.on,
 			opened: options.opened,
 			closed: options.closed,
 			template: options.template,

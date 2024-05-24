@@ -136,6 +136,11 @@ class TransferServices
                 'info_hash' => $infohash,
             ];
 
+            if (Transfer::where($attributes)->exists()) {
+                echo '存在缓存（管理中心 - 自动转移），当前种子哈希：' . $infohash . ' 已忽略。' . PHP_EOL;
+                continue;
+            }
+
             if ($this->pathFilter($downloadDirOriginal)) {
                 continue;
             }
@@ -396,7 +401,7 @@ class TransferServices
 
         // 添加分类标签
         if (DownloaderMarkerEnums::Category === $this->downloaderMarkerEnums) {
-            $contractsTorrent->parameters['category'] = 'IYUU'  . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer);
+            $contractsTorrent->parameters['category'] = 'IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer);
         }
         return $contractsTorrent;
     }

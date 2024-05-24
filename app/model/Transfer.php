@@ -2,6 +2,7 @@
 
 namespace app\model;
 
+use Illuminate\Database\Eloquent\Builder;
 use plugin\admin\app\model\Base;
 
 /**
@@ -41,6 +42,20 @@ class Transfer extends Base
      * @var array<string>|bool
      */
     protected $guarded = [];
+
+    /**
+     * 是否存在缓存
+     * @param int $from_client_id
+     * @param int $to_client_id
+     * @param string $info_hash
+     * @return Builder
+     */
+    public static function existCacheModel(int $from_client_id, int $to_client_id, string $info_hash): Builder
+    {
+        return static::where('from_client_id', $from_client_id)
+            ->where('to_client_id', $to_client_id)
+            ->where('info_hash', $info_hash);
+    }
 
     /**
      * 依据client_id批量删除数据
