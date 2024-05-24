@@ -30,7 +30,11 @@ class SystemController
         }
 
         if (!isDockerEnvironment()) {
-            return $this->fail('docker环境存在s6时，才能进行此操作');
+            if (current_git_commit()) {
+                return $this->success('请重启IYUU，即可更新成功');
+            } else {
+                return $this->fail('通过git拉取的代码，才支持自动更新 https://doc.iyuu.cn/guide/install-windows');
+            }
         }
 
         Timer::add(2, function () use ($command) {
@@ -48,11 +52,13 @@ class SystemController
      */
     public function pull(Request $request): Response
     {
+        exec('git pull', $result);
+        var_dump($result);
         $command = DIRECTORY_SEPARATOR === '\\' ? ['git', 'pull'] : ['sh', base_path('gg.sh')];
         $process = new Process($command, base_path(), null, null, 10);
         $process->run();
         $status = $process->getExitCode();
         $output = $process->getOutput();
-        return $status ? $this->fail('刷新失败') : $this->success('ok', ['status' => $status, 'output' => $output]);
+        return $status ? $this->fail('刷新失败：' . json_encode($output, JSON_UNESCAPED_UNICODE)) : $this->success('ok', ['status' => $status, 'output' => $output]);
     }
 }

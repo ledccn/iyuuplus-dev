@@ -146,6 +146,7 @@ update_render_callable.push(
                             name: "parameter[path_filter]",
                             initValue: initPathFilterValue,
                             filterable: true,
+                            tips: '请选择排除目录',
                             data: res.data,
                             //model: {"icon": "hidden", "label": {"type": "text"}},
                         });
