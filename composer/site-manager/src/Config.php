@@ -20,7 +20,6 @@ use Ledc\Curl\Curl;
  * @property string $download_page 下载种子页
  * @property string $details_page 详情页
  * @property string $reseed_check 检查项
- * @property string $bind_check 绑定字段
  * @property mixed $options 用户配置值
  * @property integer $disabled 禁用
  * @property integer $is_https 可选：0http，1https，2http+https

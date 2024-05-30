@@ -98,6 +98,7 @@ class LayuiTemplate
             'okpt',
             'tosky',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class], $default),
+            'yemapt' => Decorator::make([OptionsRssUrl::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'redleaves', 'pter', 'pt', 'hdsky' => Decorator::make([NexusPHP::class, OptionsLimit::class], $default),
             'hdpost', 'monikadesign' => Decorator::make([NexusPHP::class, OptionsRsskey::class, OptionsRssUrl::class], $default),
