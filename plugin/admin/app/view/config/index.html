@@ -377,6 +377,24 @@
         let form = layui.form;
         let util = layui.util;
 
+        function device_generate(cloud_access_token) {
+            $.ajax({
+                url: CLOUD_SERVER + "/likeadmin/device/generate",
+                dataType: "json",
+                success: function (res) {
+                    if (1 !== res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+
+                    cloud_access_token = res.data.device_secret;
+                    //sessionStorage.setItem('cloud_access_token', cloud_access_token);
+                    $('#cloud_access_token').val(cloud_access_token);
+
+                    return device_bind(cloud_access_token, cloud_sn);
+                }
+            });
+        }
+
         /**
          * 设备端绑定用户
          * @param {string} cloud_access_token
@@ -391,6 +409,10 @@
                 data: {device_secret: cloud_access_token, sn: cloud_sn},
                 success: function (res) {
                     if (1 !== res.code) {
+                        if ('设备密钥无效' === res.msg) {
+                            $('#cloud_access_token').val('');
+                            return layui.popup.failure(res.msg + ' 已清空失效token，请重新点击绑定按钮');
+                        }
                         return layui.popup.failure(res.msg);
                     }
                     return layui.popup.success("绑定成功，请点击提交");
