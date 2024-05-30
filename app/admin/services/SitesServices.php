@@ -39,7 +39,6 @@ class SitesServices
                 $siteModel->base_url = $item['base_url'];
                 $siteModel->download_page = $item['download_page'] ?? '';
                 $siteModel->details_page = $item['details_page'] ?? '';
-                $siteModel->reseed_check = $item['reseed_check'] ?? '';
                 $siteModel->is_https = $item['is_https'] ?? 1;
                 $siteModel->cookie_required = $item['cookie_required'] ?? 0;
                 $siteModel->save();

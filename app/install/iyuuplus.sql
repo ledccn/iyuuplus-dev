@@ -68,7 +68,6 @@ CREATE TABLE IF NOT EXISTS `cn_sites` (
   `cookie` varchar(2000) DEFAULT '' COMMENT 'cookie',
   `download_page` varchar(200) NOT NULL DEFAULT '' COMMENT '下载种子页',
   `details_page` varchar(200) NOT NULL DEFAULT '' COMMENT '详情页',
-  `reseed_check` varchar(200) NOT NULL DEFAULT '' COMMENT '检查项',
   `is_https` tinyint(3) UNSIGNED NOT NULL DEFAULT '1' COMMENT '可选：0http，1https，2http+https',
   `cookie_required` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'cookie必须',
   `options` longtext COMMENT '用户配置值',
