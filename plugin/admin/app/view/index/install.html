@@ -196,7 +196,7 @@
         }
 
         layui.form.verify({
-            username: [/^(?!.*(admin|root|iyuu|password|user|guest)).{4,16}$/, "用户名不能包含admin、root、iyuu、password、user或guest，且长度必须在4到16位之间"],
+            username: [/^(?!.*(admin|root|iyuu|password|user|guest)).{4,32}$/, "用户名不能包含admin、root、iyuu、password、user或guest，且长度必须在4到32位之间"],
             password: function (value, item) {
                 if (/(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/.test(value)) {
                     return '密码不能包含连续的数字序列';
