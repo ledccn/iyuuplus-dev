@@ -89,7 +89,7 @@ class IndexController
         }
 
         [$total_seeding, $total_seeding_time] = TotalSeedingServices::get();
-        return raw_view('index/dashboard', [
+        $vars = [
             'app_filemtime' => current_git_filemtime(),
             'app_commit_id' => current_git_commit(),
             'iyuu_version' => iyuu_version(),
@@ -108,7 +108,7 @@ class IndexController
             'mysql_version' => $mysql_version,
             'os' => PHP_OS,
             'day7_detail' => array_reverse($day7_detail),
-        ]);
+        ];
+        return $request->input('json') ? json($vars) : raw_view('index/dashboard', $vars);
     }
-
 }
