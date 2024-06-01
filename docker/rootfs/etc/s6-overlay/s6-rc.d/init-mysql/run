@@ -1,13 +1,17 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
+if [ ! -d /var/tmp ]; then
+    mkdir /var/tmp
+fi
+chmod 777 /var/tmp
+chmod 777 /tmp
+
 if [ ! -d /data ]; then
     mkdir /data
 fi
 
 chown mysql:mysql /data
-chmod 777 /var/tmp
-chmod 777 /tmp
 
 if [ ! -d /data/iyuu ]; then
     mysql_install_db \
