@@ -6,6 +6,8 @@ if [ ! -d /data ]; then
 fi
 
 chown mysql:mysql /data
+chmod 777 /var/tmp
+chmod 777 /tmp
 
 if [ ! -d /data/iyuu ]; then
     mysql_install_db \
