@@ -91,7 +91,7 @@ abstract class BaseCache
      */
     final public function getKey(): string
     {
-        return get_class($this) . $this->key;
+        return md5(get_class($this)) . $this->key;
     }
 
     /**
