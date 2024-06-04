@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\HasClear;
 use app\common\HasDelete;
 use app\model\Transfer;
 use plugin\admin\app\controller\Crud;
@@ -14,7 +15,7 @@ use support\Response;
  */
 class TransferController extends Crud
 {
-    use HasDelete;
+    use HasDelete, HasClear;
 
     /**
      * @var Transfer
