@@ -229,7 +229,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
      */
     public function throwException(Curl $curl): void
     {
-        $errmsg = $curl->error_message ?: 'error_message为空';
+        $errmsg = $curl->error_message ?: 'error_message为空:' . json_encode([$curl->http_status_code, $curl->response_headers, $curl->response], JSON_UNESCAPED_UNICODE);
         if (302 === $curl->http_status_code) {
             if ($this->getConfig()->isCookieRequired()) {
                 $errmsg .= ' Cookie过期';
