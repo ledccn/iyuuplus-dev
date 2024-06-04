@@ -10,6 +10,7 @@ return [
     // 超全局中间件
     '@' => [
         app\middleware\Install::class,
+        app\middleware\SessionId::class,
     ],
     // 全局中间件
     '' => [

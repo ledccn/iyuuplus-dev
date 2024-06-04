@@ -18,6 +18,12 @@ class EnumsController
     use HasFormatEnum, HasJsonResponse;
 
     /**
+     * 无需登录及鉴权的方法
+     * @var array
+     */
+    protected array $noNeedLogin = ['client', 'notifyConfig', 'reseedStatus'];
+
+    /**
      * 客户端类型
      * @param Request $request
      * @return Response
