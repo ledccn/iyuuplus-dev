@@ -2,6 +2,7 @@
 
 namespace app\model;
 
+use app\common\cache\ReseedCache;
 use app\model\enums\ReseedStatusEnums;
 use app\model\enums\ReseedSubtypeEnums;
 use app\model\payload\ReseedPayload;
@@ -48,6 +49,15 @@ class Reseed extends Base
      * @var array<string>|bool
      */
     protected $guarded = [];
+
+    /**
+     * 辅种缓存实例
+     * @return ReseedCache
+     */
+    public function reseedCache(): ReseedCache
+    {
+        return new ReseedCache($this->site);
+    }
 
     /**
      * 获取成功的辅种构造器

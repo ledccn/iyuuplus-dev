@@ -29,9 +29,8 @@ class OptionsLimit extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label required">辅种间隔</label>
                 <div class="layui-input-group">
-                    <input type="number" name="options[limit][sleep]" value="5" required lay-verify="required|limit_sleep" placeholder="每个种子间隔时间" class="layui-input">
+                    <input type="number" name="options[limit][sleep]" value="5" required lay-verify="required" placeholder="每个种子间隔时间" class="layui-input">
                     <div class="layui-input-suffix">秒</div>
-                    
                 </div>
             </div>
 

@@ -27,6 +27,11 @@ use Webman\Event\Event;
 class ReseedDownloadServices
 {
     /**
+     * 最大允许的sleep值，单位秒
+     */
+    private const int SLEEP_MAX_VALUE = 30;
+
+    /**
      * 处理自动辅种表，下载种子塞给下载器
      * @param Site $site
      * @return void
@@ -115,7 +120,13 @@ class ReseedDownloadServices
     public static function sendDownloader(Reseed $reseed, int $limitSleep = 0): bool
     {
         $step = '';
+        $cache = $reseed->reseedCache();
         try {
+            // 如果间隔时间大于最大休眠 && 存在缓存，则等待下一个调度周期
+            if (static::SLEEP_MAX_VALUE < $limitSleep && $cache->has()) {
+                return false;
+            }
+
             $torrent = new Torrent([
                 'site' => $reseed->site,
                 'id' => $reseed->reseed_id,
@@ -125,6 +136,7 @@ class ReseedDownloadServices
             ]);
             $step = '1.准备下载种子';
             $response = Helper::download($torrent);
+            $cache->set(time(), $limitSleep);
             $step = '2.种子下载成功';
             // 调度事件：下载种子之后
             Event::dispatch('reseed.torrent.download.after', [$response, $reseed]);
@@ -158,8 +170,9 @@ class ReseedDownloadServices
             $reseed->status = ReseedStatusEnums::Fail->value;
             $reseed->save();
         } finally {
-            if (0 < $limitSleep) {
-                sleep(min($limitSleep, 60));
+            // 如果大于0 && 小于等于最大休眠秒，直接sleep
+            if (0 < $limitSleep && $limitSleep <= static::SLEEP_MAX_VALUE) {
+                sleep(min($limitSleep, static::SLEEP_MAX_VALUE));
             }
         }
 
