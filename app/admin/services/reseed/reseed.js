@@ -99,6 +99,31 @@ update_render_callable.push(
                     }
                 }
             });
+
+            // 路径过滤器
+            layui.$.ajax({
+                url: "/admin/folder/select?format=select&limit=1000",
+                dataType: "json",
+                success: function (res) {
+                    let value = layui.$("#parameter").attr("value");
+                    let parameter = value ? JSON.parse(value) : {};
+                    let path_filter = parameter['path_filter'] || null;
+                    let initPathFilterValue = path_filter ? path_filter.split(",") : [];
+                    layui.xmSelect.render({
+                        el: "#path_filter",
+                        name: "parameter[path_filter]",
+                        initValue: initPathFilterValue,
+                        filterable: true,
+                        tips: '请选择排除目录',
+                        data: res.data,
+                        //model: {"icon": "hidden", "label": {"type": "text"}},
+                    });
+
+                    if (res.code) {
+                        layui.popup.failure(res.msg);
+                    }
+                }
+            });
         });
     }
 );

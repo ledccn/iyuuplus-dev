@@ -10,6 +10,7 @@ use app\model\enums\DownloaderMarkerEnums;
 use app\model\enums\NotifyChannelEnums;
 use app\model\enums\ReseedStatusEnums;
 use app\model\enums\ReseedSubtypeEnums;
+use app\model\Folder;
 use app\model\payload\ReseedPayload;
 use app\model\Reseed;
 use app\model\Site;
@@ -46,6 +47,11 @@ class ReseedServices
      * @var array
      */
     protected array $crontabClients;
+    /**
+     * 路径过滤器
+     * @var array
+     */
+    protected array $path_filter = [];
     /**
      * 计划任务：通知渠道
      * @var NotifyChannelEnums|null
@@ -124,6 +130,16 @@ class ReseedServices
             $total = count($hashDict);
             echo "{$this->clientModel->title} 下载器获取到做种哈希总数：{$total}" . PHP_EOL;
 
+            $torrentList = $this->pathFilter($torrentList);
+            if (empty($torrentList)) {
+                echo "{$this->clientModel->title} 下载器排除目录后，做种哈希为空" . PHP_EOL;
+                continue;
+            } else {
+                $hashDict = $torrentList['hashString'];   // 哈希目录字典
+                $total = count($hashDict);
+                echo "{$this->clientModel->title} 下载器排除目录后，剩余做种哈希总数：{$total}" . PHP_EOL;
+            }
+
             // 调度事件：当前客户端辅种开始前
             Event::emit('reseed.current.before', [$hashDict, $this->bittorrentClient, $this->clientModel]);
 
@@ -169,6 +185,40 @@ class ReseedServices
             Log::error('辅种后发送通知时异常：' . $throwable->getMessage());
             NotifyAdmin::error($throwable->getMessage());
         }
+    }
+
+    /**
+     * 路径过滤器
+     * @param array $hashArray
+     * @return array|null
+     */
+    protected function pathFilter(array $hashArray): ?array
+    {
+        if (empty($this->path_filter)) {
+            return $hashArray;
+        }
+
+        $hashDict = $hashArray['hashString'];   // 哈希目录字典
+        $rs = [];
+        foreach ($hashDict as $key => $value) {
+            foreach ($this->path_filter as $prefix) {
+                if (!str_starts_with(rtrim($value, "/\\"), $prefix)) {
+                    $rs[$key] = $value;
+                }
+            }
+        }
+
+        if (empty($rs)) {
+            return null;
+        }
+
+        $info_hash = array_keys($rs);
+        sort($info_hash);
+        $json = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
+        $hashArray['hash'] = $json;
+        $hashArray['sha1'] = sha1($json);
+        $hashArray['hashString'] = $rs;
+        return $hashArray;
     }
 
     /**
@@ -335,6 +385,11 @@ class ReseedServices
         }
         $sites = $parameter['sites'];
         $clients = $parameter['clients'];
+        // 路径过滤器
+        if ($path_filter = $parameter['path_filter'] ?? []) {
+            $this->path_filter = Folder::whereIn('folder_id', explode(',', $path_filter))->pluck('folder_value')->toArray();
+        }
+
         $notify_channel = $parameter['notify_channel'] ?? '';
         $marker = DownloaderMarkerEnums::from($parameter['marker'] ?? DownloaderMarkerEnums::Empty->value);
         $auto_check = $parameter['auto_check'] ?? '';

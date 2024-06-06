@@ -144,6 +144,13 @@ class ReseedTemplate extends CrontabAbstract
     </div>
 </div>
 <div class="layui-form-item">
+    <label class="layui-form-label">路径过滤器</label>
+    <div class="layui-input-block">
+        <div name="parameter[path_filter]" id="path_filter" value=""></div>
+        <div class="layui-form-mid layui-text-em">排除目录内的资源，不辅种</div>
+    </div>
+</div>
+<div class="layui-form-item">
     <label class="layui-form-label required">通知渠道</label>
     <div class="layui-input-block">
         <input type="radio" name="parameter[notify_channel]" value="" title="不通知" checked>
