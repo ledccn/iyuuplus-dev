@@ -144,9 +144,9 @@ class ReseedTemplate extends CrontabAbstract
     </div>
 </div>
 <div class="layui-form-item">
-    <label class="layui-form-label required" title="统一辅种到此下载器">主辅分离</label>
+    <label class="layui-form-label required">主辅分离</label>
     <div class="layui-input-block" id="master" value=""></div>
-    <div class="layui-form-mid layui-text-em">统一辅种到此下载器（若使用此功能，需要你下载器的数据目录保持一致）；优势：减少校验引起的下载器卡顿</div>
+    <div class="layui-form-mid layui-text-em">辅种全部添加到此下载器（PS：数据目录需保持一致）</div>
 </div>
 <div class="layui-form-item">
     <label class="layui-form-label">路径过滤器</label>
