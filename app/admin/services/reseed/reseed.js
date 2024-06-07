@@ -26,7 +26,6 @@ update_render_callable.push(
             }
         });
 
-
         layui.use(["jquery", "xmSelect", "popup", "laytpl"], function () {
             let laytpl = layui.laytpl;
             // 辅种站点
@@ -61,10 +60,12 @@ update_render_callable.push(
                 url: "/admin/client/select?format=select&enabled=1&limit=1000",
                 dataType: "json",
                 success: function (res) {
+                    const original = JSON.stringify(res.data);
+                    const result = res.data;
                     let getTpl = document.getElementById('clients_tpl').innerHTML; // 获取模板字符
                     let elemView = document.getElementById('clients'); // 视图对象
                     // 渲染并输出结果
-                    laytpl(getTpl).render(res.data, function (str) {
+                    laytpl(getTpl).render(result, function (str) {
                         elemView.innerHTML = str;
                         let value = layui.$("#parameter").attr("value");
                         if (value) {
@@ -94,6 +95,20 @@ update_render_callable.push(
                         }
                         form.render();
                     });
+
+                    // 主辅分离，统一辅种到此下载器
+                    laytpl(document.getElementById('master_tpl').innerHTML).render(result, function (str) {
+                        document.getElementById('master').innerHTML = str;
+                        let value = layui.$("#parameter").attr("value");
+                        let parameter = JSON.parse(value);
+                        if (parameter['master']) {
+                            $('input[name="parameter[master]').each(function () {
+                                $(this).prop('checked', $(this).val() === parameter['master']);
+                            });
+                        }
+                        form.render();
+                    });
+
                     if (res.code) {
                         layui.popup.failure(res.msg);
                     }

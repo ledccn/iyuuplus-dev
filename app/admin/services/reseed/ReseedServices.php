@@ -48,6 +48,16 @@ class ReseedServices
      */
     protected array $crontabClients;
     /**
+     * 计划任务：主辅种下载器的数据模型
+     * @var Client|null
+     */
+    protected ?Client $masterModel = null;
+    /**
+     * 计划任务：主辅种下载器的实例
+     * @var Clients|null
+     */
+    protected ?Clients $masterBittorrentClient = null;
+    /**
      * 路径过滤器
      * @var array
      */
@@ -318,8 +328,12 @@ class ReseedServices
                 $reseedPayload->marker = $this->downloaderMarkerEnums->value;
                 $reseedPayload->auto_check = $this->auto_check;
 
+                // 主辅分离
+                if ($this->masterModel) {
+                    echo "【主辅分离】主辅种客户端 {$this->masterModel->title}，辅种将添加到此下载器" . PHP_EOL;
+                }
                 $attributes = [
-                    'client_id' => $this->clientModel->id,
+                    'client_id' => $this->masterModel ? $this->masterModel->id : $this->clientModel->id,
                     'info_hash' => $reseed_infohash,
                 ];
                 $values = [
@@ -393,6 +407,13 @@ class ReseedServices
         $notify_channel = $parameter['notify_channel'] ?? '';
         $marker = DownloaderMarkerEnums::from($parameter['marker'] ?? DownloaderMarkerEnums::Empty->value);
         $auto_check = $parameter['auto_check'] ?? '';
+
+        // 主辅种下载的主键id
+        $master = $parameter['master'] ?? null;
+        if ($master) {
+            $this->masterModel = ClientServices::getClient((int)$master);
+            $this->masterBittorrentClient = ClientServices::createBittorrent($this->masterModel);
+        }
 
         $this->crontabModel = $crontabModel;
         $this->crontabSites = $sites;

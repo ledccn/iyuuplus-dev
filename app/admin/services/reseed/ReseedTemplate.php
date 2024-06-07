@@ -144,6 +144,11 @@ class ReseedTemplate extends CrontabAbstract
     </div>
 </div>
 <div class="layui-form-item">
+    <label class="layui-form-label required" title="统一辅种到此下载器">主辅分离</label>
+    <div class="layui-input-block" id="master" value=""></div>
+    <div class="layui-form-mid layui-text-em">统一辅种到此下载器（若使用此功能，需要你下载器的数据目录保持一致）；优势：减少校验引起的下载器卡顿</div>
+</div>
+<div class="layui-form-item">
     <label class="layui-form-label">路径过滤器</label>
     <div class="layui-input-block">
         <div name="parameter[path_filter]" id="path_filter" value=""></div>
@@ -202,6 +207,13 @@ class ReseedTemplate extends CrontabAbstract
 {{#  }); }}
 </script>
 
+<!-- 主辅下载器分离模板 -->
+<script type="text/html" id="master_tpl">
+<input type="radio" name="parameter[master]" value="" title="不启用" checked>
+{{#  layui.each(d, function(index, item){ }}
+<input type="radio" name="parameter[master]" value="{{= item.value }}" title="{{= item.name }}" lay-skin="tag">
+{{#  }); }}
+</script>
 EOF;
     }
 
