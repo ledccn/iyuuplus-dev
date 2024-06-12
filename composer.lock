@@ -5724,16 +5724,16 @@
         },
         {
             "name": "workerman/http-client",
-            "version": "v2.2.0",
+            "version": "v2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/http-client.git",
-                "reference": "03bd2a4d71c815d5db765419eefc0b8108b15dec"
+                "reference": "452223733f9db2ad0a5118d8703598e73b4a06d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/http-client/zipball/03bd2a4d71c815d5db765419eefc0b8108b15dec",
-                "reference": "03bd2a4d71c815d5db765419eefc0b8108b15dec",
+                "url": "https://api.github.com/repos/walkor/http-client/zipball/452223733f9db2ad0a5118d8703598e73b4a06d9",
+                "reference": "452223733f9db2ad0a5118d8703598e73b4a06d9",
                 "shasum": ""
             },
             "require": {
@@ -5753,9 +5753,9 @@
             "homepage": "http://www.workerman.net",
             "support": {
                 "issues": "https://github.com/walkor/http-client/issues",
-                "source": "https://github.com/walkor/http-client/tree/v2.2.0"
+                "source": "https://github.com/walkor/http-client/tree/v2.2.4"
             },
-            "time": "2024-04-12T06:39:18+00:00"
+            "time": "2024-05-20T15:08:26+00:00"
         },
         {
             "name": "workerman/psr7",
