@@ -212,7 +212,7 @@ class ReseedServices
         $rs = [];
         foreach ($hashDict as $key => $value) {
             foreach ($this->path_filter as $prefix) {
-                if (!str_starts_with(rtrim($value, "/\\"), $prefix)) {
+                if (!str_starts_with(rtrim($value, "/\\"), rtrim($prefix, "/\\"))) {
                     $rs[$key] = $value;
                 }
             }
