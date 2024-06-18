@@ -52,9 +52,9 @@ class SystemController
      */
     public function pull(Request $request): Response
     {
-        exec('git pull', $result);
+        //exec('git pull', $result);
         $command = DIRECTORY_SEPARATOR === '\\' ? ['git', 'pull'] : ['sh', base_path('gg.sh')];
-        $process = new Process($command, base_path(), null, null, 10);
+        $process = new Process($command, base_path(), null, null, 30);
         $process->run();
         $status = $process->getExitCode();
         $output = $process->getOutput();
