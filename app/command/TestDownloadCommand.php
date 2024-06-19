@@ -8,6 +8,7 @@ use Ledc\Container\App;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
@@ -33,6 +34,7 @@ class TestDownloadCommand extends Command
         $this->addArgument('sid', InputArgument::REQUIRED, '站点ID');
         $this->addArgument('torrent_id', InputArgument::REQUIRED, '站点内种子ID');
         $this->addArgument('group_id', InputArgument::OPTIONAL, '站点内种子分组ID', 0);
+        $this->addOption('metadata', null, InputOption::VALUE_OPTIONAL, '种子元数据', true);
     }
 
     /**
@@ -53,7 +55,7 @@ class TestDownloadCommand extends Command
         try {
             /** @var DownloaderServices $downloadServices */
             $downloadServices = App::pull(DownloaderServices::class);
-            $response = $downloadServices->download($data);
+            $response = $downloadServices->download($data, $input->getOption('metadata'));
             $model = ClientServices::getDefaultClient();
             $result = ClientServices::sendClientDownloader($response, $model);
             var_dump($result);
