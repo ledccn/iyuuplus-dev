@@ -22,6 +22,9 @@ class CrontabObserver
     {
         clearstatcache();
         $directory = config('crontab.observer_directory');
+        if (empty($directory)) {
+            throw new InvalidArgumentException('Crontab observer directory does not config.');
+        }
         $filename = $directory . DIRECTORY_SEPARATOR . $crontab_id . '.' . $event;
         if (!is_dir($directory) && !@mkdir($directory, 0777, true)) {
             throw new InvalidArgumentException(sprintf('Crontab observer directory does not exist and cannot be created: "%s".', $directory));
