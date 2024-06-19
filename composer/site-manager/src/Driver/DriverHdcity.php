@@ -14,6 +14,7 @@ use Iyuu\SiteManager\Frameworks\NexusPhp\HasRss;
 use Iyuu\SiteManager\Spider\RouteEnum;
 use Iyuu\SiteManager\Spider\SpiderTorrents;
 use Iyuu\SiteManager\Utils;
+use Ledc\Curl\Curl;
 use RuntimeException;
 use Throwable;
 
@@ -86,6 +87,17 @@ class DriverHdcity extends BaseDriver implements Processor, ProcessorXml
         }
         SpiderTorrents::notify($items, $this, $this->isRssDownloadCookieRequired());
         return $items;
+    }
+
+    /**
+     * 请求下载种子前回调
+     * @param Curl $curl
+     * @return void
+     */
+    protected function beforeDownload(Curl $curl): void
+    {
+        parent::beforeDownload($curl);
+        $curl->setFollowLocation(1);
     }
 
     /**
