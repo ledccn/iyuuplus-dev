@@ -211,10 +211,14 @@ class ReseedServices
         $hashDict = $hashArray['hashString'];   // 哈希目录字典
         $rs = [];
         foreach ($hashDict as $key => $value) {
+            $filter = false;
             foreach ($this->path_filter as $prefix) {
-                if (!str_starts_with(rtrim($value, DIRECTORY_SEPARATOR), rtrim($prefix, DIRECTORY_SEPARATOR))) {
-                    $rs[$key] = $value;
+                if (str_starts_with(rtrim($value, DIRECTORY_SEPARATOR), rtrim($prefix, DIRECTORY_SEPARATOR))) {
+                    $filter = true;
                 }
+            }
+            if (false === $filter) {
+                $rs[$key] = $value;
             }
         }
 
