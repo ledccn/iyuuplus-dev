@@ -6,7 +6,7 @@
 use support\Request;
 
 return [
-    'debug' => true,
+    'debug' => env('APP_DEBUG', true),
     'error_reporting' => E_ALL,
     'default_timezone' => 'Asia/Shanghai',
     'request_class' => Request::class,
