@@ -56,6 +56,14 @@ return [
                 'type' => 1,
                 'weight' => 0,
             ],
+            [
+                'title' => '动态令牌',
+                'icon' => 'layui-icon-circle-dot',
+                'key' => app\admin\controller\TotpController::class,
+                'href' => '/admin/totp/index',
+                'type' => 1,
+                'weight' => 0,
+            ],
         ],
     ],
 ];

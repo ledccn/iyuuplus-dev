@@ -16,6 +16,10 @@ use app\model\Reseed;
 use app\model\ReseedObserver;
 use app\model\Site;
 use app\model\SiteObserver;
+use app\model\Totp;
+use app\model\TotpObserver;
+use app\model\Transfer;
+use app\model\TransferObserver;
 use plugin\cron\api\CrontabExtend;
 use plugin\cron\app\model\Crontab;
 use Workerman\Worker;
@@ -59,6 +63,8 @@ class Bootstrap implements \Webman\Bootstrap
         Folder::observe(FolderObserver::class);
         Reseed::observe(ReseedObserver::class);
         Site::observe(SiteObserver::class);
+        Totp::observe(TotpObserver::class);
+        Transfer::observe(TransferObserver::class);
     }
 
     /**
