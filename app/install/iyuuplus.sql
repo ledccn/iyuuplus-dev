@@ -81,14 +81,14 @@ CREATE TABLE IF NOT EXISTS `cn_sites` (
 
 CREATE TABLE IF NOT EXISTS `cn_totp` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `name` varchar(50) NOT NULL COMMENT '名称',
+  `name` varchar(200) NOT NULL COMMENT '名称',
   `secret` varchar(128) NOT NULL COMMENT '密钥',
-  `issuer` varchar(100) NOT NULL DEFAULT '' COMMENT '发行方',
+  `issuer` varchar(200) NOT NULL DEFAULT '' COMMENT '发行方',
   `t0` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '开始纪元',
   `t1` smallint(5) UNSIGNED NOT NULL DEFAULT '30' COMMENT '时间间隔',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='双因素身份验证';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='动态令牌';
 
 CREATE TABLE IF NOT EXISTS `cn_transfer` (
   `transfer_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
