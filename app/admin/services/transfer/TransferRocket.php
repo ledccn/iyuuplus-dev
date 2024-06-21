@@ -25,9 +25,9 @@ class TransferRocket
      * @param array $move 下载器内全部做种信息
      */
     public function __construct(
-        public readonly string $infohash,
-        public readonly string $path,
-        public readonly array  $move,
+        public readonly string  $infohash,
+        public readonly string  $path,
+        public readonly array   $move,
     )
     {
     }

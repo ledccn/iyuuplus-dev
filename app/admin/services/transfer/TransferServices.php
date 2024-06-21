@@ -192,6 +192,7 @@ class TransferServices
 
             echo "将把种子文件推送给下载器，正在转移做种客户端..." . PHP_EOL . PHP_EOL;
             $ret = $toBittorrentClient->addTorrent($contractsTorrent);
+            echo '成功推送种子到下载器...' . PHP_EOL;
 
             // 调度事件：把种子发送给下载器之后
             $this->sendAfter($contractsTorrent, $fromBittorrentClient, $toBittorrentClient, $rocket, $ret);
@@ -228,6 +229,27 @@ class TransferServices
      */
     private function sendBefore(TorrentContract $contractsTorrent, Clients $fromBittorrentClient, Clients $toBittorrentClient, TransferRocket $rocket): void
     {
+        try {
+            switch ($this->to_client->getClientEnums()) {
+                case ClientEnums::qBittorrent:
+                    if (DownloaderMarkerEnums::Category === $this->downloaderMarkerEnums) {
+                        // 添加分类
+                        $contractsTorrent->parameters['category'] = 'IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer);
+                    }
+                    break;
+                case ClientEnums::transmission:
+                    if (DownloaderMarkerEnums::Empty !== $this->downloaderMarkerEnums) {
+                        // 添加标签 （tr只有标签）
+                        $contractsTorrent->parameters['labels'] = ['IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer)];
+                    }
+                    break;
+                default:
+                    echo '把种子发送给下载器前，未匹配到操作' . PHP_EOL;
+                    break;
+            }
+        } catch (Throwable $throwable) {
+            Log::error('把种子发送给下载器之前，做一些操作，异常啦：' . $throwable->getMessage());
+        }
     }
 
     /**
@@ -294,9 +316,7 @@ class TransferServices
         $metadata = file_get_contents($torrentFile);
         $contractsTorrent = new TorrentContract($metadata, true);
         $contractsTorrent->parameters = $extra_options;
-        if (DownloaderMarkerEnums::Empty !== $this->downloaderMarkerEnums) {
-            $contractsTorrent->parameters['labels'] = ['IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer)];   // 添加分类标签
-        }
+
         return $contractsTorrent;
     }
 
@@ -399,10 +419,6 @@ class TransferServices
         $contractsTorrent = new TorrentContract($metadata, true);
         $contractsTorrent->parameters = $extra_options;
 
-        // 添加分类标签
-        if (DownloaderMarkerEnums::Category === $this->downloaderMarkerEnums) {
-            $contractsTorrent->parameters['category'] = 'IYUU' . ReseedSubtypeEnums::text(ReseedSubtypeEnums::Transfer);
-        }
         return $contractsTorrent;
     }
 
