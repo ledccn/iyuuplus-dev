@@ -2,7 +2,9 @@
 
 namespace app\model;
 
+use Iyuu\SiteManager\Contracts\RecoveryInterface;
 use OTPHP\OTPInterface;
+use plugin\admin\app\common\Util;
 use plugin\admin\app\model\Base;
 use support\exception\BusinessException;
 use Throwable;
@@ -20,7 +22,7 @@ use Throwable;
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
  */
-class Totp extends Base
+class Totp extends Base implements RecoveryInterface
 {
     /**
      * The table associated with the model.
@@ -61,5 +63,19 @@ class Totp extends Base
         } catch (Throwable $throwable) {
             throw new BusinessException($throwable->getMessage());
         }
+    }
+
+    /**
+     * 数据恢复
+     * @param array $list
+     * @return bool
+     */
+    public function recoveryHandle(array $list): bool
+    {
+        foreach ($list as $data) {
+            unset($data[$this->getKeyName()]);
+            Util::db()->table($this->getTable())->insert($data);
+        }
+        return true;
     }
 }

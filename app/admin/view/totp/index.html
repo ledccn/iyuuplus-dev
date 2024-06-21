@@ -64,6 +64,12 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
+    <button class="pear-btn pear-btn-success pear-btn-md" lay-event="backup" permission="admin.totp.backup">
+        <i class="layui-icon layui-icon-export"></i>全部备份并下载
+    </button>
+    <button class="pear-btn pear-btn-warming pear-btn-md" id="recovery" permission="admin.totp.recovery">
+        <i class="layui-icon layui-icon-upload"></i>数据恢复
+    </button>
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="admin.totp.insert">
         <i class="layui-icon layui-icon-add-1"></i>新增
     </button>
@@ -223,6 +229,21 @@
             },
             done: function () {
                 layer.photos({photos: 'div[lay-id="data-table"]', anim: 5});
+
+                // 数据恢复
+                layui.upload.render({
+                    elem: '#recovery',
+                    url: '/admin/totp/recovery',
+                    accept: 'file',
+                    exts: 'json',
+                    dataType: 'json',
+                    done: function (res) {
+                        if (res.code) {
+                            return layui.popup.failure(res.msg);
+                        }
+                        return layui.popup.success("操作成功", refreshTable);
+                    }
+                });
             }
         });
 
@@ -243,6 +264,8 @@
                 refreshTable();
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
+            } else if (obj.event === "backup") {
+                window.open('/admin/totp/backup')
             }
         });
 

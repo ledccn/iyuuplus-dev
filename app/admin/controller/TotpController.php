@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\model\Totp;
 use plugin\admin\app\controller\Crud;
@@ -14,7 +15,7 @@ use support\Response;
  */
 class TotpController extends Crud
 {
-    use HasDelete;
+    use HasDelete, HasBackupRecovery;
 
     /**
      * @var Totp

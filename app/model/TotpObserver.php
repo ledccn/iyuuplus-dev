@@ -2,12 +2,16 @@
 
 namespace app\model;
 
+use app\common\HasStaticBackup;
+
 /**
  * 模型观察者：cn_totp
  * @usage Totp::observe(TotpObserver::class);
  */
 class TotpObserver
 {
+    use HasStaticBackup;
+
     /**
      * 监听数据即将创建的事件。
      *
@@ -66,6 +70,7 @@ class TotpObserver
      */
     public function saved(Totp $model): void
     {
+        static::onBackupByModel($model);
     }
 
     /**

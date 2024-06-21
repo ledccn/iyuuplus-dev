@@ -5,6 +5,7 @@ namespace app\command;
 use app\model\Client;
 use app\model\Folder;
 use app\model\Site;
+use app\model\Totp;
 use Illuminate\Database\Eloquent\Collection;
 use Iyuu\SiteManager\Contracts\RecoveryInterface;
 use Iyuu\SiteManager\Utils;
@@ -28,6 +29,7 @@ class BackupCommand extends Command
         Client::class,
         Folder::class,
         Site::class,
+        Totp::class,
         Crontab::class,
         Option::class,
     ];
