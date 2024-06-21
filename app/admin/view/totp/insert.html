@@ -29,9 +29,9 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">发行方</label>
+                <label class="layui-form-label required">发行方</label>
                 <div class="layui-input-block">
-                    <input type="text" name="issuer" value="" class="layui-input">
+                    <input type="text" name="issuer" value="" required lay-verify="required" class="layui-input" placeholder="请输入发行方">
                 </div>
             </div>
 
@@ -46,6 +46,20 @@
                 <label class="layui-form-label">时间间隔</label>
                 <div class="layui-input-block">
                     <input type="number" name="t1" value="30" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">散列算法</label>
+                <div class="layui-input-block">
+                    <input type="text" name="algo" value="sha1" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">令牌位数</label>
+                <div class="layui-input-block">
+                    <input type="number" name="digits" value="6" class="layui-input">
                 </div>
             </div>
 
@@ -75,14 +89,6 @@
 
     // 相关接口
     const INSERT_API = "/admin/totp/insert";
-
-    // 字段 创建时间 created_at
-    layui.use(["laydate"], function () {
-        layui.laydate.render({
-            elem: "#created_at",
-            type: "datetime",
-        });
-    })
 
     //提交事件
     layui.use(["form", "popup"], function () {

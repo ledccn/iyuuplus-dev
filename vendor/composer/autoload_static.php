@@ -104,11 +104,13 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
             'Psr\\Cache\\' => 10,
             'PhpOption\\' => 10,
             'Phinx\\' => 6,
+            'ParagonIE\\ConstantTime\\' => 23,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
         'O' => 
         array (
             'Overtrue\\EasySms\\' => 17,
+            'OTPHP\\' => 6,
         ),
         'M' => 
         array (
@@ -386,6 +388,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         array (
             0 => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx',
         ),
+        'ParagonIE\\ConstantTime\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -393,6 +399,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         'Overtrue\\EasySms\\' => 
         array (
             0 => __DIR__ . '/..' . '/overtrue/easy-sms/src',
+        ),
+        'OTPHP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spomky-labs/otphp/src',
         ),
         'Monolog\\' => 
         array (

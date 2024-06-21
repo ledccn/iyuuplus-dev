@@ -55,6 +55,9 @@
 <!-- 数据表格 -->
 <div class="layui-card">
     <div class="layui-card-body">
+        <div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo-filter-progress">
+            <div class="layui-progress-bar" lay-percent="0 / 30"></div>
+        </div>
         <table id="data-table" lay-filter="data-table"></table>
     </div>
 </div>
@@ -91,12 +94,26 @@
     const UPDATE_URL = "/admin/totp/update";
 
     // 表格渲染
-    layui.use(["table", "form", "common", "popup", "util"], function () {
+    layui.use(["table", "form", "common", "popup", "util", "element"], function () {
         let table = layui.table;
         let form = layui.form;
         let $ = layui.$;
         let common = layui.common;
         let util = layui.util;
+        let element = layui.element;
+
+        //进度条
+        let progress = Math.round(Math.round(new Date().getTime() / 1000) % 30);
+        //进度条定时器
+        setInterval(() => {
+            if (30 <= progress) {
+                progress = 0;
+                table.reloadData("data-table", {
+                    scrollPos: "fixed"
+                });
+            }
+            element.progress('demo-filter-progress', ++progress + ' / 30');
+        }, 1000);
 
         /**
          * 屏幕宽度小于指定值
@@ -117,10 +134,12 @@
                 title: "ID", align: "center",
                 field: "id",
                 width: 120,
+                hide: true,
             }, {
                 title: "名称", align: "center",
                 field: "name",
                 sort: true,
+                width: 200,
             }, {
                 title: "密钥", align: "center",
                 field: "secret",
@@ -129,56 +148,50 @@
                 title: "发行方", align: "center",
                 field: "issuer",
                 sort: true,
+                minWidth: 300,
             }, {
                 title: "开始纪元", align: "center",
                 field: "t0",
-                width: 120,
+                width: 100,
                 hide: isWidthLessThan(),
             }, {
-                title: "时间间隔", align: "center",
+                title: "时间周期", align: "center",
                 field: "t1",
                 sort: true,
                 hide: isWidthLessThan(),
-                width: 120,
+                width: 110,
             }, {
-                title: "授权码", align: "center",
+                title: "散列算法", align: "center",
+                field: "algo",
+                hide: isWidthLessThan(),
+                width: 100,
+            }, {
+                title: "令牌位数", align: "center",
+                field: "digits",
+                hide: isWidthLessThan(),
+                width: 100,
+            }, {
+                title: "动态密码", align: "center",
                 field: "auth_code",
-                width: 85,
+                width: 100,
                 templet: function (d) {
                     let field = "auth_code";
                     if (typeof d[field] == "undefined") return "";
-                    const auto_code = d[field];
-                    const data_id = d[PRIMARY_KEY];
-                    const elem = 'auth_code_' + data_id;
-                    const t1 = d['t1'];
-                    let tpl = '';
-                    if (auto_code) {
-                        const data = {id: data_id};
-                        tpl = '<span id="' + elem + '">' + auto_code + '</span>';
-                        const timer_id = setInterval(() => {
-                            $.ajax({
-                                url: GET_API,
-                                data: data,
-                                dataType: "json",
-                                type: "get",
-                                success: function (res) {
-                                    if (res.code) {
-                                        return layui.popup.failure(res.msg);
-                                    } else {
-                                        document.getElementById(elem).innerText = res.data[field];
-                                    }
-                                }
-                            })
-                        }, t1 * 1000);
-                        timer.push(timer_id);
-                    }
-                    return tpl;
+                    let v = d[field];
+                    return '<span class="layui-badge layui-bg-black">' + v + '</span>';
                 }
             }, {
                 title: "创建时间", align: "center",
                 field: "created_at",
                 sort: true,
                 width: 170,
+                hide: isWidthLessThan(),
+            }, {
+                title: "更新时间", align: "center",
+                field: "updated_at",
+                sort: true,
+                width: 170,
+                hide: isWidthLessThan(),
             }, {
                 title: "操作",
                 toolbar: "#table-bar",
@@ -193,6 +206,8 @@
             elem: "#data-table",
             url: SELECT_API,
             page: true,
+            limit: 20,
+            limits: [20, 50, 100, 200, 500, 1000],
             cols: [cols],
             //skin: "line",
             size: "lg",
@@ -203,6 +218,9 @@
                 layEvent: "refresh",
                 icon: "layui-icon-refresh",
             }, "filter", "print", "exports"],
+            parseData: function (res) {
+                return res;
+            },
             done: function () {
                 layer.photos({photos: 'div[lay-id="data-table"]', anim: 5});
             }

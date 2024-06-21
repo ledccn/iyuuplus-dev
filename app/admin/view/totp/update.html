@@ -23,9 +23,16 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">发行方</label>
+                <label class="layui-form-label required">密钥</label>
                 <div class="layui-input-block">
-                    <input type="text" name="issuer" value="" class="layui-input">
+                    <input type="text" name="secret" value="" required lay-verify="required" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">发行方</label>
+                <div class="layui-input-block">
+                    <input type="text" name="issuer" value="" required lay-verify="required" class="layui-input" placeholder="请输入发行方">
                 </div>
             </div>
 
@@ -40,6 +47,20 @@
                 <label class="layui-form-label">时间间隔</label>
                 <div class="layui-input-block">
                     <input type="number" name="t1" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">散列算法</label>
+                <div class="layui-input-block">
+                    <input type="text" name="algo" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">令牌位数</label>
+                <div class="layui-input-block">
+                    <input type="number" name="digits" value="" class="layui-input">
                 </div>
             </div>
 
@@ -95,14 +116,6 @@
                     }
                 });
 
-                // 字段 创建时间 created_at
-                layui.use(["laydate"], function () {
-                    layui.laydate.render({
-                        elem: "#created_at",
-                        type: "datetime",
-                    });
-                })
-
 
                 // ajax返回失败
                 if (res.code) {
@@ -148,5 +161,4 @@
 </script>
 
 </body>
-
 </html>
