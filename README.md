@@ -1,5 +1,7 @@
 # IYUUPlus开发版
 
+<a href="https://item.jd.com/100058776147.html" target="_blank"><img src="https://ledc.cn/zspace-01.jpg" width="1080"></a>
+
 # 介绍
 
 IYUUPlus项目运行在php-cli模式，常驻内存运行；集成webui界面、辅种、转移、下载、定时访问URL、动态域名ddns等常用功能，提供完善的插件机制。
@@ -7,7 +9,6 @@ IYUUPlus项目运行在php-cli模式，常驻内存运行；集成webui界面、
 IYUUPlus客户端完全开源，行为透明，安全可靠；根据源码可以自由定制。
 
 IYUU自动辅种工具，目前能对国内大部分的PT站点自动辅种，支持下载器集群，支持多盘位，支持多下载目录，支持连接远程下载器等。
-
 
 # 免责声明
 
@@ -21,16 +22,14 @@ IYUU自动辅种工具，目前能对国内大部分的PT站点自动辅种，�
 
 第三：您使用IYUU工具造成的一切损失，与IYUU无关。如不接受此条款，请不要使用IYUUAutoReseed，并立刻删除已经下载的源码。
 
-
 # 原理
 
-IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编写的Private Tracker辅种脚本，通过计划任务或常驻内存，按指定频率调用transmission、qBittorrent下载软件的API接口，提取正在做种的info_hash提交到辅种服务器API接口（辅种过程和PT站没有交互），根据API接口返回的数据拼接种子连接，提交给下载器，由下载器主动去站点下载种子、校验、做种，自动辅种各个站点。
-
+IYUU自动辅种工具（英文名：IYUUAutoReseed），是一款PHP语言编写的Private
+Tracker辅种脚本，通过计划任务或常驻内存，按指定频率调用transmission、qBittorrent下载软件的API接口，提取正在做种的info_hash提交到辅种服务器API接口（辅种过程和PT站没有交互），根据API接口返回的数据拼接种子连接，提交给下载器，由下载器主动去站点下载种子、校验、做种，自动辅种各个站点。
 
 # 使用文档
 
 [http://doc.iyuu.cn](http://doc.iyuu.cn)
-
 
 ## 运行要求最低PHP版本：v8.3.0
 
@@ -66,19 +65,16 @@ extension=zip
 | Layui         | 2.8.12 | https://layui.dev/                          |
 | Vue           | 3.4.21 | https://vuejs.org/                          |
 
-
 # 支持的下载器
 
 1. transmission
 2. qBittorrent
-
 
 # 版本发布页
 
 国内：https://gitee.com/ledc/iyuuplus-dev/tags
 
 国际：https://github.com/ledccn/iyuuplus-dev/tags
-
 
 # nginx反向代理配置
 
@@ -109,7 +105,6 @@ location /app/d9422b72cffad23098ad301eea0f8419
 - QQ群：859882209[2000人]，41477250[1000人]，924099912[2000人]
 - issues： https://github.com/ledccn/iyuuplus-dev/issues
 - 博客：https://www.iyuu.cn/
-
 
 # 接口开发文档
 
