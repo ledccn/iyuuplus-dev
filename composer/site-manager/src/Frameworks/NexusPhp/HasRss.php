@@ -92,7 +92,11 @@ trait HasRss
     protected function filterRssUrl(string $url, string $domain): string
     {
         $url = $url ?: $this->getRssDefaultRoute();
-        $url = Utils::removeSchemeHost($url);
+        //$url = Utils::removeSchemeHost($url);
+        // 2024年7月3日，当配置RSS链接时，以RSS域名为准
+        if (str_starts_with($url, 'https://') || str_starts_with($url, 'http://')) {
+            return $url;
+        }
 
         return rtrim($domain, '/') . '/' . ltrim($url, '/');
     }
