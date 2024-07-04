@@ -6,6 +6,7 @@ use app\admin\services\client\ClientServices;
 use app\admin\services\download\DownloaderServices;
 use app\admin\services\reseed\CrontabObserver;
 use app\admin\services\reseed\ReseedTemplate;
+use app\admin\services\rss\RssTemplate;
 use app\admin\services\transfer\CrontabObserver as TransferCrontabObserver;
 use app\admin\services\transfer\TransferTemplate;
 use app\model\Client;
@@ -75,6 +76,7 @@ class Bootstrap implements \Webman\Bootstrap
     {
         CrontabExtend::getInstance()
             ->register(new ReseedTemplate())
-            ->register(new TransferTemplate());
+            ->register(new TransferTemplate())
+            ->register(new RssTemplate());
     }
 }

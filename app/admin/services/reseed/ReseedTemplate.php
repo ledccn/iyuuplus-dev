@@ -53,54 +53,7 @@ class ReseedTemplate extends CrontabAbstract
      */
     public function start(CrontabRocket $rocket): ?WorkermanCrontab
     {
-        $model = $rocket->model;
-        if ((int)$model->task_type === ReseedSelectEnums::reseed->value) {
-            return new WorkermanCrontab($model->rule, function () use ($model, $rocket) {
-                $startTime = microtime(true);
-                $time = time();
-                try {
-                    if ($rocket->getProcess()?->isRunning()) {
-                        echo '当前辅种任务运行中，本轮忽略！' . PHP_EOL;
-                        PushNotify::info(sprintf('任务d%运行中，本轮忽略', $model->crontab_id));
-                        return;
-                    }
-
-                    $command = [PHP_BINARY, base_path('webman'), $model->target, $model->crontab_id];
-                    $process = new Process($command, base_path());
-                    $process->start();
-                    $rocket->setProcess($process);
-                    $timer_id = Timer::add(0.5, function () use ($rocket, $process, &$timer_id, $startTime) {
-                        $code = 0;
-                        $exception = '';
-                        try {
-                            $isDelete = !$process->isRunning();
-                            if ($out = $process->getIncrementalOutput()) {
-                                send_shell_output($rocket->model->crontab_id, $out);
-                            }
-                        } catch (Error|Exception|Throwable $throwable) {
-                            $code = $throwable->getCode() ?: Scheduler::DEFAULT_ERROR_CODE;
-                            $exception = $throwable->getMessage();
-                            $isDelete = true;
-                        } finally {
-                            if ($isDelete) {
-                                Timer::del($timer_id);
-                                $rocket->setProcess(null);
-                                $endTime = microtime(true);
-                                CrontabLog::createCrontabLog($rocket->model, $exception ?: '进程运行结束', $code, ($endTime - $startTime) * 1000);
-                            }
-                        }
-                    });
-                } catch (Error|Exception|Throwable $throwable) {
-                    $code = $throwable->getCode() ?: Scheduler::DEFAULT_ERROR_CODE;
-                    $message = $throwable->getMessage();
-                    $exception = "任务执行异常，异常码：{$code} | 异常消息：{$message}";
-                    send_shell_output($model->crontab_id, $exception);
-                } finally {
-                    $model->updateRunning($time);
-                }
-            }, $model->crontab_id);
-        }
-        return null;
+        return static::startCrontab(ReseedSelectEnums::reseed->value, '自动辅种', $rocket);
     }
 
     /**

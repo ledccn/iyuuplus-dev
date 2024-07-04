@@ -100,11 +100,13 @@ update_render_callable.push(
                     laytpl(document.getElementById('master_tpl').innerHTML).render(result, function (str) {
                         document.getElementById('master').innerHTML = str;
                         let value = layui.$("#parameter").attr("value");
-                        let parameter = JSON.parse(value);
-                        if (parameter['master']) {
-                            $('input[name="parameter[master]').each(function () {
-                                $(this).prop('checked', $(this).val() === parameter['master']);
-                            });
+                        if (value) {
+                            let parameter = JSON.parse(value);
+                            if (parameter['master']) {
+                                $('input[name="parameter[master]').each(function () {
+                                    $(this).prop('checked', $(this).val() === parameter['master']);
+                                });
+                            }
                         }
                         form.render();
                     });
