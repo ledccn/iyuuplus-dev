@@ -13,7 +13,7 @@ update_render_callable.push(
                         return layui.popup.failure(res.msg);
                     }
 
-                    let initValue = parameter && parameter['client_id'] ? [parameter['client_id']] : [];
+                    let initValue = parameter && parameter['client_id'] ? parameter['client_id'].split(",") : [];
                     layui.xmSelect.render({
                         el: "#client_id",
                         name: "parameter[client_id]",
@@ -32,7 +32,7 @@ update_render_callable.push(
                 }
             });
 
-            let text_selector = parameter && parameter['text_selector'] ? [parameter['text_selector']] : [];
+            let text_selector = parameter && parameter['text_selector'] ? parameter['text_selector'].split(",") : [];
             layui.xmSelect.render({
                 el: '#text_selector',
                 name: "parameter[text_selector]",

@@ -126,7 +126,7 @@ class RssTemplate extends CrontabAbstract
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">包含关键字</label>
-                        <div class="layui-input-inline" style="width: 280px;">
+                        <div class="layui-input-inline" style="width: 400px;">
                             <div name="parameter[text_selector]" id="text_selector" value=""></div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@ class RssTemplate extends CrontabAbstract
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">排除关键字</label>
-                        <div class="layui-input-inline" style="width: 280px;">
+                        <div class="layui-input-inline" style="width: 400px;">
                             <div name="parameter[text_filter]" id="text_filter" value=""></div>
                         </div>
                     </div>
