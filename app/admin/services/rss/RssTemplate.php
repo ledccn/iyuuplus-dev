@@ -124,16 +124,32 @@ class RssTemplate extends CrontabAbstract
             <div class="layui-colla-title">简易模式</div>
             <div class="layui-colla-content layui-show">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">包含关键字</label>
-                    <div class="layui-input-block">
-                        <div class="layui-btn-container tag" lay-filter="tag_selector" lay-allowclose="true" lay-newTag="true">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">包含关键字</label>
+                        <div class="layui-input-inline" style="width: 280px;">
+                            <div name="parameter[text_selector]" id="text_selector" value=""></div>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">逻辑关系</label>
+                        <div class="layui-input-inline">
+                          <input type="radio" name="parameter[text_selector_op]" value="or" title="或" checked>
+                          <input type="radio" name="parameter[text_selector_op]" value="and" title="与">
                         </div>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">排除关键字</label>
-                    <div class="layui-input-block">
-                        <div class="layui-btn-container tag" lay-filter="tag_filter" lay-allowclose="true" lay-newTag="true">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">排除关键字</label>
+                        <div class="layui-input-inline" style="width: 280px;">
+                            <div name="parameter[text_filter]" id="text_filter" value=""></div>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">逻辑关系</label>
+                        <div class="layui-input-inline">
+                          <input type="radio" name="parameter[text_filter_op]" value="or" title="或" checked>
+                          <input type="radio" name="parameter[text_filter_op]" value="and" title="与">
                         </div>
                     </div>
                 </div>
@@ -145,18 +161,19 @@ class RssTemplate extends CrontabAbstract
                 <div class="layui-form-item">
                     <label class="layui-form-label">选中规则</label>
                     <div class="layui-input-block">
-                        <input type="text" name="parameter[rule_selector]" value="" placeholder="请输入正则表达式" autocomplete="off" class="layui-input">
+                        <input type="text" name="parameter[regex_selector]" value="" placeholder="请输入正则表达式" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">排除规则</label>
                     <div class="layui-input-block">
-                        <input type="text" name="parameter[rule_filter]" value="" placeholder="请输入正则表达式" autocomplete="off" class="layui-input">
+                        <input type="text" name="parameter[regex_filter]" value="" placeholder="请输入正则表达式" autocomplete="off" class="layui-input">
                     </div>
                 </div>
             </div>
           </div>
         </div>
+        <div class="layui-form-mid layui-text-em">规则优先级：<span class="layui-badge layui-bg-gray">简易模式</span> <i class="layui-icon layui-icon-right"></i> <span class="layui-badge layui-bg-gray">正则模式</span></div>
     </div>
 </div>
 
