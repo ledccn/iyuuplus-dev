@@ -96,7 +96,7 @@ class CrontabObserver
             $text_selector = $parameter['text_selector'] ?? '';
             $text_filter = $parameter['text_filter'] ?? '';
             if ($text_selector && $text_filter) {
-                $intersect = array_intersect(explode(',', $text_selector), explode(',', $text_filter));
+                $intersect = array_intersect(array_map('strtolower', explode(',', $text_selector)), array_map('strtolower', explode(',', $text_filter)));
                 if (!empty($intersect)) {
                     throw new InvalidArgumentException('包含关键字、排除关键字存在交集：' . implode(',', $intersect));
                 }

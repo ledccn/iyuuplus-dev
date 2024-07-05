@@ -184,7 +184,7 @@ class RssTemplate extends CrontabAbstract
             </div>
           </div>
         </div>
-        <div class="layui-form-mid layui-text-em">规则优先级：<span class="layui-badge layui-bg-gray">简易模式</span> <i class="layui-icon layui-icon-right"></i> <span class="layui-badge layui-bg-gray">正则模式</span></div>
+        <div class="layui-form-mid layui-text-em">规则优先级：<span class="layui-badge layui-bg-gray">简易模式</span><i class="layui-icon layui-icon-right"></i><span class="layui-badge layui-bg-gray">正则模式</span></div>
     </div>
 </div>
 
