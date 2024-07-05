@@ -8,6 +8,7 @@ use app\admin\services\reseed\CrontabObserver;
 use app\admin\services\reseed\ReseedTemplate;
 use app\admin\services\rss\RssTemplate;
 use app\admin\services\transfer\CrontabObserver as TransferCrontabObserver;
+use app\admin\services\rss\CrontabObserver as RssCrontabObserver;
 use app\admin\services\transfer\TransferTemplate;
 use app\model\Client;
 use app\model\ClientObserver;
@@ -61,6 +62,7 @@ class Bootstrap implements \Webman\Bootstrap
         Client::observe(ClientObserver::class);
         Crontab::observe(CrontabObserver::class);
         Crontab::observe(TransferCrontabObserver::class);
+        Crontab::observe(RssCrontabObserver::class);
         Folder::observe(FolderObserver::class);
         Reseed::observe(ReseedObserver::class);
         Site::observe(SiteObserver::class);

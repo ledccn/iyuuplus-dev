@@ -67,7 +67,8 @@
     "chrome-php/chrome": "^1.11",
     "robmorgan/phinx": "^0.16.0",
     "ledc/notify": "^8.0",
-    "spomky-labs/otphp": "^11.3"
+    "spomky-labs/otphp": "^11.3",
+    "ext-bcmath": "*"
   },
   "autoload": {
     "psr-4": {

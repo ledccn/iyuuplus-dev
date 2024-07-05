@@ -2,19 +2,30 @@
 
 namespace app\admin\services\rss;
 
+use app\command\RssCommand;
 use app\model\enums\DownloaderMarkerEnums;
 use Ledc\Element\GenerateInterface;
 use plugin\cron\app\interfaces\CrontabAbstract;
 use plugin\cron\app\services\CrontabRocket;
 use Workerman\Crontab\Crontab as WorkermanCrontab;
 
+/**
+ * RSS订阅，计划任务配置模板
+ */
 class RssTemplate extends CrontabAbstract
 {
+    /**
+     * @return array
+     */
     public static function select(): array
     {
         return RssSelectEnums::select();
     }
 
+    /**
+     * @param int $type
+     * @return GenerateInterface|null
+     */
     public function generate(int $type): ?GenerateInterface
     {
         return match ($type) {
@@ -38,7 +49,7 @@ class RssTemplate extends CrontabAbstract
      */
     public function html(): string
     {
-        $command = 'iyuu:rss';
+        $command = RssCommand::COMMAND_NAME;
         $markerEmpty = DownloaderMarkerEnums::Empty->value;
         $markerTag = DownloaderMarkerEnums::Tag->value;
         $markerCategory = DownloaderMarkerEnums::Category->value;
@@ -91,12 +102,11 @@ class RssTemplate extends CrontabAbstract
       <div class="layui-input-inline">
         <input type="number" name="parameter[size_min]" placeholder="最小值" autocomplete="off" class="layui-input">
       </div>
-      <div class="layui-input-inline" style="width: 120px;">
+      <div class="layui-input-inline" style="width: 100px;" title="最小值单位">
         <select name="parameter[size_min_unit]">
-          <option value="">最小值单位</option>
           <option value="KB">KB</option>
           <option value="MB">MB</option>
-          <option value="GB">GB</option>
+          <option value="GB" selected>GB</option>
           <option value="TB">TB</option>
         </select>
       </div>
@@ -104,12 +114,11 @@ class RssTemplate extends CrontabAbstract
       <div class="layui-input-inline">
         <input type="number" name="parameter[size_max]" placeholder="最大值" autocomplete="off" class="layui-input">
       </div>
-      <div class="layui-input-inline" style="width: 120px;">
+      <div class="layui-input-inline" style="width: 100px;" title="最大值单位">
         <select name="parameter[size_max_unit]">
-          <option value="">最大值单位</option>
           <option value="KB">KB</option>
           <option value="MB">MB</option>
-          <option value="GB">GB</option>
+          <option value="GB" selected>GB</option>
           <option value="TB">TB</option>
         </select>
       </div>
@@ -117,7 +126,7 @@ class RssTemplate extends CrontabAbstract
 </div>
 
 <div class="layui-form-item">
-    <label class="layui-form-label">规则设置</label>
+    <label class="layui-form-label">其他规则</label>
     <div class="layui-input-block">
         <div class="layui-collapse" lay-accordion>
           <div class="layui-colla-item">
@@ -131,10 +140,11 @@ class RssTemplate extends CrontabAbstract
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">逻辑关系</label>
-                        <div class="layui-input-inline">
-                          <input type="radio" name="parameter[text_selector_op]" value="or" title="或" checked>
-                          <input type="radio" name="parameter[text_selector_op]" value="and" title="与">
+                        <div class="layui-input-inline" style="width: 100px;" title="包含的逻辑关系">
+                            <select name="parameter[text_selector_op]">
+                                <option value="or" selected>逻辑或</option>
+                                <option value="and">逻辑与</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -146,10 +156,11 @@ class RssTemplate extends CrontabAbstract
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">逻辑关系</label>
-                        <div class="layui-input-inline">
-                          <input type="radio" name="parameter[text_filter_op]" value="or" title="或" checked>
-                          <input type="radio" name="parameter[text_filter_op]" value="and" title="与">
+                        <div class="layui-input-inline" style="width: 100px;" title="排除的逻辑关系">
+                            <select name="parameter[text_filter_op]">
+                                <option value="or" selected>逻辑或</option>
+                                <option value="and">逻辑与</option>
+                            </select>
                         </div>
                     </div>
                 </div>
