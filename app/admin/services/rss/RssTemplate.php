@@ -172,13 +172,15 @@ class RssTemplate extends CrontabAbstract
                 <div class="layui-form-item">
                     <label class="layui-form-label">选中规则</label>
                     <div class="layui-input-block">
-                        <input type="text" name="parameter[regex_selector]" value="" placeholder="请输入正则表达式" autocomplete="off" class="layui-input">
+                        <input type="text" name="parameter[regex_selector]" value="" placeholder="请输入正则的表达式" autocomplete="off" class="layui-input">
+                        <div class="layui-form-mid layui-text-em">正则表达式包含三个部分：分隔符、表达式、修饰符；您只需填写分隔符、表达式</div>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">排除规则</label>
                     <div class="layui-input-block">
-                        <input type="text" name="parameter[regex_filter]" value="" placeholder="请输入正则表达式" autocomplete="off" class="layui-input">
+                        <input type="text" name="parameter[regex_filter]" value="" placeholder="请输入正则的表达式" autocomplete="off" class="layui-input">
+                        <div class="layui-form-mid layui-text-em">正则表达式包含三个部分：分隔符、表达式、修饰符；您只需填写分隔符、表达式</div>
                     </div>
                 </div>
             </div>

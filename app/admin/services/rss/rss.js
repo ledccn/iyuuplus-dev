@@ -53,7 +53,7 @@ update_render_callable.push(
                 data: text_selector ? text_selector.map((value) => ({name: value, value: value})) : []
             });
 
-            let text_filter = parameter && parameter['text_filter'] ? [parameter['text_filter']] : [];
+            let text_filter = parameter && parameter['text_filter'] ? parameter['text_filter'].split(",") : [];
             layui.xmSelect.render({
                 el: '#text_filter',
                 name: "parameter[text_filter]",

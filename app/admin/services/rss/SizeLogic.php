@@ -2,6 +2,7 @@
 
 namespace app\admin\services\rss;
 
+use app\common\Number;
 use app\model\enums\SizeUnitEnums;
 
 /**
@@ -43,5 +44,48 @@ class SizeLogic
         $this->size_min_unit = SizeUnitEnums::from($size_min_unit);
         $this->size_max = $size_max;
         $this->size_max_unit = SizeUnitEnums::from($size_max_unit);
+    }
+
+    /**
+     * 匹配
+     * @param TorrentItem $item
+     * @return bool
+     */
+    public function match(TorrentItem $item): bool
+    {
+        $length = (string)$item->getLength();
+        if (empty($length)) {
+            return true;
+        }
+
+        if (empty($this->size_min) && empty($this->size_max)) {
+            return true;
+        }
+
+        return match (true) {
+            empty($this->size_min) => $this->bccompSizeMin($length),
+            empty($this->size_max) => $this->bccompSizeMax($length),
+            default => $this->bccompSizeMin($length) and $this->bccompSizeMax($length),
+        };
+    }
+
+    /**
+     * 比较最小值
+     * @param string $length
+     * @return bool
+     */
+    private function bccompSizeMin(string $length): bool
+    {
+        return -1 === Number::bccomp(SizeUnitEnums::convert($this->size_min, $this->size_min_unit), $length);
+    }
+
+    /**
+     * 比较最大值
+     * @param string $length
+     * @return bool
+     */
+    private function bccompSizeMax(string $length): bool
+    {
+        return -1 === Number::bccomp($length, SizeUnitEnums::convert($this->size_max, $this->size_max_unit));
     }
 }

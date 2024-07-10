@@ -2,6 +2,8 @@
 
 namespace app\model\enums;
 
+use InvalidArgumentException;
+
 /**
  * 容量大小单位
  */
@@ -63,5 +65,21 @@ enum SizeUnitEnums: string
             self::ZB => bcmul($value, (string)pow(1024, 7)),
             self::YB => bcmul($value, (string)pow(1024, 8)),
         };
+    }
+
+    /**
+     * 转换为字节
+     * @param string $value 容量大小(如：100GB)
+     * @return string
+     */
+    public static function convertToBytes(string $value): string
+    {
+        if (preg_match('#(?<size>(?<number>\d+([.]\d+)?)(?<unit>[KMGTPEZY]?B))#i', $value, $matches)) {
+            $number = $matches['number'];
+            $unit = $matches['unit'];
+            return self::convert($number, self::from($unit));
+        }
+
+        throw new InvalidArgumentException('容量大小格式错误：' . $value);
     }
 }
