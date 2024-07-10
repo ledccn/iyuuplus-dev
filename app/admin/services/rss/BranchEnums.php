@@ -27,6 +27,10 @@ enum BranchEnums
      */
     public static function create(string $url, DOMDocument $dom, DOMElement $element): self
     {
+        if ($element->getElementsByTagName('enclosure')->item(0)->getAttribute('url')) {
+            return self::Default;
+        }
+
         if ($generator = $dom->getElementsByTagName('generator')->item(0)?->nodeValue) {
             if (str_contains($generator, 'NexusPHP')) {
                 return self::Default;
