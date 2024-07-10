@@ -126,7 +126,7 @@ class RssTemplate extends CrontabAbstract
 </div>
 
 <div class="layui-form-item">
-    <label class="layui-form-label">其他规则</label>
+    <label class="layui-form-label">匹配标题</label>
     <div class="layui-input-block">
         <div class="layui-collapse" lay-accordion>
           <div class="layui-colla-item">

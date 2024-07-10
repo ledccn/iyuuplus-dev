@@ -63,8 +63,8 @@ class SizeLogic
         }
 
         return match (true) {
-            empty($this->size_min) => $this->bccompSizeMin($length),
-            empty($this->size_max) => $this->bccompSizeMax($length),
+            empty($this->size_max) => $this->bccompSizeMin($length),
+            empty($this->size_min) => $this->bccompSizeMax($length),
             default => $this->bccompSizeMin($length) and $this->bccompSizeMax($length),
         };
     }
