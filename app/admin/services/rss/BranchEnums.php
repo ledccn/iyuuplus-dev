@@ -27,7 +27,7 @@ enum BranchEnums
      */
     public static function create(string $url, DOMDocument $dom, DOMElement $element): self
     {
-        if ($element->getElementsByTagName('enclosure')->item(0)->getAttribute('url')) {
+        if ($element->getElementsByTagName('enclosure')?->item(0)?->getAttribute('url')) {
             return self::Default;
         }
 
