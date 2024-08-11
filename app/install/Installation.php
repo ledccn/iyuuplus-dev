@@ -45,6 +45,10 @@ class Installation
             if (!Menu::get(self::MENU_KEY)) {
                 Menu::import(include __DIR__ . '/menu.php');
             }
+            //安装动态令牌菜单
+            if (!Menu::get('app\admin\controller\TotpController::class')) {
+                Menu::import(include __DIR__ . '/menu.php');
+            }
         } catch (\Error|\Exception|\Throwable $throwable) {
             echo $throwable->getMessage() . PHP_EOL;
         } finally {

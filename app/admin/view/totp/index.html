@@ -52,11 +52,31 @@
     </div>
 </div>
 
+<!--<div class="layui-card">-->
+<!--    <label class="layui-form-label">当前时间</label>-->
+<!--    <div class="layui-card-body">-->
+<!--        <h1 id="currentTime" ></h1>-->
+<!--    </div>-->
+<!--</div>-->
+
 <!-- 数据表格 -->
 <div class="layui-card">
     <div class="layui-card-body">
-        <div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo-filter-progress">
-            <div class="layui-progress-bar" lay-percent="0 / 30"></div>
+        <div class="layui-row">
+            <!-- 左侧显示当前时间 -->
+            <div class="layui-col-xs6 layui-col-md2">
+                <div class="layui-card">
+                    <label class="layui-form-label">当前时间：</label>
+                    <div class="layui-table-cell" id="currentTime">
+                    </div>
+                </div>
+            </div>
+            <!-- 右侧显示进度条 -->
+            <div class="layui-col-xs6 layui-col-md10">
+                <div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo-filter-progress">
+                    <div class="layui-progress-bar" lay-percent="0 / 30"></div>
+                </div>
+            </div>
         </div>
         <table id="data-table" lay-filter="data-table"></table>
     </div>
@@ -100,13 +120,25 @@
     const UPDATE_URL = "/admin/totp/update";
 
     // 表格渲染
-    layui.use(["table", "form", "common", "popup", "util", "element"], function () {
+    layui.use(["table", "form", "common", "popup", "util", "element" ,"laydate"], function () {
         let table = layui.table;
         let form = layui.form;
         let $ = layui.$;
         let common = layui.common;
         let util = layui.util;
         let element = layui.element;
+        var laydate = layui.laydate;
+
+        // 获取当前时间并格式化
+        function getFormattedDate() {
+            var now = new Date();
+            return now.getFullYear() + '-' +
+                ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+                ('0' + now.getDate()).slice(-2) + ' ' +
+                ('0' + now.getHours()).slice(-2) + ':' +
+                ('0' + now.getMinutes()).slice(-2) + ':' +
+                ('0' + now.getSeconds()).slice(-2);
+        }
 
         //进度条
         let progress = Math.round(Math.round(new Date().getTime() / 1000) % 30);
@@ -119,6 +151,7 @@
                 });
             }
             element.progress('demo-filter-progress', ++progress + ' / 30');
+            document.getElementById('currentTime').innerHTML = getFormattedDate();
         }, 1000);
 
         /**
