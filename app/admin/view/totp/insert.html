@@ -24,7 +24,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label required">密钥</label>
                 <div class="layui-input-block">
-                    <input type="text" name="secret" value="" required lay-verify="required" class="layui-input">
+                    <input type="text" name="secret" value="" required lay-verify="required|totp" class="layui-input">
                 </div>
             </div>
 
@@ -68,6 +68,7 @@
 
     <div class="bottom">
         <div class="button-container">
+            <button class="layui-icon layui-icon-help" id="helpButton"></button>
             <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
                     lay-filter="save">
                 提交
@@ -86,6 +87,11 @@
 <script src="/app/admin/admin/js/permission.js"></script>
 
 <script>
+    // 点击帮助按钮跳转到新页面
+    document.getElementById("helpButton").addEventListener("click", function () {
+        var helpPageUrl = "https://doc.iyuu.cn/guide/totp";
+        window.open(helpPageUrl, "_blank");
+    });
 
     // 相关接口
     const INSERT_API = "/admin/totp/insert";
@@ -99,7 +105,19 @@
             url: [/(^$)|(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, "链接格式不正确"],
             number: [/(^$)|^\d+$/, '只能填写数字'],
             date: [/(^$)|^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/, "日期格式不正确"],
-            identity: [/(^$)|(^\d{15}$)|(^\d{17}(x|X|\d)$)/, "请输入正确的身份证号"]
+            identity: [/(^$)|(^\d{15}$)|(^\d{17}(x|X|\d)$)/, "请输入正确的身份证号"],
+            totp: function(value){
+                var validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+                var key = value.replace(/\s+/g, ''); // 去除空格
+                if (key.length % 8 !== 0) {
+                    return 'TOTP 密钥长度不正确，应为 16 或 32 位。';
+                }
+                for (var i = 0; i < key.length; i++) {
+                    if (validChars.indexOf(key[i].toUpperCase()) === -1) {
+                        return 'TOTP 密钥包含无效Base32，请检查。';
+                    }
+                }
+            }
         });
         layui.form.on("submit(save)", function (data) {
             layui.$.ajax({
