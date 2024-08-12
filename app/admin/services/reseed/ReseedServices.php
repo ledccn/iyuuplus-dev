@@ -162,11 +162,14 @@ class ReseedServices
                     sort($info_hash);
                     $hash = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
                     try {
+                        echo "正在请求IYUU服务器，匹配辅种{$this->clientModel->title} " . PHP_EOL;
                         $result = $reseedClient->reseed($hash, sha1($hash), $sid_sha1, iyuu_version());
                         $this->currentReseed($hashDict, $result);
                     } catch (InternalServerErrorException $throwable) {
+                        echo "匹配辅种异常：InternalServerErrorException" . PHP_EOL;
                         throw $throwable;
                     } catch (Throwable $throwable) {
+                        echo "匹配辅种异常：Throwable" . PHP_EOL;
                         echo $throwable->getMessage() . PHP_EOL;
                     }
                 }
