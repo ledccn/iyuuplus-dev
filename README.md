@@ -1,6 +1,6 @@
 # IYUUPlus开发版
 
-<a href="https://item.jd.com/100058776147.html" target="_blank"><img src="https://iyuu-1251099245.cos.ap-chengdu.myqcloud.com/zspace-01.jpg" width="1080"></a>
+<a href="https://3.cn/-10he54Mn" target="_blank"><img src="https://v.hilx.cn/app/admin/upload/files/20240910/66e00fce43e6.jpg" width="1080"></a>
 
 # 介绍
 
