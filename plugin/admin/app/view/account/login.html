@@ -126,9 +126,10 @@
                         if (iyuuPusher.connection.state === 'connected') {
                             oauthLoginElem.classList.remove('layui-bg-orange');
                         } else {
+                            iyuuPusher.unsubscribeAll();
                             oauthLoginElem.classList.add('layui-bg-orange');
                         }
-                    }, 1000);
+                    }, 3000);
                 }
             });
         }
@@ -155,7 +156,7 @@
                     return res.data;
                 })
                 .then(res => {
-                    showQrcode(res['ticket'], res['expire_seconds']);
+                    showQrcode(res['ticket'], res['expire_seconds'], res['channel_name']);
                 })
                 .catch(error => {
                     oauthLoginElem.classList.remove('layui-btn-disabled');
@@ -194,8 +195,9 @@
          * 显示二维码
          * @param {string} ticket
          * @param {int} expire_seconds
+         * @param {string} channel_name
          */
-        function showQrcode(ticket, expire_seconds) {
+        function showQrcode(ticket, expire_seconds, channel_name) {
             layer.open({
                 type: 1,
                 id: 'oauth_login',
@@ -214,6 +216,7 @@
                     if (timeNum <= 0) clearInterval(this.timer);
                 },
                 end: function () {
+                    iyuuPusher.unsubscribe(channel_name);
                     oauthLoginElem.classList.remove('layui-btn-disabled');
                     clearInterval(this.timer);
                 }
