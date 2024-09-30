@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/app/admin/admin/css/pages/login.css"/>
 </head>
 <!-- 代 码 结 构 -->
-<body background="/app/admin/admin/images/background.svg" style="background-size: cover;">
+<body style="background-size: cover; background-image: url(/app/admin/admin/images/background.svg)">
 <form class="layui-form">
     <div class="layui-form-item">
         <img class="logo" src="/app/admin/admin/images/logo.png"/>
@@ -35,6 +35,9 @@
     </div>
     <!-- 添加忘记密码链接 -->
     <div class="layui-form-item">
+        <button type="button" class="layui-btn layui-btn-sm" id="oauth_login" lay-on="oauth_login">
+            <i class="layui-icon layui-icon-login-wechat"></i> 微信扫码登陆
+        </button>
         <a href="https://doc.iyuu.cn/guide/qa-iyuuplus#reset-password" target="_blank" class="pear-text"
            style="display: block; text-align: center; color: #2d8cf0;">
             忘记密码？
@@ -54,19 +57,18 @@
 <script src="/app/admin/component/pear/pear.js"></script>
 <script src="/push.js"></script>
 <script>
-    layui.use(['form', 'button', 'popup', 'layer', 'theme', 'admin'], function () {
-        var $ = layui.$, layer = layui.layer, form = layui.form;
+    layui.use(['form', 'button', 'popup', 'layer', 'theme', 'admin', 'util'], function () {
+        var $ = layui.$, layer = layui.layer, form = layui.form, util = layui.util;
 
         // 爱语飞飞服务器域名
         const IYUU_HOST = 'https://iyuu.cn';
         // 获取Pusher长连接配置
         const IYUU_PUSH_CONFIG = IYUU_HOST + '/plugin/ledc/push/config';
-        // 获取唯一私有频道名称
-        const IYUU_PUSH_UNIQID_CHANNEL = IYUU_HOST + '/plugin/ledc/push/uniqid_channel';
         // 获取带参数二维码
-        const IYUU_QRCODE_CREATE = IYUU_HOST + '/qrcode/create';
+        const IYUU_QRCODE_CREATE = IYUU_HOST + '/qrcode/create?scene=oauth&force_refresh=1';
         // 登录验证
         const IYUU_ACCOUNT_LOGIN = '/admin/account/index';
+        let oauthLoginElem = document.getElementById('oauth_login');
 
         let iyuuPusher = null;
 
@@ -76,6 +78,12 @@
 
         switchCaptcha();
         requestPusherConfig();
+        util.on('lay-on', {
+            oauth_login: function () {
+                oauthLoginElem.classList.add('layui-btn-disabled');
+                fetchChannelNameOrQrcode();
+            },
+        });
         // 登 录 提 交
         form.on('submit(login)', function (data) {
             layer.load();
@@ -118,19 +126,89 @@
             });
         }
 
-        function showQrcode() {
-            $.ajax({
-                url: IYUU_PUSH_UNIQID_CHANNEL,
-                dataType: 'json',
-                success: function (res) {
-                    console.log('唯一值的私有频道', res);
-                    if (res.hasOwnProperty('channel_name')) {
-                        let uniqid_channel = iyuuPusher.subscribe(res.channel_name);
-                        // 扫码登录事件
-                        uniqid_channel.on('oauth_login', function (data) {
-                            console.info(data);
-                        });
+        /**
+         * 请求唯一私有频道和二维码
+         * @returns {Promise<any>}
+         */
+        function fetchChannelNameOrQrcode() {
+            fetch(IYUU_QRCODE_CREATE, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.code) {
+                        layui.layer.msg('失败：' + res.msg);
+                        throw new Error('响应失败');
                     }
+                    console.log('成功获取二维码:', res);
+                    listenChannel(res.data.channel_name);
+                    return res.data;
+                })
+                .then(res => {
+                    showQrcode(res['ticket'], res['expire_seconds']);
+                })
+                .catch(error => {
+                    oauthLoginElem.classList.remove('layui-btn-disabled');
+                    console.error('请求失败:', error);
+                });
+        }
+
+        /**
+         * 监听频道
+         * @param channel_name
+         */
+        function listenChannel(channel_name) {
+            let uniqid_channel = iyuuPusher.subscribe(channel_name);
+            uniqid_channel.on('oauth_login', function (data) {
+                layui.layer.closeAll('page');
+                console.info(data);
+                data.key = channel_name;
+                layui.$.ajax({
+                    url: IYUU_ACCOUNT_LOGIN,
+                    type: "POST",
+                    dateType: "json",
+                    data: data,
+                    success: function (res) {
+                        if (res.code) {
+                            return layui.popup.failure(res.msg);
+                        }
+                        layui.popup.success('登录成功', function () {
+                            location.reload();
+                        })
+                    }
+                });
+            });
+        }
+
+        /**
+         * 显示二维码
+         * @param {string} ticket
+         * @param {int} expire_seconds
+         */
+        function showQrcode(ticket, expire_seconds) {
+            layer.open({
+                type: 1,
+                id: 'oauth_login',
+                area: ['auto'],
+                title: '请用微信扫码',
+                time: expire_seconds * 1000,
+                shade: 0.6, // 遮罩透明度
+                anim: 0, // 0-6 的动画形式，-1 不开启
+                content: '<div style="display: flex;justify-content: center;align-items: center;"><img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + ticket + '" width="300px" height="300px" alt="二维码" /></div>',
+                success: function (layero, index) {
+                    let timeNum = this.time / 1000, setText = function (start) {
+                        layer.title('请用微信扫码，二维码<span class="layui-font-red">' + (start ? timeNum : --timeNum) + '</span>秒过期', index);
+                    };
+                    setText(!0);
+                    this.timer = setInterval(setText, 1000);
+                    if (timeNum <= 0) clearInterval(this.timer);
+                },
+                end: function () {
+                    oauthLoginElem.classList.remove('layui-btn-disabled');
+                    clearInterval(this.timer);
                 }
             });
         }

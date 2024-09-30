@@ -19,6 +19,12 @@ class AccountController
     use HasJsonResponse;
 
     /**
+     * 无需登录及鉴权的方法
+     * @var array
+     */
+    protected array $noNeedLogin = ['index'];
+
+    /**
      * 爱语飞飞扫码登录
      * @param Request $request
      * @return Response
