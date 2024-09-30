@@ -1,0 +1,24 @@
+{
+  "name": "ledc/crypt",
+  "description": "加密解密、加签验签",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Ledc\\Crypt\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "david",
+      "email": "367013672@qq.com",
+      "homepage": "https://www.iyuu.cn",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "ext-json": "*",
+    "ext-openssl": "*"
+  }
+}

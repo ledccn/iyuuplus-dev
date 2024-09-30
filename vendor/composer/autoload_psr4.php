@@ -66,6 +66,7 @@ return array(
     'Ledc\\Macroable\\' => array($vendorDir . '/ledc/macroable/src'),
     'Ledc\\Element\\' => array($vendorDir . '/ledc/element/src'),
     'Ledc\\Curl\\' => array($vendorDir . '/ledc/curl/src'),
+    'Ledc\\Crypt\\' => array($vendorDir . '/ledc/crypt/src'),
     'Ledc\\Container\\' => array($vendorDir . '/ledc/container/src'),
     'League\\Container\\' => array($vendorDir . '/league/container/src'),
     'Iyuu\\SiteManager\\' => array($baseDir . '/composer/site-manager/src'),

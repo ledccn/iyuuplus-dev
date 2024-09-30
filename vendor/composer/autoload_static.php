@@ -123,6 +123,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
             'Ledc\\Macroable\\' => 15,
             'Ledc\\Element\\' => 13,
             'Ledc\\Curl\\' => 10,
+            'Ledc\\Crypt\\' => 11,
             'Ledc\\Container\\' => 15,
             'League\\Container\\' => 17,
         ),
@@ -427,6 +428,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         'Ledc\\Curl\\' => 
         array (
             0 => __DIR__ . '/..' . '/ledc/curl/src',
+        ),
+        'Ledc\\Crypt\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ledc/crypt/src',
         ),
         'Ledc\\Container\\' => 
         array (

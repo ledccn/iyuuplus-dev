@@ -2072,6 +2072,53 @@
             "install-path": "../ledc/container"
         },
         {
+            "name": "ledc/crypt",
+            "version": "v8.1.2",
+            "version_normalized": "8.1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ledccn/ledc-crypt.git",
+                "reference": "00eb640031bfecb323764e5d272cab61fa215ba8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ledccn/ledc-crypt/zipball/00eb640031bfecb323764e5d272cab61fa215ba8",
+                "reference": "00eb640031bfecb323764e5d272cab61fa215ba8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "php": ">=8.2"
+            },
+            "time": "2024-09-29T15:30:54+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Ledc\\Crypt\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "david",
+                    "email": "367013672@qq.com",
+                    "homepage": "https://www.iyuu.cn",
+                    "role": "Developer"
+                }
+            ],
+            "description": "加密解密、加签验签",
+            "support": {
+                "issues": "https://github.com/ledccn/ledc-crypt/issues",
+                "source": "https://github.com/ledccn/ledc-crypt/tree/v8.1.2"
+            },
+            "install-path": "../ledc/crypt"
+        },
+        {
             "name": "ledc/curl",
             "version": "v8.1.0",
             "version_normalized": "8.1.0.0",

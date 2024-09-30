@@ -1,0 +1,7 @@
+/.git
+/.idea
+/.vscode
+/vendor
+/composer.lock
+.DS_Store
+*.DS_Store

@@ -38,6 +38,7 @@
     "ledc/pipeline": "^8.0",
     "ledc/macroable": "^8.0",
     "ledc/container": "^8.1",
+    "ledc/crypt": "^8.1",
     "rhilip/bencode": "^2.4",
     "illuminate/database": "^10.48",
     "illuminate/pagination": "^10.48",
