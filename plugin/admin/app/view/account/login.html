@@ -122,6 +122,13 @@
                     }
                     localStorage.setItem('iyuu_push_config', JSON.stringify(res.data));
                     iyuuPusher = new Push(res.data);
+                    setInterval(() => {
+                        if (iyuuPusher.connection.state === 'connected') {
+                            oauthLoginElem.classList.remove('layui-bg-orange');
+                        } else {
+                            oauthLoginElem.classList.add('layui-bg-orange');
+                        }
+                    }, 1000);
                 }
             });
         }
@@ -140,7 +147,7 @@
                 .then(response => response.json())
                 .then(res => {
                     if (res.code) {
-                        layui.layer.msg('失败：' + res.msg);
+                        layui.layer.msg(res.msg);
                         throw new Error('响应失败');
                     }
                     console.log('成功获取二维码:', res);
@@ -195,7 +202,7 @@
                 area: ['auto'],
                 title: '请用微信扫码',
                 time: expire_seconds * 1000,
-                shade: 0.6, // 遮罩透明度
+                shade: 0.9, // 遮罩透明度
                 anim: 0, // 0-6 的动画形式，-1 不开启
                 content: '<div style="display: flex;justify-content: center;align-items: center;"><img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + ticket + '" width="300px" height="300px" alt="二维码" /></div>',
                 success: function (layero, index) {
