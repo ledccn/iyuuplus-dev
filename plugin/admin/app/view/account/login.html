@@ -1,86 +1,140 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>IYUUPlus开发版 - 登录</title>
-        <!-- 样 式 文 件 -->
-        <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
-        <link rel="stylesheet" href="/app/admin/admin/css/pages/login.css" />
-    </head>
-    <!-- 代 码 结 构 -->
-    <body background="/app/admin/admin/images/background.svg" style="background-size: cover;">
-        <form class="layui-form">
-            <div class="layui-form-item">
-                <img class="logo" src="/app/admin/admin/images/logo.png" />
-                <div class="title pear-text">IYUUPlus</div>
-            </div>
-            <div class="layui-form-item">
-                <input lay-verify="required" hover class="layui-input" type="text" name="username" value="" placeholder="用户名" />
-            </div>
-            <div class="layui-form-item">
-                <input lay-verify="required" hover class="layui-input" type="password" name="password" value="" placeholder="密码" />
-            </div>
-            <div class="layui-form-item">
-                <input hover  lay-verify="required" class="code layui-input layui-input-inline" name="captcha" placeholder="验证码" />
-                <img class="codeImage" width="120px"/>
-            </div>
-            <div class="layui-form-item">
-                <button type="submit" class="pear-btn pear-btn-primary login" lay-submit lay-filter="login">
-                    登 入
-                </button>
-            </div>
-            <!-- 添加忘记密码链接 -->
-            <div class="layui-form-item">
-                <a href="https://doc.iyuu.cn/guide/qa-iyuuplus#reset-password" target="_blank" class="pear-text" style="display: block; text-align: center; color: #2d8cf0;">
-                    忘记密码？
-                </a>
-            </div>
-        </form>
-        <script>
-            var color = localStorage.getItem("theme-color-color");
-            var second = localStorage.getItem("theme-color-second");
-            if (!color || !second) {
-                localStorage.setItem("theme-color-color", "#2d8cf0");
-                localStorage.setItem("theme-color-second", "#ecf5ff");
-            }
-        </script>
-        <!-- 资 源 引 入 -->
-        <script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
-        <script src="/app/admin/component/pear/pear.js"></script>
-        <script>
-            layui.use(['form', 'button', 'popup', 'layer', 'theme', 'admin'], function() {
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>IYUUPlus开发版 - 登录</title>
+    <!-- 样 式 文 件 -->
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/app/admin/admin/css/pages/login.css"/>
+</head>
+<!-- 代 码 结 构 -->
+<body background="/app/admin/admin/images/background.svg" style="background-size: cover;">
+<form class="layui-form">
+    <div class="layui-form-item">
+        <img class="logo" src="/app/admin/admin/images/logo.png"/>
+        <div class="title pear-text">IYUUPlus</div>
+    </div>
+    <div class="layui-form-item">
+        <input lay-verify="required" hover class="layui-input" type="text" name="username" value=""
+               placeholder="用户名"/>
+    </div>
+    <div class="layui-form-item">
+        <input lay-verify="required" hover class="layui-input" type="password" name="password" value=""
+               placeholder="密码"/>
+    </div>
+    <div class="layui-form-item">
+        <input hover lay-verify="required" class="code layui-input layui-input-inline" name="captcha"
+               placeholder="验证码"/>
+        <img class="codeImage" width="120px"/>
+    </div>
+    <div class="layui-form-item">
+        <button type="submit" class="pear-btn pear-btn-primary login" lay-submit lay-filter="login">
+            登 入
+        </button>
+    </div>
+    <!-- 添加忘记密码链接 -->
+    <div class="layui-form-item">
+        <a href="https://doc.iyuu.cn/guide/qa-iyuuplus#reset-password" target="_blank" class="pear-text"
+           style="display: block; text-align: center; color: #2d8cf0;">
+            忘记密码？
+        </a>
+    </div>
+</form>
+<script>
+    var color = localStorage.getItem("theme-color-color");
+    var second = localStorage.getItem("theme-color-second");
+    if (!color || !second) {
+        localStorage.setItem("theme-color-color", "#2d8cf0");
+        localStorage.setItem("theme-color-second", "#ecf5ff");
+    }
+</script>
+<!-- 资 源 引 入 -->
+<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+<script src="/push.js"></script>
+<script>
+    layui.use(['form', 'button', 'popup', 'layer', 'theme', 'admin'], function () {
+        var $ = layui.$, layer = layui.layer, form = layui.form;
 
-                var $ = layui.$, layer = layui.layer, form = layui.form;
-                function switchCaptcha() {
-                    $('.codeImage').attr("src", "/app/admin/account/captcha/login?v=" + new Date().getTime());
+        // 爱语飞飞服务器域名
+        const IYUU_HOST = 'https://iyuu.cn';
+        // 获取Pusher长连接配置
+        const IYUU_PUSH_CONFIG = IYUU_HOST + '/plugin/ledc/push/config';
+        // 获取唯一私有频道名称
+        const IYUU_PUSH_UNIQID_CHANNEL = IYUU_HOST + '/plugin/ledc/push/uniqid_channel';
+        // 获取带参数二维码
+        const IYUU_QRCODE_CREATE = IYUU_HOST + '/qrcode/create';
+        // 登录验证
+        const IYUU_ACCOUNT_LOGIN = '/admin/account/index';
+
+        let iyuuPusher = null;
+
+        function switchCaptcha() {
+            $('.codeImage').attr("src", "/app/admin/account/captcha/login?v=" + new Date().getTime());
+        }
+
+        switchCaptcha();
+        requestPusherConfig();
+        // 登 录 提 交
+        form.on('submit(login)', function (data) {
+            layer.load();
+            $.ajax({
+                url: '/app/admin/account/login',
+                type: "POST",
+                data: data.field,
+                success: function (res) {
+                    layer.closeAll('loading');
+                    if (!res.code) {
+                        layui.popup.success('登录成功', function () {
+                            location.reload();
+                        })
+                    } else {
+                        layui.popup.failure(res.msg)
+                        switchCaptcha();
+                    }
                 }
-                switchCaptcha();
-                // 登 录 提 交
-                form.on('submit(login)', function (data) {
-                    layer.load();
-                    $.ajax({
-                        url: '/app/admin/account/login',
-                        type: "POST",
-                        data: data.field,
-                        success: function (res) {
-                            layer.closeAll('loading');
-                            if (!res.code) {
-                                layui.popup.success('登录成功', function () {
-                                    location.reload();
-                                })
-                            } else {
-                                layui.popup.failure(res.msg)
-                                switchCaptcha();
-                            }
-                        }
-                    });
-                    return false;
-                });
-                $('.codeImage').on('click', function () {
-                    switchCaptcha();
-                });
-            })
-        </script>
-    </body>
+            });
+            return false;
+        });
+        $('.codeImage').on('click', function () {
+            switchCaptcha();
+        });
+
+        /**
+         * 请求长连接配置信息
+         */
+        function requestPusherConfig() {
+            $.ajax({
+                url: IYUU_PUSH_CONFIG,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    localStorage.setItem('iyuu_push_config', JSON.stringify(res.data));
+                    iyuuPusher = new Push(res.data);
+                }
+            });
+        }
+
+        function showQrcode() {
+            $.ajax({
+                url: IYUU_PUSH_UNIQID_CHANNEL,
+                dataType: 'json',
+                success: function (res) {
+                    console.log('唯一值的私有频道', res);
+                    if (res.hasOwnProperty('channel_name')) {
+                        let uniqid_channel = iyuuPusher.subscribe(res.channel_name);
+                        // 扫码登录事件
+                        uniqid_channel.on('oauth_login', function (data) {
+                            console.info(data);
+                        });
+                    }
+                }
+            });
+        }
+    })
+</script>
+</body>
 </html>
