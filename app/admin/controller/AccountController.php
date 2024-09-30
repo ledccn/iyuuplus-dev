@@ -52,7 +52,7 @@ class AccountController
             $wechatUser = $rsaCrypt->decrypt($payload, $signature);
             $rocket = new WechatAccountRocket($wechatUser);
             if (!password_verify(iyuu_token(), $rocket->token_password_hash)) {
-                return $this->fail('您的token在爱语飞飞已变更，请更新环境变量');
+                return $this->fail('登录失败：环境变量内token与登录方不一致');
             }
 
             $admin = Admin::first();
