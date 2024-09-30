@@ -35,7 +35,7 @@
     </div>
     <!-- 添加忘记密码链接 -->
     <div class="layui-form-item">
-        <button type="button" class="layui-btn layui-btn-sm" id="oauth_login" lay-on="oauth_login">
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-disabled" id="oauth_login" lay-on="oauth_login">
             <i class="layui-icon layui-icon-login-wechat"></i> 微信扫码登陆
         </button>
         <a href="https://doc.iyuu.cn/guide/qa-iyuuplus#reset-password" target="_blank" class="pear-text"
@@ -68,8 +68,9 @@
         const IYUU_QRCODE_CREATE = IYUU_HOST + '/qrcode/create?scene=oauth&force_refresh=1';
         // 登录验证
         const IYUU_ACCOUNT_LOGIN = '/admin/account/index';
+        // 登录按钮
         let oauthLoginElem = document.getElementById('oauth_login');
-
+        // pusher长连接对象
         let iyuuPusher = null;
 
         function switchCaptcha() {
@@ -77,13 +78,6 @@
         }
 
         switchCaptcha();
-        requestPusherConfig();
-        util.on('lay-on', {
-            oauth_login: function () {
-                oauthLoginElem.classList.add('layui-btn-disabled');
-                fetchChannelNameOrQrcode();
-            },
-        });
         // 登 录 提 交
         form.on('submit(login)', function (data) {
             layer.load();
@@ -109,6 +103,17 @@
             switchCaptcha();
         });
 
+        util.on('lay-on', {
+            oauth_login: function () {
+                if (oauthLoginElem.classList.contains('layui-bg-orange')) {
+                    layui.layer.msg('长连接已断线，不支持扫码登录');
+                    return false;
+                }
+                fetchChannelNameOrQrcode();
+            },
+        });
+        requestPusherConfig();
+
         /**
          * 请求长连接配置信息
          */
@@ -124,12 +129,14 @@
                     iyuuPusher = new Push(res.data);
                     setInterval(() => {
                         if (iyuuPusher.connection.state === 'connected') {
+                            oauthLoginElem.classList.remove('layui-btn-disabled');
                             oauthLoginElem.classList.remove('layui-bg-orange');
                         } else {
+                            layui.layer.closeAll('page');
                             iyuuPusher.unsubscribeAll();
                             oauthLoginElem.classList.add('layui-bg-orange');
                         }
-                    }, 3000);
+                    }, 2000);
                 }
             });
         }
@@ -159,7 +166,6 @@
                     showQrcode(res['ticket'], res['expire_seconds'], res['channel_name']);
                 })
                 .catch(error => {
-                    oauthLoginElem.classList.remove('layui-btn-disabled');
                     console.error('请求失败:', error);
                 });
         }
@@ -172,8 +178,8 @@
             let uniqid_channel = iyuuPusher.subscribe(channel_name);
             uniqid_channel.on('oauth_login', function (data) {
                 layui.layer.closeAll('page');
-                console.info(data);
                 data.key = channel_name;
+                console.info(data);
                 layui.$.ajax({
                     url: IYUU_ACCOUNT_LOGIN,
                     type: "POST",
@@ -217,7 +223,6 @@
                 },
                 end: function () {
                     iyuuPusher.unsubscribe(channel_name);
-                    oauthLoginElem.classList.remove('layui-btn-disabled');
                     clearInterval(this.timer);
                 }
             });
