@@ -281,7 +281,7 @@
 
         setInterval(() => {
             show_websocket_state();
-        }, 2000);
+        }, 5000);
 
         let channel = connection.subscribe('private-webman-admin');
         // 普通消息
@@ -333,6 +333,12 @@
                     break;
                 case 'info':
                     notice.info(data.msg);
+                    break;
+                case 'setTimeout':
+                    notice.warning(data.msg);
+                    setTimeout(function () {
+                        parent.location.reload();
+                    }, 8000);
                     break;
                 default:
                     notice.clear();

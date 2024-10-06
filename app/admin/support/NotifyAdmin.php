@@ -8,6 +8,7 @@ namespace app\admin\support;
  * @method static error(string $msg) 错误消息
  * @method static warning(string $msg) 警告消息
  * @method static info(string $msg) 通用消息
+ * @method static setTimeout(string $msg) 更新消息自动刷新
  */
 class NotifyAdmin
 {

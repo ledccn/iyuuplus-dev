@@ -6,6 +6,7 @@ use app\admin\services\client\SeedingAfterCompletedServices;
 use app\admin\services\client\TotalSeedingServices;
 use app\admin\services\reseed\ReseedDownloadServices;
 use app\admin\services\SitesServices;
+use app\admin\services\SystemServices;
 use app\admin\support\NotifyAdmin;
 use app\model\Site;
 use Error;
@@ -69,8 +70,10 @@ class ReseedProcess
         }
 
         // 每天执行
+        SystemServices::checkRemoteUpdates();
         new Crontab('10 10 * * *', function () {
             exec(implode(' ', [PHP_BINARY, base_path('webman'), 'iyuu:backup', 'backup']));
+            SystemServices::checkRemoteUpdates();
         });
 
         // 每4小时执行
