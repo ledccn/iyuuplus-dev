@@ -70,14 +70,25 @@ class SystemServices
     public static function checkRemoteUpdates(string $branch = 'master'): false|string
     {
         try {
-            exec('git fetch', $output, $fetchStatus);
-            exec("git rev-list HEAD...origin/{$branch} --count", $output, $checkStatus);
-
-            if ($checkStatus !== 0) {
+            if (!current_git_commit()) {
                 throw new RuntimeException('通过git拉取的代码，才支持自动更新！');
             }
 
-            $updatesCount = intval($output[0]);
+            $process = new Process(['git', 'fetch'], base_path());
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new RuntimeException('检查失败：无法拉取代码！');
+            }
+
+            $process = new Process(["git", "rev-list", "HEAD...origin/{$branch}", "--count"], base_path());
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new RuntimeException('检查失败：无法拉取代码，可能不是通过git拉取的代码，才支持自动更新');
+            }
+
+            $updatesCount = intval(trim($process->getOutput()));
 
             if ($updatesCount > 0) {
                 return self::handleUpdates();
