@@ -70,10 +70,6 @@ class SystemServices
     public static function checkRemoteUpdates(string $branch = 'master'): false|string
     {
         try {
-            if (!current_git_commit()) {
-                throw new RuntimeException('通过git拉取的代码，才支持自动更新！');
-            }
-
             exec('git fetch', $output, $fetchStatus);
             exec("git rev-list HEAD...origin/{$branch} --count", $output, $checkStatus);
 
