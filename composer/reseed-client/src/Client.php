@@ -13,7 +13,7 @@ class Client extends AbstractCurl
     /**
      * 主域名
      */
-    protected const string BASE_API = 'https://dev.iyuu.cn';
+    public const string BASE_API = 'https://dev.iyuu.cn';
 
     /**
      * 解析响应结果
@@ -67,7 +67,7 @@ class Client extends AbstractCurl
     /**
      * 汇报持有的站点
      * @param array $data
-     * @return string
+     * @return string 站点哈希值（有效期7天，持有站点没变化时，不用重复获取）
      * @throws InternalServerErrorException
      */
     public function reportExisting(array $data): string
@@ -100,6 +100,29 @@ class Client extends AbstractCurl
             'version' => $version,
         ];
         $curl = $this->getCurl()->post(self::BASE_API . '/reseed/index/index', $data);
+        $response = $this->parseResponse($curl, '获取可辅种数据失败');
+        return $response['data'];
+    }
+
+    /**
+     * 查询单个种子的辅种数据
+     * @param int $sid
+     * @param int $torrent_id
+     * @param string $sid_sha1
+     * @param string $version
+     * @return array
+     * @throws InternalServerErrorException
+     */
+    public function single(int $sid, int $torrent_id, string $sid_sha1, string $version): array
+    {
+        $data = [
+            'sid' => $sid,
+            'torrent_id' => $torrent_id,
+            'sid_sha1' => $sid_sha1,
+            'timestamp' => time(),
+            'version' => $version,
+        ];
+        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/index/single', $data);
         $response = $this->parseResponse($curl, '获取可辅种数据失败');
         return $response['data'];
     }
