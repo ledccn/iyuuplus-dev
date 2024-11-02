@@ -16,6 +16,7 @@ namespace support;
 
 use Closure;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Connection;
 
 /**
  * Class Db
@@ -32,5 +33,19 @@ use Illuminate\Database\Capsule\Manager;
  */
 class Db extends Manager
 {
+    /**
+     * @return Manager
+     */
+    public static function getInstance()
+    {
+        return static::$instance;
+    }
 
+    /**
+     * @return Connection[]
+     */
+    public static function getConnections()
+    {
+        return static::$instance->getDatabaseManager()->getConnections();
+    }
 }

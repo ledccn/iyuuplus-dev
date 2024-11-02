@@ -30,7 +30,9 @@ class Base
 
     /**
      * 数据限制
-     * 例如当$dataLimit='personal'时将只返回当前管理员的数据
+     * null 不做限制，任何管理员都可以查看该表的所有数据
+     * auth 管理员能看到自己以及自己的子管理员插入的数据
+     * personal 管理员只能看到自己插入的数据
      * @var string
      */
     protected $dataLimit = null;

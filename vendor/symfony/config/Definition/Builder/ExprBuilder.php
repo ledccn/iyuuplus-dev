@@ -30,11 +30,9 @@ class ExprBuilder
     public ?\Closure $ifPart = null;
     public ?\Closure $thenPart = null;
 
-    protected NodeDefinition $node;
-
-    public function __construct(NodeDefinition $node)
-    {
-        $this->node = $node;
+    public function __construct(
+        protected NodeDefinition $node,
+    ) {
     }
 
     /**
@@ -102,7 +100,7 @@ class ExprBuilder
      */
     public function ifEmpty(): static
     {
-        $this->ifPart = static fn ($v) => empty($v);
+        $this->ifPart = static fn ($v) => !$v;
         $this->allowedTypes = self::TYPE_ANY;
 
         return $this;

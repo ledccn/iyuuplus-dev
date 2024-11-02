@@ -2260,8 +2260,12 @@ class Worker
         } elseif (!static::$_outputDecorated) {
             return false;
         }
-        \fwrite($stream, $msg);
-        \fflush($stream);
+        set_error_handler(function(){});
+        if (!feof($stream)) {
+            fwrite($stream, $msg);
+            fflush($stream);
+        }
+        restore_error_handler();
         return true;
     }
 

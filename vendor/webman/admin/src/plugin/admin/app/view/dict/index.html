@@ -84,34 +84,86 @@
                 
 				// 表头参数
 				let cols = [
-					{
-						type: "checkbox"
-					},{
-						title: "名称",
-						field: "name",
-                        width: 160,
-					},{
-                        title: "值",
-                        field: "value",
-                    },{
-						title: "创建时间",
-						field: "created_at",
-                        width: 180,
-						hide: true,
-					},{
-						title: "更新时间",
-						field: "updated_at",
-                        width: 180,
-						hide: true,
-					},{
-						title: "操作",
-						toolbar: "#table-bar",
-						align: "center",
-                        width: 130,
-						fixed: "right",
-					}
-				];
-				
+          {
+            type: "checkbox",
+          }, {
+            title  : "名称",
+            field  : "name",
+            width  : 200,
+            templet: function (d) {
+              let field = "name";
+              if (typeof d[field] == "undefined") return "";
+              let items = [];
+              layui.each((
+                d[field] + ""
+              ).split(","), function (k, v) {
+                items.push(apiResults[field][v] || v);
+              });
+              return util.escape(items.join(","));
+            },
+          }, {
+            title  : "值",
+            field  : "value",
+            templet: function (d) {
+              const dicts = JSON.parse(d.value)
+              return dicts.map(dict => `<span class="layui-badge layui-bg-blue">${dict.name}: ${dict.value}</span>`).join(' ');
+            },
+          }, {
+            title: "创建时间",
+            field: "created_at",
+            width: 180,
+            hide : true,
+          }, {
+            title: "更新时间",
+            field: "updated_at",
+            width: 180,
+            hide : true,
+          }, {
+            title  : "操作",
+            toolbar: "#table-bar",
+            align  : "center",
+            width  : 130,
+            fixed  : "right",
+          },
+        ];
+
+        let apiResults = {};
+        const loadDictNames = () => {
+          let apis = [];
+          apis.push(["name", "/app/admin/dict/get/dict_name"]);
+          apiResults["name"] = [];
+          let count = apis.length;
+          layui.each(apis, function (k, item) {
+            let [field, url] = item;
+            $.ajax({
+              url     : url,
+              dateType: "json",
+              success : function (res) {
+                if (res.code) {
+                  return layui.popup.failure(res.msg);
+                }
+
+                function travel(items) {
+                  for (let k in items) {
+                    let item = items[k];
+                    apiResults[field][item.value] = `${item.name}: ${item.value}`;
+                    if (item.children) {
+                      travel(item.children);
+                    }
+                  }
+                }
+
+                travel(res.data);
+              },
+              complete: function () {
+                if (--count === 0) {
+                  render();
+                }
+              },
+            });
+          });
+        }
+        loadDictNames();
 				// 渲染表格
 				function render()
 				{
@@ -248,9 +300,20 @@
                 }
 
                 // 刷新表格数据
-                window.refreshTable = function(param) {
+                window.refreshTable = function() {
                     table.reloadData("data-table", {
-                        scrollPos: "fixed"
+                        scrollPos: "fixed",
+                        done: function (res, curr) {
+                            if (curr > 1 && res.data && !res.data.length) {
+                                curr = curr - 1;
+                                table.reloadData("data-table", {
+                                    page: {
+                                        curr: curr
+                                    },
+                                })
+                            }
+                            loadDictNames()
+                        }
                     });
                 }
             })

@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Webman\Console\Util;
 
 
@@ -41,7 +42,7 @@ class MakeBootstrapCommand extends Command
         $upper = $bootstrap_str === 'Bootstrap';
         if (!($pos = strrpos($name, '/'))) {
             $name = ucfirst($name);
-            $file = app_path() . "/$bootstrap_str/$name.php";
+            $file = app_path() . DIRECTORY_SEPARATOR . $bootstrap_str . DIRECTORY_SEPARATOR . "$name.php";
             $namespace = $upper ? 'App\Bootstrap' : 'app\bootstrap';
         } else {
             if($real_name = Util::guessPath(app_path(), $name)) {
@@ -54,8 +55,16 @@ class MakeBootstrapCommand extends Command
             }
             $path = "$bootstrap_str/" . substr($upper ? ucfirst($name) : $name, 0, $pos);
             $name = ucfirst(substr($name, $pos + 1));
-            $file = app_path() . "/$path/$name.php";
+            $file = app_path() . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "$name.php";
             $namespace = str_replace('/', '\\', ($upper ? 'App/' : 'app/') . $path);
+        }
+
+        if (is_file($file)) {
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion("$file already exists. Do you want to override it? (yes/no)", false);
+            if (!$helper->ask($input, $output, $question)) {
+                return Command::SUCCESS;
+            }
         }
 
         $this->createBootstrap($name, $namespace, $file);

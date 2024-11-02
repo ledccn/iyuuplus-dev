@@ -422,7 +422,7 @@ class CaptchaBuilder implements CaptchaBuilderInterface
         }
 
         if ($font === null) {
-            $font = $this->getFontPath(__DIR__ . '/Font/captcha'.$this->rand(0, 5).'.ttf');
+            $font = $this->getFontPath(__DIR__ . '/Font/captcha'.$this->rand(0, 4).'.ttf');
         }
 
         if (empty($this->backgroundImages)) {

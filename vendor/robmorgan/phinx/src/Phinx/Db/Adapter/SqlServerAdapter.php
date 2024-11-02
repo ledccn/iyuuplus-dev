@@ -211,7 +211,7 @@ class SqlServerAdapter extends PdoAdapter
      */
     public function quoteColumnName(string $columnName): string
     {
-        return '[' . str_replace(']', '\]', $columnName) . ']';
+        return '[' . str_replace(']', ']]', $columnName) . ']';
     }
 
     /**
@@ -270,7 +270,7 @@ class SqlServerAdapter extends PdoAdapter
 
         // set the primary key(s)
         if (isset($options['primary_key'])) {
-            $pkSql = sprintf('CONSTRAINT PK_%s PRIMARY KEY (', $table->getName());
+            $pkSql = sprintf('CONSTRAINT PK_%s PRIMARY KEY (', str_replace('.', '_', $table->getName()));
             if (is_string($options['primary_key'])) { // handle primary_key => 'id'
                 $pkSql .= $this->quoteColumnName($options['primary_key']);
             } elseif (is_array($options['primary_key'])) { // handle primary_key => array('tag_id', 'resource_id')
@@ -1174,12 +1174,13 @@ ORDER BY T.[name], I.[index_id];";
      */
     public function createDatabase(string $name, array $options = []): void
     {
+        $databaseName = $this->quoteColumnName($name);
         if (isset($options['collation'])) {
-            $this->execute(sprintf('CREATE DATABASE [%s] COLLATE [%s]', $name, $options['collation']));
+            $this->execute(sprintf('CREATE DATABASE %s COLLATE %s', $databaseName, $options['collation']));
         } else {
-            $this->execute(sprintf('CREATE DATABASE [%s]', $name));
+            $this->execute(sprintf('CREATE DATABASE %s', $databaseName));
         }
-        $this->execute(sprintf('USE [%s]', $name));
+        $this->execute(sprintf('USE %s', $databaseName));
     }
 
     /**
@@ -1203,12 +1204,13 @@ ORDER BY T.[name], I.[index_id];";
      */
     public function dropDatabase(string $name): void
     {
-        $sql = <<<SQL
-USE master;
-IF EXISTS(select * from sys.databases where name=N'$name')
-ALTER DATABASE [$name] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-DROP DATABASE [$name];
-SQL;
+        $sql = sprintf(
+            'USE master;
+            IF EXISTS(select * from sys.databases where name=N\'' . $name . '\')
+            ALTER DATABASE %1$s SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+            DROP DATABASE %1$s;',
+            $this->quoteColumnName($name),
+        );
         $this->execute($sql);
         $this->createdTables = [];
     }

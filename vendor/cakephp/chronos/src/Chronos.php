@@ -736,13 +736,15 @@ class Chronos extends DateTimeImmutable implements Stringable
     /**
      * Create an instance from a timestamp
      *
-     * @param int $timestamp The timestamp to create an instance from.
+     * @param float|int $timestamp The timestamp to create an instance from.
      * @param \DateTimeZone|string|null $timezone The DateTimeZone object or timezone name the new instance should use.
      * @return static
      */
-    public static function createFromTimestamp(int $timestamp, DateTimeZone|string|null $timezone = null): static
+    public static function createFromTimestamp(float|int $timestamp, DateTimeZone|string|null $timezone = null): static
     {
-        return static::now($timezone)->setTimestamp($timestamp);
+        $instance = PHP_VERSION_ID >= 80400 ? parent::createFromTimestamp($timestamp) : new static('@' . $timestamp);
+
+        return $timezone ? $instance->setTimezone($timezone) : $instance;
     }
 
     /**
@@ -936,7 +938,7 @@ class Chronos extends DateTimeImmutable implements Stringable
     {
         $new = parent::modify($modifier);
         if ($new === false) {
-            throw new InvalidArgumentException('Unable to modify date using: ' . $modifier);
+            throw new InvalidArgumentException(sprintf('Unable to modify date using `%s`', $modifier));
         }
 
         return $new;
@@ -2665,7 +2667,7 @@ class Chronos extends DateTimeImmutable implements Stringable
                 return $this->getTimezone()->getName();
 
             default:
-                throw new InvalidArgumentException(sprintf("Unknown getter '%s'", $name));
+                throw new InvalidArgumentException(sprintf('Unknown getter `%s`', $name));
         }
     }
 
@@ -2673,7 +2675,7 @@ class Chronos extends DateTimeImmutable implements Stringable
      * Check if an attribute exists on the object
      *
      * @param string $name The property name to check.
-     * @return bool Whether or not the property exists.
+     * @return bool Whether the property exists.
      */
     public function __isset(string $name): bool
     {

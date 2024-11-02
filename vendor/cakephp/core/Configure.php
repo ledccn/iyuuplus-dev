@@ -97,13 +97,6 @@ class Configure
             if (static::$_hasIniSet) {
                 ini_set('display_errors', $config['debug'] ? '1' : '0');
             }
-
-            if ($config['debug'] && PHP_SAPI !== 'cli' && ini_get('zend.assertions') === '-1') {
-                trigger_error(
-                    'You should set `zend.assertions` to `1` in your php.ini for your development environment.',
-                    E_USER_WARNING
-                );
-            }
         }
     }
 
@@ -275,7 +268,7 @@ class Configure
     /**
      * Gets the names of the configured Engine objects.
      *
-     * @return array<string>
+     * @return list<string>
      */
     public static function configured(): array
     {

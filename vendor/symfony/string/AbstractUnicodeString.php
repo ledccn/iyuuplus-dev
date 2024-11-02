@@ -155,7 +155,7 @@ abstract class AbstractUnicodeString extends AbstractString
     public function camel(): static
     {
         $str = clone $this;
-        $str->string = str_replace(' ', '', preg_replace_callback('/\b.(?![A-Z]{2,})/u', static function ($m) {
+        $str->string = str_replace(' ', '', preg_replace_callback('/\b.(?!\p{Lu})/u', static function ($m) {
             static $i = 0;
 
             return 1 === ++$i ? ('İ' === $m[0] ? 'i̇' : mb_strtolower($m[0], 'UTF-8')) : mb_convert_case($m[0], \MB_CASE_TITLE, 'UTF-8');
@@ -190,7 +190,7 @@ abstract class AbstractUnicodeString extends AbstractString
 
         if (!$compat || !\defined('Normalizer::NFKC_CF')) {
             $str->string = normalizer_normalize($str->string, $compat ? \Normalizer::NFKC : \Normalizer::NFC);
-            $str->string = mb_strtolower(str_replace(self::FOLD_FROM, self::FOLD_TO, $this->string), 'UTF-8');
+            $str->string = mb_strtolower(str_replace(self::FOLD_FROM, self::FOLD_TO, $str->string), 'UTF-8');
         } else {
             $str->string = normalizer_normalize($str->string, \Normalizer::NFKC_CF);
         }
@@ -218,6 +218,21 @@ abstract class AbstractUnicodeString extends AbstractString
         $str->string = mb_strtolower(str_replace('İ', 'i̇', $str->string), 'UTF-8');
 
         return $str;
+    }
+
+    /**
+     * @param string $locale In the format language_region (e.g. tr_TR)
+     */
+    public function localeLower(string $locale): static
+    {
+        if (null !== $transliterator = $this->getLocaleTransliterator($locale, 'Lower')) {
+            $str = clone $this;
+            $str->string = $transliterator->transliterate($str->string);
+
+            return $str;
+        }
+
+        return $this->lower();
     }
 
     public function match(string $regexp, int $flags = 0, int $offset = 0): array
@@ -363,6 +378,21 @@ abstract class AbstractUnicodeString extends AbstractString
         return $str;
     }
 
+    /**
+     * @param string $locale In the format language_region (e.g. tr_TR)
+     */
+    public function localeTitle(string $locale): static
+    {
+        if (null !== $transliterator = $this->getLocaleTransliterator($locale, 'Title')) {
+            $str = clone $this;
+            $str->string = $transliterator->transliterate($str->string);
+
+            return $str;
+        }
+
+        return $this->title();
+    }
+
     public function trim(string $chars = " \t\n\r\0\x0B\x0C\u{A0}\u{FEFF}"): static
     {
         if (" \t\n\r\0\x0B\x0C\u{A0}\u{FEFF}" !== $chars && !preg_match('//u', $chars)) {
@@ -448,6 +478,21 @@ abstract class AbstractUnicodeString extends AbstractString
         $str->string = mb_strtoupper($str->string, 'UTF-8');
 
         return $str;
+    }
+
+    /**
+     * @param string $locale In the format language_region (e.g. tr_TR)
+     */
+    public function localeUpper(string $locale): static
+    {
+        if (null !== $transliterator = $this->getLocaleTransliterator($locale, 'Upper')) {
+            $str = clone $this;
+            $str->string = $transliterator->transliterate($str->string);
+
+            return $str;
+        }
+
+        return $this->upper();
     }
 
     public function width(bool $ignoreAnsiDecoration = true): int
@@ -586,5 +631,34 @@ abstract class AbstractUnicodeString extends AbstractString
         }
 
         return $width;
+    }
+
+    private function getLocaleTransliterator(string $locale, string $id): ?\Transliterator
+    {
+        $rule = $locale.'-'.$id;
+        if (\array_key_exists($rule, self::$transliterators)) {
+            return self::$transliterators[$rule];
+        }
+
+        if (null !== $transliterator = self::$transliterators[$rule] = \Transliterator::create($rule)) {
+            return $transliterator;
+        }
+
+        // Try to find a parent locale (nl_BE -> nl)
+        if (false === $i = strpos($locale, '_')) {
+            return null;
+        }
+
+        $parentRule = substr_replace($locale, '-'.$id, $i);
+
+        // Parent locale was already cached, return and store as current locale
+        if (\array_key_exists($parentRule, self::$transliterators)) {
+            return self::$transliterators[$rule] = self::$transliterators[$parentRule];
+        }
+
+        // Create transliterator based on parent locale and cache the result on both initial and parent locale values
+        $transliterator = \Transliterator::create($parentRule);
+
+        return self::$transliterators[$rule] = self::$transliterators[$parentRule] = $transliterator;
     }
 }

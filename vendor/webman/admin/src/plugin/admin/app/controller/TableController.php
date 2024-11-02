@@ -321,7 +321,7 @@ class TableController extends Base
         $drop_column_names = array_diff($old_columns_names, $exists_column_names);
         $drop_column_names = Util::filterAlphaNum($drop_column_names);
         foreach ($drop_column_names as $drop_column_name) {
-            Util::db()->statement("ALTER TABLE $table_name DROP COLUMN `$drop_column_name`");
+            Util::db()->statement("ALTER TABLE `$table_name` DROP COLUMN `$drop_column_name`");
         }
 
         $old_keys = Util::getSchema($table_name, 'keys');
@@ -584,7 +584,6 @@ class TableController extends Base
     public \$incrementing = false;
 
 EOF;
-;
                     }
                 }
                 $type = $this->getType($item->DATA_TYPE);
@@ -963,9 +962,19 @@ EOF
                 }
 
                 // 刷新表格数据
-                window.refreshTable = function(param) {
+                window.refreshTable = function() {
                     table.reloadData("data-table", {
-                        scrollPos: "fixed"
+                        scrollPos: "fixed",
+                        done: function (res, curr) {
+                            if (curr > 1 && res.data && !res.data.length) {
+                                curr = curr - 1;
+                                table.reloadData("data-table", {
+                                    page: {
+                                        curr: curr
+                                    },
+                                })
+                            }
+                        }
                     });
                 }
             })
@@ -1220,7 +1229,7 @@ EOF;
         $format = $request->get('format', 'normal');
         $limit = $request->get('limit', $format === 'tree' ? 5000 : 10);
 
-        $allow_column = Util::db()->select("desc $table");
+        $allow_column = Util::db()->select("desc `$table`");
         if (!$allow_column) {
             return $this->json(2, '表不存在');
         }

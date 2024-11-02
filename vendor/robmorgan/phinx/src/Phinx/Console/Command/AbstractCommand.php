@@ -9,9 +9,11 @@ declare(strict_types=1);
 namespace Phinx\Console\Command;
 
 use InvalidArgumentException;
+use PDO;
 use Phinx\Config\Config;
 use Phinx\Config\ConfigInterface;
 use Phinx\Db\Adapter\AdapterInterface;
+use Phinx\Db\Adapter\SQLiteAdapter;
 use Phinx\Migration\Manager;
 use Phinx\Util\Util;
 use RuntimeException;
@@ -422,5 +424,72 @@ abstract class AbstractCommand extends Command
     protected function getSeedTemplateFilename(): string
     {
         return __DIR__ . self::DEFAULT_SEED_TEMPLATE;
+    }
+
+    /**
+     * Write out environment information to the OutputInterface
+     */
+    protected function writeEnvironmentOutput(?string &$environment, OutputInterface $output): bool
+    {
+        if ($environment === null) {
+            $environment = $this->getConfig()->getDefaultEnvironment();
+            $output->writeln('<comment>warning</comment> no environment specified, defaulting to: ' . $environment, $this->verbosityLevel);
+        } else {
+            $output->writeln('<info>using environment</info> ' . $environment, $this->verbosityLevel);
+        }
+
+        if (!$this->getConfig()->hasEnvironment($environment)) {
+            $output->writeln(sprintf('<error>The environment "%s" does not exist</error>', $environment));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Write out options information to the OutputInterface
+     */
+    protected function writeInformationOutput(?string &$environment, OutputInterface $output): bool
+    {
+        $success = $this->writeEnvironmentOutput($environment, $output);
+        if (!$success) {
+            return false;
+        }
+
+        $envOptions = $this->getConfig()->getEnvironment($environment);
+        if (isset($envOptions['adapter'])) {
+            $output->writeln('<info>using adapter</info> ' . $envOptions['adapter'], $this->verbosityLevel);
+        }
+
+        if (isset($envOptions['wrapper'])) {
+            $output->writeln('<info>using wrapper</info> ' . $envOptions['wrapper'], $this->verbosityLevel);
+        }
+
+        if (isset($envOptions['name'])) {
+            $name = $envOptions['name'];
+            // We do error handling for missing adapter or connection is invalid later on running a command
+            $adapter = $envOptions['adapter'] ?? null;
+            if (isset($envOptions['connection']) && $envOptions['connection'] instanceof PDO) {
+                $adapter = $envOptions['connection']->getAttribute(PDO::ATTR_DRIVER_NAME);
+            }
+            if ($adapter === 'sqlite') {
+                $name .= SQLiteAdapter::getSuffix($envOptions);
+            }
+            $output->writeln('<info>using database</info> ' . $name, $this->verbosityLevel);
+        } else {
+            $output->writeln('<error>Could not determine database name! Please specify a database name in your config file.</error>');
+
+            return false;
+        }
+
+        if (isset($envOptions['table_prefix'])) {
+            $output->writeln('<info>using table prefix</info> ' . $envOptions['table_prefix'], $this->verbosityLevel);
+        }
+        if (isset($envOptions['table_suffix'])) {
+            $output->writeln('<info>using table suffix</info> ' . $envOptions['table_suffix'], $this->verbosityLevel);
+        }
+
+        return true;
     }
 }

@@ -160,6 +160,7 @@ function createChannel(channel_name, push) {
     channel.subscribeCb = function () {
         push.connection.send(JSON.stringify({ event: "pusher:subscribe", data: { channel: channel_name } }));
     }
+    channel.processSubscribe();
     return channel;
 }
 
@@ -693,7 +694,7 @@ function __ajax(options) {
     options = options || {};
     options.type = (options.type || 'GET').toUpperCase();
     options.dataType = options.dataType || 'json';
-    params = formatParams(options.data);
+    var params = formatParams(options.data);
 
     var xhr;
     if (window.XMLHttpRequest) {

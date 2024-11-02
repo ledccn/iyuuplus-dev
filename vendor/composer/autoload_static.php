@@ -126,6 +126,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
             'Ledc\\Crypt\\' => 11,
             'Ledc\\Container\\' => 15,
             'League\\Container\\' => 17,
+            'Laravel\\SerializableClosure\\' => 28,
         ),
         'I' => 
         array (
@@ -193,8 +194,8 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         'think\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-container/src',
-            1 => __DIR__ . '/..' . '/topthink/think-helper/src',
-            2 => __DIR__ . '/..' . '/topthink/think-validate/src',
+            1 => __DIR__ . '/..' . '/topthink/think-validate/src',
+            2 => __DIR__ . '/..' . '/topthink/think-helper/src',
         ),
         'support\\' => 
         array (
@@ -362,8 +363,8 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -441,6 +442,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         array (
             0 => __DIR__ . '/..' . '/league/container/src',
         ),
+        'Laravel\\SerializableClosure\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laravel/serializable-closure/src',
+        ),
         'Iyuu\\SiteManager\\' => 
         array (
             0 => __DIR__ . '/../..' . '/composer/site-manager/src',
@@ -463,9 +468,9 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/collections',
+            0 => __DIR__ . '/..' . '/illuminate/macroable',
             1 => __DIR__ . '/..' . '/illuminate/conditionable',
-            2 => __DIR__ . '/..' . '/illuminate/macroable',
+            2 => __DIR__ . '/..' . '/illuminate/collections',
             3 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Pipeline\\' => 

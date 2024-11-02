@@ -5,9 +5,11 @@
     "license" : "MIT",
     "require": {
         "workerman/psr7": ">=1.4.3",
-        "workerman/workerman": "^4.1.0||^5.0.0"
+        "workerman/workerman": "^4.1.0||^5.0.0||dev-master"
     },
     "autoload": {
         "psr-4": {"Workerman\\Http\\": "./src"}
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

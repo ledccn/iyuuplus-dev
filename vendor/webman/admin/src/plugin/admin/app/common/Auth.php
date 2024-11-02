@@ -47,11 +47,23 @@ class Auth
     }
 
     /**
+     * 兼容旧版本
+     * @param int $admin_id
+     * @deprecated
+     * @return bool
+     */
+    public static function isSupperAdmin(int $admin_id = 0): bool
+    {
+        return static::isSuperAdmin($admin_id);
+
+    }
+
+    /**
      * 是否是超级管理员
      * @param int $admin_id
      * @return bool
      */
-    public static function isSupperAdmin(int $admin_id = 0): bool
+    public static function isSuperAdmin(int $admin_id = 0): bool
     {
         if (!$admin_id) {
             if (!$roles = admin('roles')) {

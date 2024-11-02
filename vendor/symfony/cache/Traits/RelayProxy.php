@@ -28,6 +28,7 @@ class RelayProxy extends \Relay\Relay implements ResetInterface, LazyObjectInter
     use LazyProxyTrait {
         resetLazyObject as reset;
     }
+    use RelayProxyTrait;
 
     private const LAZY_OBJECT_PROPERTY_SCOPES = [];
 
@@ -276,6 +277,11 @@ class RelayProxy extends \Relay\Relay implements ResetInterface, LazyObjectInter
         return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->replicaof(...\func_get_args());
     }
 
+    public function waitaof($numlocal, $numremote, $timeout): \Relay\Relay|array|false
+    {
+        return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->waitaof(...\func_get_args());
+    }
+
     public function restore($key, $ttl, $value, $options = null): \Relay\Relay|bool
     {
         return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->restore(...\func_get_args());
@@ -284,11 +290,6 @@ class RelayProxy extends \Relay\Relay implements ResetInterface, LazyObjectInter
     public function migrate($host, $port, $key, $dstdb, $timeout, $copy = false, $replace = false, #[\SensitiveParameter] $credentials = null): \Relay\Relay|bool
     {
         return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->migrate(...\func_get_args());
-    }
-
-    public function copy($src, $dst, $options = null): \Relay\Relay|false|int
-    {
-        return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->copy(...\func_get_args());
     }
 
     public function echo($arg): \Relay\Relay|bool|string

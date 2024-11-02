@@ -7,13 +7,14 @@ use Intervention\Image\ImageManagerStatic as Image;
 use plugin\admin\app\controller\Base;
 use plugin\admin\app\controller\Crud;
 use plugin\admin\app\model\Upload;
+use Random\RandomException;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
 use Throwable;
 
 /**
- * 附件管理 
+ * 附件管理
  */
 class UploadController extends Crud
 {
@@ -256,7 +257,27 @@ class UploadController extends Crud
      */
     public function delete(Request $request): Response
     {
-        return parent::delete($request);
+        $ids = $this->deleteInput($request);
+        $primary_key = $this->model->getKeyName();
+        $files = $this->model->whereIn($primary_key, $ids)->get()->toArray();
+        $file_list = array_map(function ($item) {
+          $path =$item['url'];
+          if (preg_match("#^/app/admin#",$path)){
+              $admin_public_path = config('plugin.admin.app.public_path') ?: base_path() . "/plugin/admin/public";
+              return $admin_public_path . str_replace("/app/admin", "", $item['url']);
+          }
+          return null;
+        },$files);
+        $file_list = array_filter($file_list,function ($item){
+            return !empty($item);
+        });
+        $result = parent::delete($request);
+        if (($res = json_decode($result->rawBody())) && $res->code === 0) {
+            foreach ($file_list as $file) {
+                @unlink($file);
+            }
+        }
+        return $result;
     }
 
     /**
@@ -264,17 +285,18 @@ class UploadController extends Crud
      * @param Request $request
      * @param $relative_dir
      * @return array
-     * @throws BusinessException
+     * @throws BusinessException|RandomException
      */
     protected function base(Request $request, $relative_dir): array
     {
-        $relative_dir = ltrim($relative_dir, '/');
+        $relative_dir = ltrim($relative_dir, '\\/');
         $file = current($request->file());
         if (!$file || !$file->isValid()) {
             throw new BusinessException('未找到上传文件', 400);
         }
 
-        $base_dir = base_path() . '/plugin/admin/public/';
+        $admin_public_path = rtrim(config('plugin.admin.app.public_path', ''), '\\/');
+        $base_dir = $admin_public_path ? $admin_public_path . DIRECTORY_SEPARATOR : base_path() . '/plugin/admin/public/';
         $full_dir = $base_dir . $relative_dir;
         if (!is_dir($full_dir)) {
             mkdir($full_dir, 0777, true);

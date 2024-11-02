@@ -108,12 +108,14 @@ class Crud extends Base
             }
         }
         // 按照数据限制字段返回数据
-        if ($this->dataLimit === 'personal') {
-            $where[$this->dataLimitField] = admin_id();
-        } elseif ($this->dataLimit === 'auth') {
-            $primary_key = $this->model->getKeyName();
-            if (!Auth::isSupperAdmin() && (!isset($where[$primary_key]) || $this->dataLimitField != $primary_key)) {
-                $where[$this->dataLimitField] = ['in', Auth::getScopeAdminIds(true)];
+        if (!Auth::isSuperAdmin()) {
+            if ($this->dataLimit === 'personal') {
+                $where[$this->dataLimitField] = admin_id();
+            } elseif ($this->dataLimit === 'auth') {
+                $primary_key = $this->model->getKeyName();
+                if (!Auth::isSuperAdmin() && (!isset($where[$primary_key]) || $this->dataLimitField != $primary_key)) {
+                    $where[$this->dataLimitField] = ['in', Auth::getScopeAdminIds(true)];
+                }
             }
         }
         return [$where, $format, $limit, $field, $order, $page];
@@ -203,13 +205,21 @@ class Crud extends Base
             $data[$password_filed] = Util::passwordHash($data[$password_filed]);
         }
 
-        if (!Auth::isSupperAdmin() && $this->dataLimit) {
-            if (!empty($data[$this->dataLimitField])) {
-                $admin_id = $data[$this->dataLimitField];
-                if (!in_array($admin_id, Auth::getScopeAdminIds(true))) {
-                    throw new BusinessException('无数据权限');
+        if (!Auth::isSuperAdmin()) {
+            if ($this->dataLimit === 'personal') {
+                $data[$this->dataLimitField] = admin_id();
+            } elseif ($this->dataLimit === 'auth') {
+                if (!empty($data[$this->dataLimitField])) {
+                    $admin_id = $data[$this->dataLimitField];
+                    if (!in_array($admin_id, Auth::getScopeAdminIds(true))) {
+                        throw new BusinessException('无数据权限');
+                    }
+                } else {
+                    $data[$this->dataLimitField] = admin_id();
                 }
             }
+        } elseif ($this->dataLimit && empty($data[$this->dataLimitField])) {
+            $data[$this->dataLimitField] = admin_id();
         }
         return $data;
     }
@@ -246,15 +256,22 @@ class Crud extends Base
         if (!$model) {
             throw new BusinessException('记录不存在', 2);
         }
-        if (!Auth::isSupperAdmin() && $this->dataLimit) {
-            $scopeAdminIds = Auth::getScopeAdminIds(true);
-            $admin_ids = [
-                $data[$this->dataLimitField] ?? false, // 检查要更新的数据admin_id是否是有权限的值
-                $model->{$this->dataLimitField} ?? false // 检查要更新的记录的admin_id是否有权限
-            ];
-            foreach ($admin_ids as $admin_id) {
-                if ($admin_id && !in_array($admin_id, $scopeAdminIds)) {
+
+        if (!Auth::isSuperAdmin()) {
+            if ($this->dataLimit == 'personal') {
+                if ($model->{$this->dataLimitField} != admin_id()) {
                     throw new BusinessException('无数据权限');
+                }
+            } elseif ($this->dataLimit == 'auth') {
+                $scopeAdminIds = Auth::getScopeAdminIds(true);
+                $admin_ids = [
+                    $data[$this->dataLimitField] ?? false, // 检查要更新的数据admin_id是否是有权限的值
+                    $model->{$this->dataLimitField} ?? false // 检查要更新的记录的admin_id是否有权限
+                ];
+                foreach ($admin_ids as $admin_id) {
+                    if ($admin_id && !in_array($admin_id, $scopeAdminIds)) {
+                        throw new BusinessException('无数据权限');
+                    }
                 }
             }
         }
@@ -335,10 +352,19 @@ class Crud extends Base
             throw new BusinessException('该表无主键，不支持删除');
         }
         $ids = (array)$request->post($primary_key, []);
-        if (!Auth::isSupperAdmin() && $this->dataLimit) {
-            $admin_ids = $this->model->where($primary_key, $ids)->pluck($this->dataLimitField)->toArray();
-            if (array_diff($admin_ids, Auth::getScopeAdminIds(true))) {
-                throw new BusinessException('无数据权限');
+        if (!Auth::isSuperAdmin()){
+            $admin_ids = [];
+            if ($this->dataLimit) {
+                $admin_ids = $this->model->where($primary_key, $ids)->pluck($this->dataLimitField)->toArray();
+            }
+            if ($this->dataLimit == 'personal') {
+                if (!in_array(admin_id(), $admin_ids)) {
+                    throw new BusinessException('无数据权限');
+                }
+            } elseif ($this->dataLimit == 'auth') {
+                if (array_diff($admin_ids, Auth::getScopeAdminIds(true))) {
+                    throw new BusinessException('无数据权限');
+                }
             }
         }
         return $ids;
@@ -355,7 +381,9 @@ class Crud extends Base
             return;
         }
         $primary_key = $this->model->getKeyName();
-        $this->model->whereIn($primary_key, $ids)->delete();
+        $this->model->whereIn($primary_key, $ids)->each(function ($model) {
+            $model->delete();
+        });
     }
 
     /**
@@ -366,11 +394,12 @@ class Crud extends Base
     protected function formatTree($items): Response
     {
         $format_items = [];
+        $primary_key = $this->model->getKeyName();
         foreach ($items as $item) {
             $format_items[] = [
-                'name' => $item->title ?? $item->name ?? $item->id,
-                'value' => (string)$item->id,
-                'id' => $item->id,
+                'name' => $this->guessName($item) ?: $item->$primary_key,
+                'value' => (string)$item->$primary_key,
+                'id' => $item->$primary_key,
                 'pid' => $item->pid,
             ];
         }
@@ -397,10 +426,11 @@ class Crud extends Base
     protected function formatSelect($items): Response
     {
         $formatted_items = [];
+        $primary_key = $this->model->getKeyName();
         foreach ($items as $item) {
             $formatted_items[] = [
-                'name' => $item->title ?? $item->name ?? $item->id,
-                'value' => $item->id
+                'name' => $this->guessName($item) ?: $item->$primary_key,
+                'value' => $item->$primary_key
             ];
         }
         return  $this->json(0, 'ok', $formatted_items);
@@ -425,5 +455,15 @@ class Crud extends Base
     protected function afterQuery($items)
     {
         return $items;
+    }
+
+    /**
+     * 猜测记录名称
+     * @param $item
+     * @return mixed
+     */
+    protected function guessName($item)
+    {
+        return $item->title ?? $item->name ?? $item->nickname ?? $item->username ?? $item->id;
     }
 }

@@ -34,18 +34,14 @@ use function request;
 class Raw implements View
 {
     /**
-     * @var array
-     */
-    protected static $vars = [];
-
-    /**
      * Assign.
      * @param string|array $name
      * @param mixed $value
      */
     public static function assign($name, $value = null)
     {
-        static::$vars = array_merge(static::$vars, is_array($name) ? $name : [$name => $value]);
+        $request = request();
+        $request->_view_vars = array_merge((array) $request->_view_vars, is_array($name) ? $name : [$name => $value]);
     }
 
     /**
@@ -62,23 +58,23 @@ class Raw implements View
         $plugin = $plugin === null ? ($request->plugin ?? '') : $plugin;
         $configPrefix = $plugin ? "plugin.$plugin." : '';
         $viewSuffix = config("{$configPrefix}view.options.view_suffix", 'html');
-        $app = $app === null ? $request->app : $app;
+        $app = $app === null ? ($request->app ?? '') : $app;
         $baseViewPath = $plugin ? base_path() . "/plugin/$plugin/app" : app_path();
         $__template_path__ = $app === '' ? "$baseViewPath/view/$template.$viewSuffix" : "$baseViewPath/$app/view/$template.$viewSuffix";
 
-        extract(static::$vars);
+        if(isset($request->_view_vars)) {
+            extract((array)$request->_view_vars);
+        }
         extract($vars);
         ob_start();
         // Try to include php file.
         try {
             include $__template_path__;
         } catch (Throwable $e) {
-            static::$vars = [];
             ob_end_clean();
             throw $e;
         }
-        static::$vars = [];
+
         return ob_get_clean();
     }
-
 }
