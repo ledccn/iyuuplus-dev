@@ -13,7 +13,6 @@ use Workerman\Timer;
  */
 class SystemServices
 {
-
     /**
      * 拉取最新项目
      * @return array
@@ -39,7 +38,8 @@ class SystemServices
     }
 
     /**
-     *  - 启动、重启、停止、重载等webman支持的命令
+     * 启动、重启、停止、重载等webman支持的命令
+     * - 必须在docker的S6环境
      * @param string $command
      * @return array
      */
@@ -68,6 +68,8 @@ class SystemServices
     }
 
     /**
+     * 自动更新并重启
+     * - 必须在docker的S6环境
      * @param string $branch
      * @return false|string
      */
@@ -93,9 +95,12 @@ class SystemServices
             }
 
             $updatesCount = intval(trim($process->getOutput()));
-
             if ($updatesCount > 0) {
-                return self::handleUpdates();
+                (new Process(['git', 'reset --hard origin/master'], base_path()))->run();
+                self::gitAction('restart');
+                NotifyAdmin::success("更新成功！");
+                NotifyAdmin::setTimeout("即将自动重启！");
+                return "更新成功！";
             } else {
                 NotifyAdmin::success("已是最新版本！");
                 return "已是最新版本！";
@@ -105,19 +110,4 @@ class SystemServices
             return $e->getMessage();
         }
     }
-
-    private static function handleUpdates(): string
-    {
-        try {
-            self::gitPull(); // 执行 Git 拉取
-            self::gitAction('restart');
-            NotifyAdmin::success("更新成功！");
-            NotifyAdmin::setTimeout("即将自动重启！");
-            return "更新成功！";
-        } catch (RuntimeException $e) {
-            NotifyAdmin::error($e->getMessage());
-            return $e->getMessage();
-        }
-    }
-
 }
