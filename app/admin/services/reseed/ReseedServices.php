@@ -31,7 +31,7 @@ class ReseedServices
     /**
      * 辅种每批次分组数量
      */
-    private const int RESEED_GROUP_NUMBER = 500;
+    private const int RESEED_GROUP_NUMBER = 200;
     /**
      * 计划任务：数据模型
      * @var Crontab
