@@ -70,10 +70,13 @@ class ReseedProcess
         }
 
         // 每天执行
-        SystemServices::checkRemoteUpdates();
+        //SystemServices::checkRemoteUpdates();
+        Timer::add(mt_rand(36000, 72000), function () {
+            SystemServices::checkRemoteUpdates();
+        });
+
         new Crontab('10 10 * * *', function () {
             exec(implode(' ', [PHP_BINARY, base_path('webman'), 'iyuu:backup', 'backup']));
-            SystemServices::checkRemoteUpdates();
         });
 
         // 每4小时执行
