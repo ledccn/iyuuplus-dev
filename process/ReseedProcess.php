@@ -12,6 +12,7 @@ use app\model\Site;
 use Error;
 use Exception;
 use plugin\cron\api\Install;
+use support\Cache;
 use support\Log;
 use Throwable;
 use Workerman\Crontab\Crontab;
@@ -35,7 +36,11 @@ class ReseedProcess
             return;
         }
 
-        SitesServices::sync();
+        if (!Cache::has('ReseedProcess_onWorkerStart')) {
+            Cache::set('ReseedProcess_onWorkerStart', time(), 3600 + mt_rand(100, 1000));
+            SitesServices::sync();
+        }
+
         init_migrate();
 
         // docker s6环境
