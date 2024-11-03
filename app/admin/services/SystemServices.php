@@ -43,14 +43,18 @@ class SystemServices
      * @param string $command
      * @return array
      */
-    public static function gitaction(string $command): array
+    public static function gitAction(string $command): array
     {
         if (!in_array($command, Params::ACTION_LIST, true)) {
             throw new RuntimeException('不受支持的命令，允许：' . implode('|', Params::ACTION_LIST));
         }
 
+        // 程序无法重启自身，必须用非亲缘关系的进程才能重启
+        // 在docker的S6环境，webman可以给自身发送stop、restart指令，这时webman会进程会自杀；S6会重新拉起它
         if (!isDockerEnvironment()) {
-            if (!current_git_commit()) {
+            if (current_git_commit()) {
+                throw new RuntimeException('请重启IYUU，即可更新成功');
+            } else {
                 throw new RuntimeException('通过git拉取的代码，才支持自动更新 https://doc.iyuu.cn/guide/install-windows');
             }
         }
@@ -106,7 +110,7 @@ class SystemServices
     {
         try {
             self::gitPull(); // 执行 Git 拉取
-            self::gitaction('restart');
+            self::gitAction('restart');
             NotifyAdmin::success("更新成功！");
             NotifyAdmin::setTimeout("即将自动重启！");
             return "更新成功！";

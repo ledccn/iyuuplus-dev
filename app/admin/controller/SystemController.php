@@ -4,13 +4,9 @@ namespace app\admin\controller;
 
 use app\admin\services\SystemServices;
 use app\common\HasJsonResponse;
-use Iyuu\SiteManager\Spider\Params;
-use RuntimeException;
 use support\Request;
 use support\Response;
-use Symfony\Component\Process\Process;
 use Throwable;
-use Workerman\Timer;
 
 /**
  * 系统管理
@@ -29,7 +25,7 @@ class SystemController
     {
         try {
             $command = $request->post('command', 'restart');
-            return json(SystemServices::gitaction($command));
+            return json(SystemServices::gitAction($command));
         } catch (Throwable $e) {
             return $this->fail($e->getMessage());
         }
