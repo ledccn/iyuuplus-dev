@@ -30,7 +30,7 @@ class SpiderTorrents
     /**
      * 解码器
      */
-    const DECODER = '\\runtime\\Bencode';
+    const string DECODER = '\\runtime\\Bencode';
 
     /**
      * 观察者

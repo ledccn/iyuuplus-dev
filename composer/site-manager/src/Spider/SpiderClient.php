@@ -15,19 +15,19 @@ class SpiderClient
     /**
      * 爬虫服务主域名
      */
-    const SPIDER_HOST = 'http://api.bolahg.cn:2120';
+    const string SPIDER_HOST = 'http://api.iyuu.cn:2120';
     /**
      * 站点列表
      */
-    const API_SITE_LIST = self::SPIDER_HOST . '/spider/site/index';
+    const string API_SITE_LIST = self::SPIDER_HOST . '/spider/site/index';
     /**
      * 创建
      */
-    const API_SPIDER_CREATE = self::SPIDER_HOST . '/spider/torrent/create';
+    const string API_SPIDER_CREATE = self::SPIDER_HOST . '/spider/torrent/create';
     /**
      * 查重
      */
-    const API_SPIDER_FIND = self::SPIDER_HOST . '/spider/torrent/find';
+    const string API_SPIDER_FIND = self::SPIDER_HOST . '/spider/torrent/find';
     /**
      * 应用id
      * @var string

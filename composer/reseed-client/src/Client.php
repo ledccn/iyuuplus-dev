@@ -13,7 +13,7 @@ class Client extends AbstractCurl
     /**
      * 主域名
      */
-    public const string BASE_API = 'https://dev.iyuu.cn';
+    public const string BASE_API = 'http://dev.iyuu.cn';
 
     /**
      * 解析响应结果
