@@ -23,19 +23,21 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class ResourceCheckerConfigCache implements ConfigCacheInterface
 {
-    private string $metaFile;
+    private string $file;
+
+    /**
+     * @var iterable<mixed, ResourceCheckerInterface>
+     */
+    private iterable $resourceCheckers;
 
     /**
      * @param string                                    $file             The absolute cache path
      * @param iterable<mixed, ResourceCheckerInterface> $resourceCheckers The ResourceCheckers to use for the freshness check
-     * @param string|null                               $metaFile         The absolute path to the meta file, defaults to $file.meta if null
      */
-    public function __construct(
-        private string $file,
-        private iterable $resourceCheckers = [],
-        ?string $metaFile = null,
-    ) {
-        $this->metaFile = $metaFile ?? $file.'.meta';
+    public function __construct(string $file, iterable $resourceCheckers = [])
+    {
+        $this->file = $file;
+        $this->resourceCheckers = $resourceCheckers;
     }
 
     public function getPath(): string
@@ -66,7 +68,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
             return true; // shortcut - if we don't have any checkers we don't need to bother with the meta file at all
         }
 
-        $metadata = $this->metaFile;
+        $metadata = $this->getMetaFile();
 
         if (!is_file($metadata)) {
             return false;
@@ -118,9 +120,9 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         }
 
         if (null !== $metadata) {
-            $filesystem->dumpFile($this->metaFile, serialize($metadata));
+            $filesystem->dumpFile($this->getMetaFile(), serialize($metadata));
             try {
-                $filesystem->chmod($this->metaFile, $mode, $umask);
+                $filesystem->chmod($this->getMetaFile(), $mode, $umask);
             } catch (IOException) {
                 // discard chmod failure (some filesystem may not support it)
             }
@@ -131,10 +133,18 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         }
     }
 
+    /**
+     * Gets the meta file path.
+     */
+    private function getMetaFile(): string
+    {
+        return $this->file.'.meta';
+    }
+
     private function safelyUnserialize(string $file): mixed
     {
         $meta = false;
-        $content = (new Filesystem())->readFile($file);
+        $content = file_get_contents($file);
         $signalingException = new \UnexpectedValueException();
         $prevUnserializeHandler = ini_set('unserialize_callback_func', self::class.'::handleUnserializeCallback');
         $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context = []) use (&$prevErrorHandler, $signalingException) {

@@ -226,15 +226,3 @@ a {
 }
 
 /** 表详情顶部搜索框 End **/
-
-/* tinymce 样式优化 Start */
-
-.layui-input-block .tox.tox-tinymce.tox-fullscreen {
-    z-index: 1;
-}
-
-.tox.tox-tinymce-aux {
-	z-index: 90000000 !important;
-}
-
-/* tinymce 样式优化 End */

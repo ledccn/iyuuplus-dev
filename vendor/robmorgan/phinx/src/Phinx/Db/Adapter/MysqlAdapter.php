@@ -472,10 +472,6 @@ class MysqlAdapter extends PdoAdapter
                 $column->setIdentity(true);
             }
 
-            if ($columnInfo['Extra'] === 'on update CURRENT_TIMESTAMP') {
-                $column->setUpdate('CURRENT_TIMESTAMP');
-            }
-
             if (isset($phinxType['values'])) {
                 $column->setValues($phinxType['values']);
             }
@@ -578,7 +574,7 @@ class MysqlAdapter extends PdoAdapter
 
                     return true;
                 });
-                $extra = ' ' . implode(' ', $extras);
+                $extra = implode(' ', $extras);
 
                 if (($row['Default'] !== null)) {
                     $extra .= $this->getDefaultValueDefinition($row['Default']);
@@ -1301,13 +1297,13 @@ class MysqlAdapter extends PdoAdapter
 
         if (isset($options['collation'])) {
             $this->execute(sprintf(
-                'CREATE DATABASE %s DEFAULT CHARACTER SET `%s` COLLATE `%s`',
-                $this->quoteColumnName($name),
+                'CREATE DATABASE `%s` DEFAULT CHARACTER SET `%s` COLLATE `%s`',
+                $name,
                 $charset,
                 $options['collation']
             ));
         } else {
-            $this->execute(sprintf('CREATE DATABASE %s DEFAULT CHARACTER SET `%s`', $this->quoteColumnName($name), $charset));
+            $this->execute(sprintf('CREATE DATABASE `%s` DEFAULT CHARACTER SET `%s`', $name, $charset));
         }
     }
 
@@ -1337,7 +1333,7 @@ class MysqlAdapter extends PdoAdapter
      */
     public function dropDatabase(string $name): void
     {
-        $this->execute(sprintf('DROP DATABASE IF EXISTS %s', $this->quoteColumnName($name)));
+        $this->execute(sprintf('DROP DATABASE IF EXISTS `%s`', $name));
         $this->createdTables = [];
     }
 

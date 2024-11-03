@@ -16,13 +16,9 @@ declare(strict_types=1);
  */
 namespace Cake\Database;
 
-use IteratorAggregate;
 use PDO;
 
-/**
- * @template-extends \IteratorAggregate<array>
- */
-interface StatementInterface extends IteratorAggregate
+interface StatementInterface
 {
     /**
      * Maps to PDO::FETCH_NUM.

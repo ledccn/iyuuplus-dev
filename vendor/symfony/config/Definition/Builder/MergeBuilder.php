@@ -21,9 +21,11 @@ class MergeBuilder
     public bool $allowFalse = false;
     public bool $allowOverwrite = true;
 
-    public function __construct(
-        protected NodeDefinition $node,
-    ) {
+    protected NodeDefinition $node;
+
+    public function __construct(NodeDefinition $node)
+    {
+        $this->node = $node;
     }
 
     /**

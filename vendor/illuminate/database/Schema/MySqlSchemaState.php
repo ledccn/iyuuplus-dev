@@ -26,9 +26,7 @@ class MySqlSchemaState extends SchemaState
 
         $this->removeAutoIncrementingState($path);
 
-        if ($this->hasMigrationTable()) {
-            $this->appendMigrationData($path);
-        }
+        $this->appendMigrationData($path);
     }
 
     /**

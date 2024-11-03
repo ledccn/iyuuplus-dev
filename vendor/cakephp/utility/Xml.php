@@ -185,7 +185,7 @@ class Xml
                 $xml->loadHTML($input, $flags);
 
                 if ($options['return'] === 'simplexml' || $options['return'] === 'simplexmlelement') {
-                    return simplexml_import_dom($xml);
+                    $xml = simplexml_import_dom($xml);
                 }
 
                 return $xml;
@@ -335,7 +335,7 @@ class Xml
                         $node->setAttributeNS('http://www.w3.org/2000/xmlns/', $key, (string)$value);
                         continue;
                     }
-                    if (!str_starts_with($key, '@') && $format === 'tags') {
+                    if ($key[0] !== '@' && $format === 'tags') {
                         if (!is_numeric($value)) {
                             // Escape special characters
                             // https://www.w3.org/TR/REC-xml/#syntax
@@ -347,7 +347,7 @@ class Xml
                         }
                         $node->appendChild($child);
                     } else {
-                        if (str_starts_with($key, '@')) {
+                        if ($key[0] === '@') {
                             $key = substr($key, 1);
                         }
                         $attribute = $dom->createAttribute($key);
@@ -355,7 +355,7 @@ class Xml
                         $node->appendChild($attribute);
                     }
                 } else {
-                    if (str_starts_with($key, '@')) {
+                    if ($key[0] === '@') {
                         throw new XmlException('Invalid array');
                     }
                     if (is_numeric(implode('', array_keys($value)))) {
@@ -396,8 +396,8 @@ class Xml
         $dom = $data['dom'];
         /** @var \DOMNode $node */
         $node = $data['node'];
-        $childNS = null;
-        $childValue = null;
+
+        $childNS = $childValue = null;
         if (is_object($value) && method_exists($value, 'toArray') && is_callable([$value, 'toArray'])) {
             $value = $value->toArray();
         }

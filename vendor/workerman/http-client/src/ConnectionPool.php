@@ -63,21 +63,18 @@ class ConnectionPool extends Emitter
      *
      * @param $address
      * @param bool $ssl
-     * @param string $proxy
      * @return mixed
      */
-    public function fetch($address, $ssl = false, $proxy = '')
+    public function fetch($address, $ssl = false)
     {
         $max_con = $this->_options['max_conn_per_addr'];
-        $targetAddress = $address;
-        $address = ProxyHelper::addressKey($address, $proxy);
         if (!empty($this->_using[$address])) {
             if (count($this->_using[$address]) >= $max_con) {
                 return;
             }
         }
         if (empty($this->_idle[$address])) {
-            $connection = $this->create($targetAddress, $ssl, $proxy);
+            $connection = $this->create($address, $ssl);
             $this->_idle[$address][$connection->id] = $connection;
         }
         $connection = array_pop($this->_idle[$address]);
@@ -208,29 +205,22 @@ class ConnectionPool extends Emitter
      *
      * @param $address
      * @param bool $ssl
-     * @param string $proxy
      * @return AsyncTcpConnection
      */
-    protected function create($address, $ssl = false, $proxy = '')
+    protected function create($address, $ssl = false)
     {
         $context = array(
             'ssl' => array(
                 'verify_peer' => false,
                 'verify_peer_name'  => false,
                 'allow_self_signed' => true
-            ),
-            'http' => array(
-                'proxy' => $proxy
-            ),
+            )
         );
         if (!empty( $this->_options['context'])) {
             $context = $this->_options['context'];
         }
         if (!$ssl) {
             unset($context['ssl']);
-        }
-        if (empty($proxy)) {
-            unset($context['http']['proxy']);
         }
         if (!class_exists(Worker::class) || is_null(Worker::$globalEvent)) {
             throw new \Exception('Only the workerman environment is supported.');
@@ -239,8 +229,7 @@ class ConnectionPool extends Emitter
         if ($ssl) {
             $connection->transport = 'ssl';
         }
-        ProxyHelper::setConnectionProxy($connection, $context);
-        $connection->address = ProxyHelper::addressKey($address, $proxy);
+        $connection->address = $address;
         $connection->connect();
         $connection->pool = ['connect_time' => time()];
         return $connection;

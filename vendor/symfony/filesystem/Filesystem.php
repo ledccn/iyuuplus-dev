@@ -44,7 +44,7 @@ class Filesystem
         $this->mkdir(\dirname($targetFile));
 
         $doCopy = true;
-        if (!$overwriteNewerFiles && !parse_url($originFile, \PHP_URL_HOST) && is_file($targetFile)) {
+        if (!$overwriteNewerFiles && null === parse_url($originFile, \PHP_URL_HOST) && is_file($targetFile)) {
             $doCopy = filemtime($originFile) > filemtime($targetFile);
         }
 
@@ -164,7 +164,7 @@ class Filesystem
                 }
             } elseif (is_dir($file)) {
                 if (!$isRecursive) {
-                    $tmpName = \dirname(realpath($file)).'/.!'.strrev(strtr(base64_encode(random_bytes(2)), '/=', '-!'));
+                    $tmpName = \dirname(realpath($file)).'/.'.strrev(strtr(base64_encode(random_bytes(2)), '/=', '-_'));
 
                     if (file_exists($tmpName)) {
                         try {
@@ -223,10 +223,6 @@ class Filesystem
     /**
      * Change the owner of an array of files or directories.
      *
-     * This method always throws on Windows, as the underlying PHP function is not supported.
-     *
-     * @see https://www.php.net/chown
-     *
      * @param string|int $user      A user name or number
      * @param bool       $recursive Whether change the owner recursively or not
      *
@@ -252,10 +248,6 @@ class Filesystem
 
     /**
      * Change the group of an array of files or directories.
-     *
-     * This method always throws on Windows, as the underlying PHP function is not supported.
-     *
-     * @see https://www.php.net/chgrp
      *
      * @param string|int $group     A group name or number
      * @param bool       $recursive Whether change the group recursively or not
@@ -670,15 +662,11 @@ class Filesystem
                 throw new IOException(sprintf('Failed to write file "%s": ', $filename).self::$lastError, 0, null, $filename);
             }
 
-            self::box('chmod', $tmpFile, self::box('fileperms', $filename) ?: 0666 & ~umask());
+            self::box('chmod', $tmpFile, file_exists($filename) ? fileperms($filename) : 0666 & ~umask());
 
             $this->rename($tmpFile, $filename, true);
         } finally {
             if (file_exists($tmpFile)) {
-                if ('\\' === \DIRECTORY_SEPARATOR && !is_writable($tmpFile)) {
-                    self::box('chmod', $tmpFile, self::box('fileperms', $tmpFile) | 0200);
-                }
-
                 self::box('unlink', $tmpFile);
             }
         }
@@ -707,25 +695,6 @@ class Filesystem
         if (false === self::box('file_put_contents', $filename, $content, \FILE_APPEND | ($lock ? \LOCK_EX : 0))) {
             throw new IOException(sprintf('Failed to write file "%s": ', $filename).self::$lastError, 0, null, $filename);
         }
-    }
-
-    /**
-     * Returns the content of a file as a string.
-     *
-     * @throws IOException If the file cannot be read
-     */
-    public function readFile(string $filename): string
-    {
-        if (is_dir($filename)) {
-            throw new IOException(sprintf('Failed to read file "%s": File is a directory.', $filename));
-        }
-
-        $content = self::box('file_get_contents', $filename);
-        if (false === $content) {
-            throw new IOException(sprintf('Failed to read file "%s": ', $filename).self::$lastError, 0, null, $filename);
-        }
-
-        return $content;
     }
 
     private function toIterable(string|iterable $files): iterable

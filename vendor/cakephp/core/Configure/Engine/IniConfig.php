@@ -160,14 +160,15 @@ class IniConfig implements ConfigEngineInterface
         $result = [];
         foreach ($data as $k => $value) {
             $isSection = false;
-            if (!str_starts_with($k, '[')) {
-                $result[] = "[{$k}]";
+            /** @psalm-suppress InvalidArrayAccess */
+            if ($k[0] !== '[') {
+                $result[] = "[$k]";
                 $isSection = true;
             }
             if (is_array($value)) {
                 $kValues = Hash::flatten($value, '.');
                 foreach ($kValues as $k2 => $v) {
-                    $result[] = "{$k2} = " . $this->_value($v);
+                    $result[] = "$k2 = " . $this->_value($v);
                 }
             }
             if ($isSection) {

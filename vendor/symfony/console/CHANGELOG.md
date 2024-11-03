@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-7.1
----
-
- * Add `ArgvInput::getRawTokens()`
-
 7.0
 ---
 

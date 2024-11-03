@@ -107,14 +107,10 @@ readonly class RsaCrypt
      * @param string $data
      * @param string $signature
      * @return bool
-     * @throws ErrorException
      */
     public function opensslVerify(string $data, string $signature): bool
     {
-        if (1 === openssl_verify($data, base64_decode($signature), openssl_pkey_get_public(file_get_contents($this->getPublicKey())), $this->getOpensslSignAlgorithm())) {
-            return true;
-        }
-        throw new ErrorException('非对称公钥验签失败');
+        return 1 === openssl_verify($data, base64_decode($signature), openssl_pkey_get_public(file_get_contents($this->getPublicKey())), $this->getOpensslSignAlgorithm());
     }
 
     /**

@@ -42,6 +42,7 @@ class VarCloner extends AbstractCloner
 
         $arrayStub = new Stub();
         $arrayStub->type = Stub::TYPE_ARRAY;
+        $fromObjCast = false;
 
         for ($i = 0; $i < $len; ++$i) {
             // Detect when we move on to the next tree depth
@@ -209,6 +210,24 @@ class VarCloner extends AbstractCloner
                     $vals[$k] = $stub;
                 } else {
                     $hardRefs[$zvalRef]->value = $stub;
+                }
+            }
+
+            if ($fromObjCast) {
+                $fromObjCast = false;
+                $refs = $vals;
+                $vals = [];
+                $j = -1;
+                foreach ($queue[$i] as $k => $v) {
+                    foreach ([$k => true] as $gk => $gv) {
+                    }
+                    if ($gk !== $k) {
+                        $vals = (object) $vals;
+                        $vals->{$k} = $refs[++$j];
+                        $vals = (array) $vals;
+                    } else {
+                        $vals[$k] = $refs[++$j];
+                    }
                 }
             }
 

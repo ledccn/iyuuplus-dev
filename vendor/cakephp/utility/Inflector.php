@@ -153,7 +153,7 @@ class Inflector
     /**
      * Words that should not be inflected
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected static array $_uninflected = [
         '.*[nrlm]ese', '.*data', '.*deer', '.*fish', '.*measles', '.*ois',
@@ -209,7 +209,7 @@ class Inflector
      */
     public static function reset(): void
     {
-        if (static::$_initialState === []) {
+        if (empty(static::$_initialState)) {
             static::$_initialState = get_class_vars(self::class);
 
             return;
@@ -464,7 +464,7 @@ class Inflector
     }
 
     /**
-     * Returns corresponding table name for given model $className. ("people" for the class name "Person").
+     * Returns corresponding table name for given model $className. ("people" for the model class "Person").
      *
      * @param string $className Name of class to get database table name for
      * @return string Name of the database table for given class
@@ -483,7 +483,7 @@ class Inflector
     }
 
     /**
-     * Returns a singular, CamelCase inflection for given database table. ("Person" for the table name "people")
+     * Returns Cake model class name ("Person" for the database table "people".) for given database table.
      *
      * @param string $tableName Name of database table to get class name for
      * @return string Class name

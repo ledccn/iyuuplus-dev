@@ -56,7 +56,7 @@ class Collection implements CollectionInterface
     /**
      * Get the list of tables, excluding any views, available in the current connection.
      *
-     * @return list<string> The list of tables in the connected database/schema.
+     * @return array<string> The list of tables in the connected database/schema.
      */
     public function listTablesWithoutViews(): array
     {
@@ -73,7 +73,7 @@ class Collection implements CollectionInterface
     /**
      * Get the list of tables and views available in the current connection.
      *
-     * @return list<string> The list of tables and views in the connected database/schema.
+     * @return array<string> The list of tables and views in the connected database/schema.
      */
     public function listTables(): array
     {
@@ -114,7 +114,7 @@ class Collection implements CollectionInterface
         $table = $this->_connection->getDriver()->newTableSchema($name);
 
         $this->_reflect('Column', $name, $config, $table);
-        if ($table->columns() === []) {
+        if (count($table->columns()) === 0) {
             throw new DatabaseException(sprintf('Cannot describe %s. It has 0 columns.', $name));
         }
 

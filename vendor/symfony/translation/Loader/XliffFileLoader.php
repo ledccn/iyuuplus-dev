@@ -112,20 +112,16 @@ class XliffFileLoader implements LoaderInterface
                     continue;
                 }
 
-                $source = (string) (isset($attributes['resname']) && $attributes['resname'] ? $attributes['resname'] : $translation->source);
-
-                if (isset($translation->target)
-                    && 'needs-translation' === (string) $translation->target->attributes()['state']
-                    && \in_array((string) $translation->target, [$source, (string) $translation->source], true)
-                ) {
+                if (isset($translation->target) && 'needs-translation' === (string) $translation->target->attributes()['state']) {
                     continue;
                 }
 
+                $source = isset($attributes['resname']) && $attributes['resname'] ? $attributes['resname'] : $translation->source;
                 // If the xlf file has another encoding specified, try to convert it because
                 // simple_xml will always return utf-8 encoded values
                 $target = $this->utf8ToCharset((string) ($translation->target ?? $translation->source), $encoding);
 
-                $catalogue->set($source, $target, $domain);
+                $catalogue->set((string) $source, $target, $domain);
 
                 $metadata = [
                     'source' => (string) $translation->source,
@@ -148,7 +144,7 @@ class XliffFileLoader implements LoaderInterface
                     $metadata['id'] = (string) $attributes['id'];
                 }
 
-                $catalogue->setMetadata($source, $metadata, $domain);
+                $catalogue->setMetadata((string) $source, $metadata, $domain);
             }
         }
     }

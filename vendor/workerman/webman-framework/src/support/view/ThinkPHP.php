@@ -33,14 +33,18 @@ use function runtime_path;
 class ThinkPHP implements View
 {
     /**
+     * @var array
+     */
+    protected static $vars = [];
+
+    /**
      * Assign.
      * @param string|array $name
      * @param mixed $value
      */
     public static function assign($name, $value = null)
     {
-        $request = request();
-        $request->_view_vars = array_merge((array) $request->_view_vars, is_array($name) ? $name : [$name => $value]);
+        static::$vars = array_merge(static::$vars, is_array($name) ? $name : [$name => $value]);
     }
 
     /**
@@ -55,7 +59,7 @@ class ThinkPHP implements View
     {
         $request = request();
         $plugin = $plugin === null ? ($request->plugin ?? '') : $plugin;
-        $app = $app === null ? ($request->app ?? '') : $app;
+        $app = $app === null ? $request->app : $app;
         $configPrefix = $plugin ? "plugin.$plugin." : '';
         $viewSuffix = config("{$configPrefix}view.options.view_suffix", 'html');
         $baseViewPath = $plugin ? base_path() . "/plugin/$plugin/app" : app_path();
@@ -68,10 +72,10 @@ class ThinkPHP implements View
         $options = array_merge($defaultOptions, config("{$configPrefix}view.options", []));
         $views = new Template($options);
         ob_start();
-        if(isset($request->_view_vars)) {
-            $vars = array_merge((array)$request->_view_vars, $vars);
-        }
+        $vars = array_merge(static::$vars, $vars);
         $views->fetch($template, $vars);
-        return ob_get_clean();
+        $content = ob_get_clean();
+        static::$vars = [];
+        return $content;
     }
 }

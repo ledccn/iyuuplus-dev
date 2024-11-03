@@ -76,14 +76,14 @@ JSONEditor = function(container, options, json) {
     // check availability of JSON parser (not available in IE7 and older)
     if (!JSON) {
         throw new Error(
-            "您当前使用的浏览器不支持 JSON. \n\n" +
-            "请下载安装最新版本的浏览, 本站推荐Google Chrome.\n" +
-            "(PS: 当前主流浏览器都支持JSON)."
+            "鎮ㄥ綋鍓嶄娇鐢ㄧ殑娴忚鍣ㄤ笉鏀寔 JSON. \n\n" +
+            "璇蜂笅杞藉畨瑁呮渶鏂扮増鏈殑娴忚鍣�, 鏈珯鎺ㄨ崘Google Chrome.\n" +
+            "(PS: 褰撳墠涓绘祦娴忚鍣ㄩ兘鏀寔JSON)."
         );
     }
 
     if (!container) {
-        throw new Error("没有提供容器元素.");
+        throw new Error("娌℃湁鎻愪緵瀹瑰櫒鍏冪礌.");
     }
     this.container = container;
     this.dom = {};
@@ -995,7 +995,7 @@ JSONEditor.Node.prototype.insertBefore = function(node, beforeNode) {
             // insert before a child node
             var index = this.childs.indexOf(beforeNode);
             if (index == -1) {
-                throw new Error("节点未找到.");
+                throw new Error("鑺傜偣鏈壘鍒�.");
             }
 
             // adjust the link to the parent
@@ -1211,7 +1211,7 @@ JSONEditor.Node.prototype._move = function(node, beforeNode) {
 
     // check if this node is not a child of the node to be moved here
     if (node.containsNode(this)) {
-        throw new Error("不能把区域移动到自身的子节点.");
+        throw new Error("涓嶈兘鎶婂尯鍩熺Щ鍔ㄥ埌鑷韩鐨勫瓙鑺傜偣.");
     }
 
     // remove the original node
@@ -2313,23 +2313,23 @@ JSONEditor.Node.types = [
     {
         value: "array",
         className: "jsoneditor-option-array",
-        title: '"array" 类型: 包含了有序值集合的数组.'
+        title: '"array" 绫诲瀷: 涓€涓寘鍚簡鏈夊簭鍊奸泦鍚堢殑鏁扮粍.'
     },
     {
         value: "auto",
         className: "jsoneditor-option-auto",
         title:
-            '"auto" 类型: 节点类型将自动从值中获取, 可以是: string, number, boolean, 或 null.'
+            '"auto" 绫诲瀷: 鑺傜偣绫诲瀷灏嗚嚜鍔ㄤ粠鍊间腑鑾峰彇, 鍙互鏄�: string, number, boolean, 鎴栬€� null.'
     },
     {
         value: "object",
         className: "jsoneditor-option-object",
-        title: '"object" 类型: 对象包含了一些无序的键/值对.'
+        title: '"object" 绫诲瀷: 瀵硅薄鍖呭惈浜嗕竴浜涙棤搴忕殑閿�/鍊煎.'
     },
     {
         value: "string",
         className: "jsoneditor-option-string",
-        title: '"string" 类型: 节点类型不从值中自动获取, 但永远返回string.'
+        title: '"string" 绫诲瀷: 鑺傜偣绫诲瀷涓嶄粠鍊间腑鑷姩鑾峰彇, 浣嗘案杩滆繑鍥� string.'
     }
 ];
 
@@ -2342,7 +2342,7 @@ JSONEditor.Node.prototype._createDomTypeButton = function() {
     var node = this;
     var domType = document.createElement("button");
     domType.className = "jsoneditor-type-" + node.type;
-    domType.title = "改变节点类型";
+    domType.title = "鏀瑰彉鑺傜偣绫诲瀷";
 
     return domType;
 };
@@ -2512,7 +2512,7 @@ JSONEditor.Node.prototype._createDomRemoveButton = function() {
     ) {
         var buttonRemove = document.createElement("button");
         buttonRemove.className = "jsoneditor-remove";
-        buttonRemove.title = "删除节点 (包括所有子节点)";
+        buttonRemove.title = "鍒犻櫎鑺傜偣 (鍖呮嫭鎵€鏈夊瓙鑺傜偣)";
 
         return buttonRemove;
     } else {
@@ -2534,7 +2534,7 @@ JSONEditor.Node.prototype._createDomDuplicateButton = function() {
     ) {
         var buttonDupliate = document.createElement("button");
         buttonDupliate.className = "jsoneditor-duplicate";
-        buttonDupliate.title = "复制节点 (包括所有子节点)";
+        buttonDupliate.title = "澶嶅埗鑺傜偣 (鍖呮嫭鎵€鏈夊瓙鑺傜偣)";
 
         return buttonDupliate;
     } else {
@@ -2714,7 +2714,7 @@ JSONEditor.AppendNode.prototype.getDom = function() {
     // create the append button
     var buttonAppend = document.createElement("button");
     buttonAppend.className = "jsoneditor-append";
-    buttonAppend.title = "添加";
+    buttonAppend.title = "娣诲姞";
     this.dom.append = buttonAppend;
     tdAppend.appendChild(buttonAppend);
 
@@ -2874,7 +2874,7 @@ JSONEditor.prototype._createFrame = function() {
     // create expand all button
     var expandAll = document.createElement("button");
     expandAll.className = "jsoneditor-menu jsoneditor-expand-all";
-    expandAll.title = "展开";
+    expandAll.title = "灞曞紑";
     expandAll.onclick = function() {
         editor.expandAll();
     };
@@ -2882,7 +2882,7 @@ JSONEditor.prototype._createFrame = function() {
 
     // create expand all button
     var collapseAll = document.createElement("button");
-    collapseAll.title = "折叠";
+    collapseAll.title = "鎶樺彔";
     collapseAll.className = "jsoneditor-menu jsoneditor-collapse-all";
     collapseAll.onclick = function() {
         editor.collapseAll();
@@ -2899,7 +2899,7 @@ JSONEditor.prototype._createFrame = function() {
         // create undo button
         var undo = document.createElement("button");
         undo.className = "jsoneditor-menu jsoneditor-undo";
-        undo.title = "撤销";
+        undo.title = "鎾ら攢";
         undo.onclick = function() {
             // undo last action
             editor.history.undo();
@@ -2915,7 +2915,7 @@ JSONEditor.prototype._createFrame = function() {
         // create redo button
         var redo = document.createElement("button");
         redo.className = "jsoneditor-menu jsoneditor-redo";
-        redo.title = "重做";
+        redo.title = "閲嶅仛";
         redo.onclick = function() {
             // redo last action
             editor.history.redo();
@@ -3023,9 +3023,9 @@ JSONFormatter = function(container, options, json) {
     // check availability of JSON parser (not available in IE7 and older)
     if (!JSON) {
         throw new Error(
-            "您当前使用的浏览器不支持 JSON. \n\n" +
-            "请下载安装最新版本的浏览, 本站推荐Google Chrome.\n" +
-            "(PS: 当前主流浏览器都支持JSON)."
+            "鎮ㄥ綋鍓嶄娇鐢ㄧ殑娴忚鍣ㄤ笉鏀寔 JSON. \n\n" +
+            "璇蜂笅杞藉畨瑁呮渶鏂扮増鏈殑娴忚鍣�, 鏈珯鎺ㄨ崘Google Chrome.\n" +
+            "(PS: 褰撳墠涓绘祦娴忚鍣ㄩ兘鏀寔JSON)."
         );
     }
 
@@ -3051,7 +3051,7 @@ JSONFormatter = function(container, options, json) {
     var buttonFormat = document.createElement("button");
     //buttonFormat.innerHTML = 'Format';
     buttonFormat.className = "jsoneditor-menu jsoneditor-format";
-    buttonFormat.title = "格式化JSON数据";
+    buttonFormat.title = "鏍煎紡鍖朖SON鏁版嵁";
     //buttonFormat.className = 'jsoneditor-button';
     this.menu.appendChild(buttonFormat);
 
@@ -3059,7 +3059,7 @@ JSONFormatter = function(container, options, json) {
     var buttonCompact = document.createElement("button");
     //buttonCompact.innerHTML = 'Compact';
     buttonCompact.className = "jsoneditor-menu jsoneditor-compact";
-    buttonCompact.title = "压缩JSON数据, 清除所有空白字符";
+    buttonCompact.title = "鍘嬬缉JSON鏁版嵁, 娓呴櫎鎵€鏈夌┖鐧藉瓧绗�";
     //buttonCompact.className = 'jsoneditor-button';
     this.menu.appendChild(buttonCompact);
 
@@ -3205,7 +3205,7 @@ JSONEditor.SearchBox = function(editor, container) {
     var divInput = document.createElement("div");
     this.dom.input = divInput;
     divInput.className = "jsoneditor-search";
-    divInput.title = "查找区块";
+    divInput.title = "鏌ユ壘鍖哄潡鍜屽€�";
     td.appendChild(divInput);
 
     // table to contain the text input and search button
@@ -3249,7 +3249,7 @@ JSONEditor.SearchBox = function(editor, container) {
     tr.appendChild(td);
 
     var searchNext = document.createElement("button");
-    searchNext.title = "下一个 (Enter)";
+    searchNext.title = "涓嬩竴涓� (Enter)";
     searchNext.className = "jsoneditor-search-next";
     searchNext.onclick = function() {
         searchBox.next();
@@ -3259,7 +3259,7 @@ JSONEditor.SearchBox = function(editor, container) {
     tr.appendChild(td);
 
     var searchPrevious = document.createElement("button");
-    searchPrevious.title = "上一个 (Shift+Enter)";
+    searchPrevious.title = "涓婁竴涓� (Shift+Enter)";
     searchPrevious.className = "jsoneditor-search-previous";
     searchPrevious.onclick = function() {
         searchBox.previous();
@@ -3398,11 +3398,11 @@ JSONEditor.SearchBox.prototype.onSearch = function(event, forceSearch) {
             var resultCount = this.results.length;
             switch (resultCount) {
                 case 0:
-                    this.dom.results.innerHTML = "区块/值未找到";
+                    this.dom.results.innerHTML = "鍖哄潡/鍊兼湭鎵惧埌";
                     break;
                 default:
                     this.dom.results.innerHTML =
-                        "找到&nbsp;" + resultCount + "&nbsp;个节点";
+                        "鎵惧埌&nbsp;" + resultCount + "&nbsp;涓粨鏋�";
                     break;
             }
         } else {
@@ -3811,9 +3811,9 @@ JSONEditor.validate = function(jsonString) {
         message = '<pre class="error">' + err.toString() + "</pre>";
         if (window.jsonlint) {
             message +=
-                '<div id="by-jsonlint"> <a class="error" href="http://zaach.github.com/jsonlint/" target="_blank">' +
+                '<div id="by-jsonlint">鐢� <a class="error" href="http://zaach.github.com/jsonlint/" target="_blank">' +
                 "JSONLint" +
-                "</a> 提供验证.</div>";
+                "</a> 鎻愪緵楠岃瘉.</div>";
         }
     }
 
@@ -3827,7 +3827,7 @@ function jsonArea(ob) {
     let change = ob.change;
     let thisare = new Object();
     if (!inputEle) {
-        throw new Error("没有提供数据.");
+        throw new Error("娌℃湁鎻愪緵鏁版嵁婧�.");
     }
     // if target to multi dom
     if (nth) {
@@ -3859,7 +3859,7 @@ function jsonArea(ob) {
                 return false;
             }
         }
-        console.log("不是丢�个stringify");
+        console.log("涓嶆槸涓€涓猻tringify");
     };
     // json data
     thisare.jsonval = "{}";

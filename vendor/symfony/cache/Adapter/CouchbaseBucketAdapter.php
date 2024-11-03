@@ -16,12 +16,8 @@ use Symfony\Component\Cache\Exception\InvalidArgumentException;
 use Symfony\Component\Cache\Marshaller\DefaultMarshaller;
 use Symfony\Component\Cache\Marshaller\MarshallerInterface;
 
-trigger_deprecation('symfony/cache', '7.1', 'The "%s" class is deprecated, use "%s" instead.', CouchbaseBucketAdapter::class, CouchbaseCollectionAdapter::class);
-
 /**
  * @author Antonio Jose Cerezo Aranda <aj.cerezo@gmail.com>
- *
- * @deprecated since Symfony 7.1, use {@see CouchbaseCollectionAdapter} instead
  */
 class CouchbaseBucketAdapter extends AbstractAdapter
 {
@@ -40,19 +36,18 @@ class CouchbaseBucketAdapter extends AbstractAdapter
         'durabilityTimeout',
     ];
 
+    private \CouchbaseBucket $bucket;
     private MarshallerInterface $marshaller;
 
-    public function __construct(
-        private \CouchbaseBucket $bucket,
-        string $namespace = '',
-        int $defaultLifetime = 0,
-        ?MarshallerInterface $marshaller = null,
-    ) {
+    public function __construct(\CouchbaseBucket $bucket, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
+    {
         if (!static::isSupported()) {
             throw new CacheException('Couchbase >= 2.6.0 < 3.0.0 is required.');
         }
 
         $this->maxIdLength = static::MAX_KEY_LENGTH;
+
+        $this->bucket = $bucket;
 
         parent::__construct($namespace, $defaultLifetime);
         $this->enableVersioning();
@@ -112,7 +107,7 @@ class CouchbaseBucketAdapter extends AbstractAdapter
 
             unset($options['username'], $options['password']);
             foreach ($options as $option => $value) {
-                if ($value) {
+                if (!empty($value)) {
                     $bucket->$option = $value;
                 }
             }

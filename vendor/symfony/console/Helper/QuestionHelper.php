@@ -34,6 +34,11 @@ use function Symfony\Component\String\s;
  */
 class QuestionHelper extends Helper
 {
+    /**
+     * @var resource|null
+     */
+    private $inputStream;
+
     private static bool $stty = true;
     private static bool $stdinIsInteractive;
 
@@ -54,15 +59,16 @@ class QuestionHelper extends Helper
             return $this->getDefaultAnswer($question);
         }
 
-        $inputStream = $input instanceof StreamableInputInterface ? $input->getStream() : null;
-        $inputStream ??= STDIN;
+        if ($input instanceof StreamableInputInterface && $stream = $input->getStream()) {
+            $this->inputStream = $stream;
+        }
 
         try {
             if (!$question->getValidator()) {
-                return $this->doAsk($inputStream, $output, $question);
+                return $this->doAsk($output, $question);
             }
 
-            $interviewer = fn () => $this->doAsk($inputStream, $output, $question);
+            $interviewer = fn () => $this->doAsk($output, $question);
 
             return $this->validateAttempts($interviewer, $output, $question);
         } catch (MissingInputException $exception) {
@@ -92,14 +98,13 @@ class QuestionHelper extends Helper
     /**
      * Asks the question to the user.
      *
-     * @param resource $inputStream
-     *
      * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
      */
-    private function doAsk($inputStream, OutputInterface $output, Question $question): mixed
+    private function doAsk(OutputInterface $output, Question $question): mixed
     {
         $this->writePrompt($output, $question);
 
+        $inputStream = $this->inputStream ?: \STDIN;
         $autocomplete = $question->getAutocompleterCallback();
 
         if (null === $autocomplete || !self::$stty || !Terminal::hasSttyAvailable()) {

@@ -21,7 +21,6 @@ use Cake\Core\Exception\CakeException;
 use Cake\Core\Retry\CommandRetry;
 use Cake\Database\Exception\DatabaseException;
 use Cake\Database\Exception\MissingConnectionException;
-use Cake\Database\Exception\QueryException;
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Log\LoggedQuery;
@@ -35,7 +34,6 @@ use Cake\Database\Schema\SchemaDialect;
 use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Database\Statement\Statement;
-use Closure;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
@@ -180,7 +178,7 @@ abstract class Driver
      */
     protected function createPdo(string $dsn, array $config): PDO
     {
-        $action = fn (): PDO => new PDO(
+        $action = fn () => new PDO(
             $dsn,
             $config['username'] ?: null,
             $config['password'] ?: null,
@@ -256,11 +254,7 @@ abstract class Driver
      */
     public function exec(string $sql): int|false
     {
-        try {
-            return $this->getPdo()->exec($sql);
-        } catch (PDOException $e) {
-            throw new QueryException($sql, $e);
-        }
+        return $this->getPdo()->exec($sql);
     }
 
     /**
@@ -316,11 +310,7 @@ abstract class Driver
     protected function executeStatement(StatementInterface $statement, ?array $params = null): void
     {
         if ($this->logger === null) {
-            try {
-                $statement->execute($params);
-            } catch (PDOException $e) {
-                throw $this->createQueryException($e, $statement, $params);
-            }
+            $statement->execute($params);
 
             return;
         }
@@ -348,31 +338,8 @@ abstract class Driver
         $this->log($statement->queryString(), $logContext);
 
         if ($exception) {
-            throw $this->createQueryException($exception, $statement, $params);
+            throw $exception;
         }
-    }
-
-    /**
-     * Create a QueryException from a PDOException
-     *
-     * @param \PDOException $exception
-     * @param \Cake\Database\StatementInterface $statement
-     * @param array|null $params
-     * @return \Cake\Database\Exception\QueryException
-     */
-    protected function createQueryException(
-        PDOException $exception,
-        StatementInterface $statement,
-        ?array $params = null
-    ): QueryException {
-        $loggedQuery = new LoggedQuery();
-        $loggedQuery->setContext([
-            'query' => $statement->queryString(),
-            'driver' => $this,
-            'params' => $params ?? $statement->getBoundParams(),
-        ]);
-
-        return new QueryException($loggedQuery, $exception);
     }
 
     /**
@@ -383,38 +350,15 @@ abstract class Driver
      */
     public function prepare(Query|string $query): StatementInterface
     {
-        try {
-            $statement = $this->getPdo()->prepare($query instanceof Query ? $query->sql() : $query);
-        } catch (PDOException $e) {
-            throw new QueryException(
-                $query instanceof Query ? $query->sql() : $query,
-                $e
-            );
+        $statement = $this->getPdo()->prepare($query instanceof Query ? $query->sql() : $query);
+
+        $typeMap = null;
+        if ($query instanceof SelectQuery && $query->isResultsCastingEnabled()) {
+            $typeMap = $query->getSelectTypeMap();
         }
 
         /** @var \Cake\Database\StatementInterface */
-        return new (static::STATEMENT_CLASS)($statement, $this, $this->getResultSetDecorators($query));
-    }
-
-    /**
-     * Returns the decorators to be applied to the result set incase of a SelectQuery.
-     *
-     * @param \Cake\Database\Query|string $query The query to be decorated.
-     * @return array<\Closure>
-     */
-    protected function getResultSetDecorators(Query|string $query): array
-    {
-        if ($query instanceof SelectQuery) {
-            $decorators = $query->getResultDecorators();
-            if ($query->isResultsCastingEnabled()) {
-                $typeConverter = new FieldTypeConverter($query->getSelectTypeMap(), $this);
-                array_unshift($decorators, Closure::fromCallable($typeConverter));
-            }
-
-            return $decorators;
-        }
-
-        return [];
+        return new (static::STATEMENT_CLASS)($statement, $this, $typeMap);
     }
 
     /**
@@ -822,7 +766,7 @@ abstract class Driver
         if ($this->pdo !== null) {
             try {
                 $connected = (bool)$this->pdo->query('SELECT 1');
-            } catch (PDOException) {
+            } catch (PDOException $e) {
                 $connected = false;
             }
         } else {

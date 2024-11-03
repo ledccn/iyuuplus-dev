@@ -20,6 +20,7 @@ namespace Symfony\Component\Config\Builder;
  */
 class ClassBuilder
 {
+    private string $namespace;
     private string $name;
 
     /** @var Property[] */
@@ -32,10 +33,9 @@ class ClassBuilder
     private array $implements = [];
     private bool $allowExtraKeys = false;
 
-    public function __construct(
-        private string $namespace,
-        string $name,
-    ) {
+    public function __construct(string $namespace, string $name)
+    {
+        $this->namespace = $namespace;
         $this->name = ucfirst($this->camelCase($name)).'Config';
     }
 

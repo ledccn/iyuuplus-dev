@@ -37,10 +37,11 @@ class ConfigBuilderGenerator implements ConfigBuilderGeneratorInterface
      * @var ClassBuilder[]
      */
     private array $classes = [];
+    private string $outputDir;
 
-    public function __construct(
-        private string $outputDir,
-    ) {
+    public function __construct(string $outputDir)
+    {
+        $this->outputDir = $outputDir;
     }
 
     /**

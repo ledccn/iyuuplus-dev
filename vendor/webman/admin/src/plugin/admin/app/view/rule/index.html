@@ -270,20 +270,8 @@
                 }
 
                 // 刷新表格
-                window.refreshTable = function() {
-                    table.reloadData("data-table", {
-                        scrollPos: "fixed",
-                        done: function (res, curr) {
-                            if (curr > 1 && res.data && !res.data.length) {
-                                curr = curr - 1;
-                                table.reloadData("data-table", {
-                                    page: {
-                                        curr: curr
-                                    },
-                                })
-                            }
-                        }
-                    });
+                window.refreshTable = function(param) {
+                    treeTable.reload("#data-table");
                 }
             })
 

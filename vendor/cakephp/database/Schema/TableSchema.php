@@ -167,18 +167,6 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
         'float' => [
             'unsigned' => null,
         ],
-        'geometry' => [
-            'srid' => null,
-        ],
-        'point' => [
-            'srid' => null,
-        ],
-        'linestring' => [
-            'srid' => null,
-        ],
-        'polygon' => [
-            'srid' => null,
-        ],
     ];
 
     /**
@@ -199,7 +187,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * Names of the valid index types.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected static array $_validIndexTypes = [
         self::INDEX_INDEX,
@@ -209,7 +197,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * Names of the valid constraint types.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected static array $_validConstraintTypes = [
         self::CONSTRAINT_PRIMARY,
@@ -220,7 +208,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * Names of the valid foreign key actions.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected static array $_validForeignKeyActions = [
         self::ACTION_CASCADE,
@@ -391,15 +379,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     public function setColumnType(string $name, string $type)
     {
         if (!isset($this->_columns[$name])) {
-            $message = sprintf(
-                'Column `%s` of table `%s`: The column type `%s` can only be set if the column already exists;',
-                $name,
-                $this->_table,
-                $type,
-            );
-            $message .= ' can be checked using `hasColumn()`.';
-
-            throw new DatabaseException($message);
+            return $this;
         }
 
         $this->_columns[$name]['type'] = $type;
@@ -728,9 +708,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     public function createSql(Connection $connection): array
     {
         $dialect = $connection->getDriver()->schemaDialect();
-        $columns = [];
-        $constraints = [];
-        $indexes = [];
+        $columns = $constraints = $indexes = [];
         foreach (array_keys($this->_columns) as $name) {
             $columns[] = $dialect->columnSql($this, $name);
         }

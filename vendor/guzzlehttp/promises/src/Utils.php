@@ -21,7 +21,7 @@ final class Utils
      *
      * @param TaskQueueInterface|null $assign Optionally specify a new queue instance.
      */
-    public static function queue(?TaskQueueInterface $assign = null): TaskQueueInterface
+    public static function queue(TaskQueueInterface $assign = null): TaskQueueInterface
     {
         static $queue;
 
@@ -144,9 +144,7 @@ final class Utils
                 $results[$idx] = $value;
             },
             function ($reason, $idx, Promise $aggregate): void {
-                if (Is::pending($aggregate)) {
-                    $aggregate->reject($reason);
-                }
+                $aggregate->reject($reason);
             }
         )->then(function () use (&$results) {
             ksort($results);

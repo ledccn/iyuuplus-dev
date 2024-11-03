@@ -87,7 +87,7 @@ class ConfigController extends Base
                     $data[$section]['accordion'] = !empty($items['accordion']);
                     $data[$section]['collapse'] = !empty($items['collapse']);
                     $data[$section]['control'] = !empty($items['control']);
-                    $data[$section]['controlWidth'] = (int)($items['controlWidth'] ?? 2000);
+                    $data[$section]['controlWidth'] = (int)$items['controlWidth'] ?? 500;
                     $data[$section]['select'] = (int)$items['select'] ?? 0;
                     $data[$section]['async'] = true;
                     break;

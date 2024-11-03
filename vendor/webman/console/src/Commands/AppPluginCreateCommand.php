@@ -312,7 +312,7 @@ class Install
             return;
         }
         \$installSql = file_get_contents(\$installSqlFile);
-        preg_match_all('/CREATE TABLE `(.+?)`/si', \$installSql, \$matches);
+        preg_match_all('/CREATE TABLE `(.+?)` \(/si', \$installSql, \$matches);
         \$dropSql = '';
         foreach (\$matches[1] as \$table) {
             \$dropSql .= "DROP TABLE IF EXISTS `\$table`;\\n";

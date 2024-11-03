@@ -118,17 +118,14 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Logg
             return MemcachedAdapter::createConnection($dsn, $options);
         }
         if (str_starts_with($dsn, 'couchbase:')) {
-            if (class_exists('CouchbaseBucket') && CouchbaseBucketAdapter::isSupported()) {
+            if (CouchbaseBucketAdapter::isSupported()) {
                 return CouchbaseBucketAdapter::createConnection($dsn, $options);
             }
 
             return CouchbaseCollectionAdapter::createConnection($dsn, $options);
         }
-        if (preg_match('/^(mysql|oci|pgsql|sqlsrv|sqlite):/', $dsn)) {
-            return PdoAdapter::createConnection($dsn, $options);
-        }
 
-        throw new InvalidArgumentException('Unsupported DSN: it does not start with "redis[s]:", "memcached:", "couchbase:", "mysql:", "oci:", "pgsql:", "sqlsrv:" nor "sqlite:".');
+        throw new InvalidArgumentException('Unsupported DSN: it does not start with "redis[s]:", "memcached:" nor "couchbase:".');
     }
 
     public function commit(): bool

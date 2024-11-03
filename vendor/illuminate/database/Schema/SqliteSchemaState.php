@@ -28,9 +28,7 @@ class SqliteSchemaState extends SchemaState
 
         $this->files->put($path, implode(PHP_EOL, $migrations).PHP_EOL);
 
-        if ($this->hasMigrationTable()) {
-            $this->appendMigrationData($path);
-        }
+        $this->appendMigrationData($path);
     }
 
     /**

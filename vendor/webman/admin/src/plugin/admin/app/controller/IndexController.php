@@ -3,7 +3,6 @@
 namespace plugin\admin\app\controller;
 
 use plugin\admin\app\common\Util;
-use plugin\admin\app\model\Option;
 use plugin\admin\app\model\User;
 use support\exception\BusinessException;
 use support\Request;
@@ -41,12 +40,7 @@ class IndexController
         }
         $admin = admin();
         if (!$admin) {
-            $name = 'system_config';
-            $config = Option::where('name', $name)->value('value');
-            $config = json_decode($config, true);
-            $title = $config['logo']['title'] ?? 'webman admin';
-            $logo = $config['logo']['image'] ?? '/app/admin/admin/images/logo.png';
-            return raw_view('account/login',['logo'=>$logo,'title'=>$title]);
+            return raw_view('account/login');
         }
         return raw_view('index/index');
     }

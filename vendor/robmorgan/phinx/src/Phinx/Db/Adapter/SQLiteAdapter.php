@@ -31,8 +31,6 @@ class SQLiteAdapter extends PdoAdapter
 {
     public const MEMORY = ':memory:';
 
-    public const DEFAULT_SUFFIX = '.sqlite3';
-
     /**
      * List of supported Phinx column types with their SQL equivalents
      * some types have an affinity appended to ensure they do not receive NUMERIC affinity
@@ -123,7 +121,7 @@ class SQLiteAdapter extends PdoAdapter
     /**
      * @var string
      */
-    protected string $suffix = self::DEFAULT_SUFFIX;
+    protected string $suffix = '.sqlite3';
 
     /**
      * Indicates whether the database library version is at least the specified version
@@ -197,37 +195,20 @@ class SQLiteAdapter extends PdoAdapter
     }
 
     /**
-     * Get the suffix to use for the SQLite database file.
-     *
-     * @param array $options Environment options
-     * @return string
-     */
-    public static function getSuffix(array $options): string
-    {
-        if ($options['name'] === self::MEMORY) {
-            return '';
-        }
-
-        $suffix = self::DEFAULT_SUFFIX;
-        if (isset($options['suffix'])) {
-            $suffix = $options['suffix'];
-        }
-        //don't "fix" the file extension if it is blank, some people
-        //might want a SQLITE db file with absolutely no extension.
-        if ($suffix !== '' && strpos($suffix, '.') !== 0) {
-            $suffix = '.' . $suffix;
-        }
-
-        return $suffix;
-    }
-
-    /**
      * @inheritDoc
      */
     public function setOptions(array $options): AdapterInterface
     {
         parent::setOptions($options);
-        $this->suffix = self::getSuffix($options);
+
+        if (isset($options['suffix'])) {
+            $this->suffix = $options['suffix'];
+        }
+        //don't "fix" the file extension if it is blank, some people
+        //might want a SQLITE db file with absolutely no extension.
+        if ($this->suffix !== '' && strpos($this->suffix, '.') !== 0) {
+            $this->suffix = '.' . $this->suffix;
+        }
 
         return $this;
     }
@@ -443,9 +424,6 @@ class SQLiteAdapter extends PdoAdapter
 
         $sql = 'CREATE TABLE ';
         $sql .= $this->quoteTableName($table->getName()) . ' (';
-        if (isset($options['primary_key'])) {
-            $options['primary_key'] = (array)$options['primary_key'];
-        }
         foreach ($columns as $column) {
             $sql .= $this->quoteColumnName($column->getName()) . ' ' . $this->getColumnSqlDefinition($column) . ', ';
 
@@ -468,7 +446,9 @@ class SQLiteAdapter extends PdoAdapter
         if (isset($options['primary_key'])) {
             $sql = rtrim($sql);
             $sql .= ' PRIMARY KEY (';
-            if (is_array($options['primary_key'])) { // handle primary_key => array('tag_id', 'resource_id')
+            if (is_string($options['primary_key'])) { // handle primary_key => 'id'
+                $sql .= $this->quoteColumnName($options['primary_key']);
+            } elseif (is_array($options['primary_key'])) { // handle primary_key => array('tag_id', 'resource_id')
                 $sql .= implode(',', array_map([$this, 'quoteColumnName'], $options['primary_key']));
             }
             $sql .= ')';

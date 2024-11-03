@@ -34,7 +34,7 @@ onMounted(() => {
   var connection = new Push({
     url: 'ws://127.0.0.1:3131', // websocket地址
     app_key: '<app_key，在config/plugin/webman/push/app.php里获取>',
-    auth: 'https://你的域名.com/plugin/webman/push/auth' // 订阅鉴权(仅限于私有频道)
+    auth: '/plugin/webman/push/auth' // 订阅鉴权(仅限于私有频道)
   });
 
   // 假设用户uid为1

@@ -277,13 +277,17 @@ class Command
             $statusCode = ($this->code)($input, $output);
         } else {
             $statusCode = $this->execute($input, $output);
+
+            if (!\is_int($statusCode)) {
+                throw new \TypeError(sprintf('Return value of "%s::execute()" must be of the type int, "%s" returned.', static::class, get_debug_type($statusCode)));
+            }
         }
 
         return is_numeric($statusCode) ? (int) $statusCode : 0;
     }
 
     /**
-     * Supplies suggestions when resolving possible completion options for input (e.g. option or argument).
+     * Adds suggestions to $suggestions for the current completion input (e.g. option or argument).
      */
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
@@ -401,8 +405,8 @@ class Command
     /**
      * Adds an argument.
      *
-     * @param                                                                               $mode            The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
-     * @param                                                                               $default         The default value (for InputArgument::OPTIONAL mode only)
+     * @param $mode    The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
+     * @param $default The default value (for InputArgument::OPTIONAL mode only)
      * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
      *
      * @return $this
@@ -420,9 +424,9 @@ class Command
     /**
      * Adds an option.
      *
-     * @param                                                                               $shortcut        The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
-     * @param                                                                               $mode            The option mode: One of the InputOption::VALUE_* constants
-     * @param                                                                               $default         The default value (must be null for InputOption::VALUE_NONE)
+     * @param $shortcut The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
+     * @param $mode     The option mode: One of the InputOption::VALUE_* constants
+     * @param $default  The default value (must be null for InputOption::VALUE_NONE)
      * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
      *
      * @return $this

@@ -55,6 +55,7 @@ trait CaseExpressionTrait
         } elseif ($value instanceof DateTimeInterface) {
             $type = 'datetime';
         } elseif (
+            is_object($value) &&
             $value instanceof Stringable
         ) {
             $type = 'string';

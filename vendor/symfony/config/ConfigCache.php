@@ -25,22 +25,22 @@ use Symfony\Component\Config\Resource\SelfCheckingResourceChecker;
  */
 class ConfigCache extends ResourceCheckerConfigCache
 {
+    private bool $debug;
+
     /**
-     * @param string      $file     The absolute cache path
-     * @param bool        $debug    Whether debugging is enabled or not
-     * @param string|null $metaFile The absolute path to the meta file
+     * @param string $file  The absolute cache path
+     * @param bool   $debug Whether debugging is enabled or not
      */
-    public function __construct(
-        string $file,
-        private bool $debug,
-        ?string $metaFile = null,
-    ) {
+    public function __construct(string $file, bool $debug)
+    {
+        $this->debug = $debug;
+
         $checkers = [];
         if (true === $this->debug) {
             $checkers = [new SelfCheckingResourceChecker()];
         }
 
-        parent::__construct($file, $checkers, $metaFile);
+        parent::__construct($file, $checkers);
     }
 
     /**

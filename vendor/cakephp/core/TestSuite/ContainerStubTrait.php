@@ -20,11 +20,9 @@ use Cake\Core\ConsoleApplicationInterface;
 use Cake\Core\ContainerInterface;
 use Cake\Core\HttpApplicationInterface;
 use Cake\Event\EventInterface;
-use Cake\Routing\Router;
 use Closure;
 use League\Container\Exception\NotFoundException;
 use LogicException;
-use PHPUnit\Framework\Attributes\After;
 
 /**
  * A set of methods used for defining container services
@@ -81,8 +79,6 @@ trait ContainerStubTrait
      */
     protected function createApp(): HttpApplicationInterface|ConsoleApplicationInterface
     {
-        Router::resetRoutes();
-
         if ($this->_appClass) {
             $appClass = $this->_appClass;
         } else {
@@ -97,14 +93,6 @@ trait ContainerStubTrait
         $app = new $appClass(...$appArgs);
         if ($this->containerServices && method_exists($app, 'getEventManager')) {
             $app->getEventManager()->on('Application.buildContainer', [$this, 'modifyContainer']);
-        }
-
-        foreach ($this->appPluginsToLoad as $pluginName => $config) {
-            if (is_array($config)) {
-                $app->addPlugin($pluginName, $config);
-            } else {
-                $app->addPlugin($config);
-            }
         }
 
         return $app;
@@ -161,7 +149,7 @@ trait ContainerStubTrait
             if ($container->has($key)) {
                 try {
                     $container->extend($key)->setConcrete($factory);
-                } catch (NotFoundException) {
+                } catch (NotFoundException $e) {
                     $container->add($key, $factory);
                 }
             } else {
@@ -176,9 +164,9 @@ trait ContainerStubTrait
      * Clears any mocks that were defined and cleans
      * up application class configuration.
      *
+     * @after
      * @return void
      */
-    #[After]
     public function cleanupContainer(): void
     {
         $this->_appArgs = null;

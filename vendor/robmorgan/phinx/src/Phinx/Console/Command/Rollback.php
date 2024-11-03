@@ -79,9 +79,32 @@ EOT
         $force = (bool)$input->getOption('force');
         $fake = (bool)$input->getOption('fake');
 
-        $success = $this->writeInformationOutput($environment, $output);
-        if (!$success) {
+        $config = $this->getConfig();
+
+        if ($environment === null) {
+            $environment = $config->getDefaultEnvironment();
+            $output->writeln('<comment>warning</comment> no environment specified, defaulting to: ' . $environment, $this->verbosityLevel);
+        } else {
+            $output->writeln('<info>using environment</info> ' . $environment, $this->verbosityLevel);
+        }
+
+        if (!$this->getConfig()->hasEnvironment($environment)) {
+            $output->writeln(sprintf('<error>The environment "%s" does not exist</error>', $environment));
+
             return self::CODE_ERROR;
+        }
+
+        $envOptions = $config->getEnvironment($environment);
+        if (isset($envOptions['adapter'])) {
+            $output->writeln('<info>using adapter</info> ' . $envOptions['adapter'], $this->verbosityLevel);
+        }
+
+        if (isset($envOptions['wrapper'])) {
+            $output->writeln('<info>using wrapper</info> ' . $envOptions['wrapper'], $this->verbosityLevel);
+        }
+
+        if (isset($envOptions['name'])) {
+            $output->writeln('<info>using database</info> ' . $envOptions['name'], $this->verbosityLevel);
         }
 
         $versionOrder = $this->getConfig()->getVersionOrder();

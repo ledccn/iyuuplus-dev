@@ -23,9 +23,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class OutputStyle implements OutputInterface, StyleInterface
 {
-    public function __construct(
-        private OutputInterface $output,
-    ) {
+    private OutputInterface $output;
+
+    public function __construct(OutputInterface $output)
+    {
+        $this->output = $output;
     }
 
     public function newLine(int $count = 1): void

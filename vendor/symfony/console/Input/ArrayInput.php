@@ -25,10 +25,12 @@ use Symfony\Component\Console\Exception\InvalidOptionException;
  */
 class ArrayInput extends Input
 {
-    public function __construct(
-        private array $parameters,
-        ?InputDefinition $definition = null,
-    ) {
+    private array $parameters;
+
+    public function __construct(array $parameters, ?InputDefinition $definition = null)
+    {
+        $this->parameters = $parameters;
+
         parent::__construct($definition);
     }
 

@@ -105,9 +105,7 @@ class MysqlSchemaDialect extends SchemaDialect
         }
 
         $col = strtolower($matches[1]);
-        $length = null;
-        $precision = null;
-        $scale = null;
+        $length = $precision = $scale = null;
         if (isset($matches[2]) && strlen($matches[2])) {
             $length = $matches[2];
             if (str_contains($matches[2], ',')) {
@@ -198,14 +196,6 @@ class MysqlSchemaDialect extends SchemaDialect
         if (str_contains($col, 'json')) {
             return ['type' => TableSchemaInterface::TYPE_JSON, 'length' => null];
         }
-        if (in_array($col, TableSchemaInterface::GEOSPATIAL_TYPES)) {
-            // TODO how can srid be preserved? It doesn't come back
-            // in the output of show full columns from ...
-            return [
-                'type' => $col,
-                'length' => null,
-            ];
-        }
 
         return ['type' => TableSchemaInterface::TYPE_STRING, 'length' => null];
     }
@@ -234,13 +224,11 @@ class MysqlSchemaDialect extends SchemaDialect
     public function convertIndexDescription(TableSchema $schema, array $row): void
     {
         $type = null;
-        $columns = [];
-        $length = [];
+        $columns = $length = [];
 
         $name = $row['Key_name'];
         if ($name === 'PRIMARY') {
-            $name = TableSchema::CONSTRAINT_PRIMARY;
-            $type = TableSchema::CONSTRAINT_PRIMARY;
+            $name = $type = TableSchema::CONSTRAINT_PRIMARY;
         }
 
         if (!empty($row['Column_name'])) {
@@ -386,10 +374,6 @@ class MysqlSchemaDialect extends SchemaDialect
             TableSchemaInterface::TYPE_CHAR => ' CHAR',
             TableSchemaInterface::TYPE_UUID => ' CHAR(36)',
             TableSchemaInterface::TYPE_JSON => $nativeJson ? ' JSON' : ' LONGTEXT',
-            TableSchemaInterface::TYPE_GEOMETRY => ' GEOMETRY',
-            TableSchemaInterface::TYPE_POINT => ' POINT',
-            TableSchemaInterface::TYPE_LINESTRING => ' LINESTRING',
-            TableSchemaInterface::TYPE_POLYGON => ' POLYGON',
         ];
         $specialMap = [
             'string' => true,
@@ -527,9 +511,6 @@ class MysqlSchemaDialect extends SchemaDialect
             $out .= ' NULL';
             unset($data['default']);
         }
-        if (isset($data['srid']) && in_array($data['type'], TableSchemaInterface::GEOSPATIAL_TYPES)) {
-            $out .= " SRID {$data['srid']}";
-        }
 
         $dateTimeTypes = [
             TableSchemaInterface::TYPE_DATETIME,
@@ -569,7 +550,7 @@ class MysqlSchemaDialect extends SchemaDialect
         assert($data !== null);
         if ($data['type'] === TableSchema::CONSTRAINT_PRIMARY) {
             $columns = array_map(
-                $this->_driver->quoteIdentifier(...),
+                [$this->_driver, 'quoteIdentifier'],
                 $data['columns']
             );
 
@@ -658,7 +639,7 @@ class MysqlSchemaDialect extends SchemaDialect
     protected function _keySql(string $prefix, array $data): string
     {
         $columns = array_map(
-            $this->_driver->quoteIdentifier(...),
+            [$this->_driver, 'quoteIdentifier'],
             $data['columns']
         );
         foreach ($data['columns'] as $i => $column) {

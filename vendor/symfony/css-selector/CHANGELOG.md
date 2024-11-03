@@ -1,14 +1,8 @@
 CHANGELOG
 =========
 
-7.1
----
-
- * Add support for `:is()`
- * Add support for `:where()`
-
 6.3
----
+-----
 
  * Add support for `:scope`
 

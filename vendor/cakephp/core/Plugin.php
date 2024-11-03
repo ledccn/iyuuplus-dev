@@ -104,7 +104,7 @@ class Plugin
     /**
      * Return a list of loaded plugins.
      *
-     * @return list<string> A list of plugins that have been loaded
+     * @return array<string> A list of plugins that have been loaded
      */
     public static function loaded(): array
     {
@@ -128,16 +128,5 @@ class Plugin
     public static function getCollection(): PluginCollection
     {
         return static::$plugins ??= new PluginCollection();
-    }
-
-    /**
-     * Set the shared plugin collection.
-     *
-     * @param \Cake\Core\PluginCollection $collection
-     * @return void
-     */
-    public static function setCollection(PluginCollection $collection): void
-    {
-        static::$plugins = $collection;
     }
 }

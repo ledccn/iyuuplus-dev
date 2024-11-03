@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Phinx\Db;
 
 use InvalidArgumentException;
-use Phinx\Config\FeatureFlags;
 use Phinx\Db\Action\AddColumn;
 use Phinx\Db\Action\AddForeignKey;
 use Phinx\Db\Action\AddIndex;
@@ -543,10 +542,8 @@ class Table
             throw new RuntimeException('Cannot set both created_at and updated_at columns to false');
         }
 
-        $columnType = FeatureFlags::$addTimestampsUseDateTime ? 'datetime' : 'timestamp';
-
         if ($createdAt) {
-            $this->addColumn($createdAt, $columnType, [
+            $this->addColumn($createdAt, 'timestamp', [
                 'null' => false,
                 'default' => 'CURRENT_TIMESTAMP',
                 'update' => '',
@@ -554,7 +551,7 @@ class Table
             ]);
         }
         if ($updatedAt) {
-            $this->addColumn($updatedAt, $columnType, [
+            $this->addColumn($updatedAt, 'timestamp', [
                 'null' => true,
                 'default' => null,
                 'update' => 'CURRENT_TIMESTAMP',

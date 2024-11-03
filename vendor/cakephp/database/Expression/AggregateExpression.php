@@ -235,7 +235,7 @@ class AggregateExpression extends FunctionExpression implements WindowInterface
     {
         $count = parent::count();
         if ($this->window !== null) {
-            $count += 1;
+            $count = $count + 1;
         }
 
         return $count;

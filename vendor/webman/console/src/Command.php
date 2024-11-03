@@ -41,7 +41,7 @@ class Command extends Application
                 continue;
             }
             $properties = $reflection->getStaticProperties();
-            $name = $properties['defaultName'] ?? null;
+            $name = $properties['defaultName'];
             if (!$name) {
                 throw new RuntimeException("Command {$class_name} has no defaultName");
             }

@@ -707,7 +707,7 @@ function __ajax(options){
     options=options||{};
     options.type=(options.type||'GET').toUpperCase();
     options.dataType=options.dataType||'json';
-    var params=formatParams(options.data);
+    params=formatParams(options.data);
 
     var xhr;
     if(window.XMLHttpRequest){

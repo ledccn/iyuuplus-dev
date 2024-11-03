@@ -86,7 +86,7 @@ class FileLocator implements FileLocatorInterface
                 && ':' === $file[1]
                 && ('\\' === $file[2] || '/' === $file[2])
             )
-            || parse_url($file, \PHP_URL_SCHEME)
+            || null !== parse_url($file, \PHP_URL_SCHEME)
         ) {
             return true;
         }

@@ -61,25 +61,6 @@ class PostgresAdapter extends PdoAdapter
     protected bool $useIdentity;
 
     /**
-     * @var string
-     */
-    protected string $schema = 'public';
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setOptions(array $options): AdapterInterface
-    {
-        if (!empty($options['schema'])) {
-            $this->schema = $options['schema'];
-        }
-
-        parent::setOptions($options);
-
-        return $this;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function setConnection(PDO $connection): AdapterInterface
@@ -1197,7 +1178,7 @@ class PostgresAdapter extends PdoAdapter
     public function createDatabase(string $name, array $options = []): void
     {
         $charset = $options['charset'] ?? 'utf8';
-        $this->execute(sprintf("CREATE DATABASE %s WITH ENCODING = '%s'", $this->quoteColumnName($name), $charset));
+        $this->execute(sprintf("CREATE DATABASE %s WITH ENCODING = '%s'", $name, $charset));
     }
 
     /**
@@ -1217,7 +1198,7 @@ class PostgresAdapter extends PdoAdapter
     public function dropDatabase($name): void
     {
         $this->disconnect();
-        $this->execute(sprintf('DROP DATABASE IF EXISTS %s', $this->quoteColumnName($name)));
+        $this->execute(sprintf('DROP DATABASE IF EXISTS %s', $name));
         $this->createdTables = [];
         $this->connect();
     }
@@ -1397,8 +1378,8 @@ class PostgresAdapter extends PdoAdapter
     public function createSchemaTable(): void
     {
         // Create the public/custom schema if it doesn't already exist
-        if ($this->hasSchema($this->schema) === false) {
-            $this->createSchema($this->schema);
+        if ($this->hasSchema($this->getGlobalSchemaName()) === false) {
+            $this->createSchema($this->getGlobalSchemaName());
         }
 
         $this->setSearchPath();
@@ -1547,7 +1528,7 @@ class PostgresAdapter extends PdoAdapter
      */
     protected function getSchemaName(string $tableName): array
     {
-        $schema = $this->schema;
+        $schema = $this->getGlobalSchemaName();
         $table = $tableName;
         if (strpos($tableName, '.') !== false) {
             [$schema, $table] = explode('.', $tableName);
@@ -1557,6 +1538,18 @@ class PostgresAdapter extends PdoAdapter
             'schema' => $schema,
             'table' => $table,
         ];
+    }
+
+    /**
+     * Gets the schema name.
+     *
+     * @return string
+     */
+    protected function getGlobalSchemaName(): string
+    {
+        $options = $this->getOptions();
+
+        return empty($options['schema']) ? 'public' : $options['schema'];
     }
 
     /**
@@ -1581,7 +1574,6 @@ class PostgresAdapter extends PdoAdapter
             'username' => $options['user'] ?? null,
             'password' => $options['pass'] ?? null,
             'database' => $options['name'],
-            'schema' => $this->schema,
             'quoteIdentifiers' => true,
         ] + $options;
 
@@ -1598,7 +1590,7 @@ class PostgresAdapter extends PdoAdapter
         $this->execute(
             sprintf(
                 'SET search_path TO %s,"$user",public',
-                $this->quoteSchemaName($this->schema)
+                $this->quoteSchemaName($this->getGlobalSchemaName())
             )
         );
     }
@@ -1606,8 +1598,81 @@ class PostgresAdapter extends PdoAdapter
     /**
      * @inheritDoc
      */
-    protected function getInsertOverride(): string
+    public function insert(Table $table, array $row): void
     {
-        return $this->useIdentity ? self::OVERRIDE_SYSTEM_VALUE . ' ' : '';
+        $sql = sprintf(
+            'INSERT INTO %s ',
+            $this->quoteTableName($table->getName())
+        );
+        $columns = array_keys($row);
+        $sql .= '(' . implode(', ', array_map([$this, 'quoteColumnName'], $columns)) . ')';
+
+        foreach ($row as $column => $value) {
+            if (is_bool($value)) {
+                $row[$column] = $this->castToBool($value);
+            }
+        }
+
+        $override = '';
+        if ($this->useIdentity) {
+            $override = self::OVERRIDE_SYSTEM_VALUE . ' ';
+        }
+
+        if ($this->isDryRunEnabled()) {
+            $sql .= ' ' . $override . 'VALUES (' . implode(', ', array_map([$this, 'quoteValue'], $row)) . ');';
+            $this->output->writeln($sql);
+        } else {
+            $sql .= ' ' . $override . 'VALUES (' . implode(', ', array_fill(0, count($columns), '?')) . ')';
+            $stmt = $this->getConnection()->prepare($sql);
+            $stmt->execute(array_values($row));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function bulkinsert(Table $table, array $rows): void
+    {
+        $sql = sprintf(
+            'INSERT INTO %s ',
+            $this->quoteTableName($table->getName())
+        );
+        $current = current($rows);
+        $keys = array_keys($current);
+
+        $override = '';
+        if ($this->useIdentity) {
+            $override = self::OVERRIDE_SYSTEM_VALUE . ' ';
+        }
+
+        $sql .= '(' . implode(', ', array_map([$this, 'quoteColumnName'], $keys)) . ') ' . $override . 'VALUES ';
+
+        if ($this->isDryRunEnabled()) {
+            $values = array_map(function ($row) {
+                return '(' . implode(', ', array_map([$this, 'quoteValue'], $row)) . ')';
+            }, $rows);
+            $sql .= implode(', ', $values) . ';';
+            $this->output->writeln($sql);
+        } else {
+            $count_keys = count($keys);
+            $query = '(' . implode(', ', array_fill(0, $count_keys, '?')) . ')';
+            $count_vars = count($rows);
+            $queries = array_fill(0, $count_vars, $query);
+            $sql .= implode(',', $queries);
+            $stmt = $this->getConnection()->prepare($sql);
+            $vals = [];
+
+            foreach ($rows as $row) {
+                foreach ($row as $v) {
+                    if (is_bool($v)) {
+                        $vals[] = $this->castToBool($v);
+                    } else {
+                        $vals[] = $v;
+                    }
+                }
+            }
+
+            $stmt->execute($vals);
+        }
     }
 }

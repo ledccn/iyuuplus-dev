@@ -1653,7 +1653,7 @@ Phinx provides access to a Query builder object, that you may use to execute com
 
 The Query builder is provided by the `cakephp/database <https://github.com/cakephp/database>`_ project, and should
 be easy to work with as it resembles very closely plain SQL. Accesing the query builder is done by calling the
-``getQueryBuilder(string $type)`` function. The ``string $type`` options are `'select'`, `'insert'`, `'update'` and `'delete'`:
+``getQueryBuilder()`` function:
 
 
 .. code-block:: php
@@ -1669,7 +1669,7 @@ be easy to work with as it resembles very closely plain SQL. Accesing the query 
              */
             public function up()
             {
-                $builder = $this->getQueryBuilder('select');
+                $builder = $this->getQueryBuilder();
                 $statement = $builder->select('*')->from('users')->execute();
                 var_dump($statement->fetchAll());
             }
@@ -1864,7 +1864,7 @@ Creating insert queries is also possible:
 .. code-block:: php
 
     <?php
-    $builder = $this->getQueryBuilder('insert');
+    $builder = $this->getQueryBuilder();
     $builder
         ->insert(['first_name', 'last_name'])
         ->into('users')
@@ -1879,13 +1879,13 @@ For increased performance, you can use another builder object as the values for 
 
     <?php
 
-    $namesQuery = $this->getQueryBuilder('select');
+    $namesQuery = $this->getQueryBuilder();
     $namesQuery
         ->select(['fname', 'lname'])
         ->from('users')
         ->where(['is_active' => true]);
 
-    $builder = $this->getQueryBuilder('insert');
+    $builder = $this->getQueryBuilder();
     $st = $builder
         ->insert(['first_name', 'last_name'])
         ->into('names')
@@ -1911,7 +1911,7 @@ Creating update queries is similar to both inserting and selecting:
 .. code-block:: php
 
     <?php
-    $builder = $this->getQueryBuilder('update');
+    $builder = $this->getQueryBuilder();
     $builder
         ->update('users')
         ->set('fname', 'Snow')
@@ -1927,7 +1927,7 @@ Finally, delete queries:
 .. code-block:: php
 
     <?php
-    $builder = $this->getQueryBuilder('delete');
+    $builder = $this->getQueryBuilder();
     $builder
         ->delete('users')
         ->where(['accepted_gdpr' => false])

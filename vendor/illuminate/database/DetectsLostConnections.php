@@ -19,7 +19,6 @@ trait DetectsLostConnections
 
         return Str::contains($message, [
             'server has gone away',
-            'Server has gone away',
             'no connection to the server',
             'Lost connection',
             'is dead or not enabled',

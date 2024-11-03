@@ -20,9 +20,11 @@ namespace Symfony\Component\Config\Builder;
  */
 class Method
 {
-    public function __construct(
-        private string $content,
-    ) {
+    private string $content;
+
+    public function __construct(string $content)
+    {
+        $this->content = $content;
     }
 
     public function getContent(): string

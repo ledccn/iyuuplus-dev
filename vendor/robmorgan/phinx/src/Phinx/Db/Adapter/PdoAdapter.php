@@ -41,7 +41,6 @@ use Phinx\Migration\MigrationInterface;
 use Phinx\Util\Literal;
 use ReflectionProperty;
 use RuntimeException;
-use SensitiveParameter;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
 
@@ -87,13 +86,8 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
      * @param array<int, mixed> $options Connection options
      * @return \PDO
      */
-    protected function createPdoConnection(
-        string $dsn,
-        ?string $username = null,
-        #[SensitiveParameter]
-        ?string $password = null,
-        array $options = []
-    ): PDO {
+    protected function createPdoConnection(string $dsn, ?string $username = null, ?string $password = null, array $options = []): PDO
+    {
         $adapterOptions = $this->getOptions() + [
             'attr_errmode' => PDO::ERRMODE_EXCEPTION,
         ];
@@ -329,7 +323,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
             $this->quoteTableName($table->getName())
         );
         $columns = array_keys($row);
-        $sql .= '(' . implode(', ', array_map([$this, 'quoteColumnName'], $columns)) . ') ' . $this->getInsertOverride() . 'VALUES ';
+        $sql .= '(' . implode(', ', array_map([$this, 'quoteColumnName'], $columns)) . ')';
 
         foreach ($row as $column => $value) {
             if (is_bool($value)) {
@@ -338,25 +332,12 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
         }
 
         if ($this->isDryRunEnabled()) {
-            $sql .= '(' . implode(', ', array_map([$this, 'quoteValue'], $row)) . ');';
+            $sql .= ' VALUES (' . implode(', ', array_map([$this, 'quoteValue'], $row)) . ');';
             $this->output->writeln($sql);
         } else {
-            $sql .= '(';
-            $vals = [];
-            $values = [];
-            foreach ($row as $value) {
-                $values[] = $value instanceof Literal ? (string)$value : '?';
-                if (!($value instanceof Literal)) {
-                    if (is_bool($value)) {
-                        $vals[] = $this->castToBool($value);
-                    } else {
-                        $vals[] = $value;
-                    }
-                }
-            }
-            $sql .= implode(', ', $values) . ')';
+            $sql .= ' VALUES (' . implode(', ', array_fill(0, count($columns), '?')) . ')';
             $stmt = $this->getConnection()->prepare($sql);
-            $stmt->execute($vals);
+            $stmt->execute(array_values($row));
         }
     }
 
@@ -374,10 +355,6 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
 
         if ($value === null) {
             return 'null';
-        }
-
-        if ($value instanceof Literal) {
-            return (string)$value;
         }
 
         return $this->getConnection()->quote($value);
@@ -405,7 +382,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
         );
         $current = current($rows);
         $keys = array_keys($current);
-        $sql .= '(' . implode(', ', array_map([$this, 'quoteColumnName'], $keys)) . ') ' . $this->getInsertOverride() . 'VALUES ';
+        $sql .= '(' . implode(', ', array_map([$this, 'quoteColumnName'], $keys)) . ') VALUES ';
 
         if ($this->isDryRunEnabled()) {
             $values = array_map(function ($row) {
@@ -414,23 +391,17 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
             $sql .= implode(', ', $values) . ';';
             $this->output->writeln($sql);
         } else {
-            $queries = [];
-            foreach ($rows as $row) {
-                $values = [];
-                foreach ($row as $value) {
-                    $values[] = $value instanceof Literal ? (string)$value : '?';
-                }
-                $queries[] = '(' . implode(', ', $values) . ')';
-            }
+            $count_keys = count($keys);
+            $query = '(' . implode(', ', array_fill(0, $count_keys, '?')) . ')';
+            $count_vars = count($rows);
+            $queries = array_fill(0, $count_vars, $query);
             $sql .= implode(',', $queries);
             $stmt = $this->getConnection()->prepare($sql);
             $vals = [];
 
             foreach ($rows as $row) {
                 foreach ($row as $v) {
-                    if ($v instanceof Literal) {
-                        continue;
-                    } elseif (is_bool($v)) {
+                    if (is_bool($v)) {
                         $vals[] = $this->castToBool($v);
                     } else {
                         $vals[] = $v;
@@ -440,16 +411,6 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
 
             $stmt->execute($vals);
         }
-    }
-
-    /**
-     * Returns override clause for insert operations, to be befort `VALUES` keyword.
-     *
-     * @return string
-     */
-    protected function getInsertOverride(): string
-    {
-        return '';
     }
 
     /**

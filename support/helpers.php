@@ -73,23 +73,13 @@ function app_path(string $path = ''): string
 /**
  * Public path
  * @param string $path
- * @param string|null $plugin
  * @return string
  */
-function public_path(string $path = '', string $plugin = null): string
+function public_path(string $path = ''): string
 {
-    static $publicPaths = [];
-    $plugin = $plugin ?? '';
-    if (isset($publicPaths[$plugin])) {
-        $publicPath = $publicPaths[$plugin];
-    } else {
-        $prefix = $plugin ? "plugin.$plugin." : '';
-        $pathPrefix = $plugin ? 'plugin' . DIRECTORY_SEPARATOR . $plugin . DIRECTORY_SEPARATOR : '';
-        $publicPath = \config("{$prefix}app.public_path", run_path("{$pathPrefix}public"));
-        if (count($publicPaths) > 32) {
-            $publicPaths = [];
-        }
-        $publicPaths[$plugin] = $publicPath;
+    static $publicPath = '';
+    if (!$publicPath) {
+        $publicPath = \config('app.public_path') ?: run_path('public');
     }
     return path_combine($publicPath, $path);
 }
@@ -254,6 +244,9 @@ function think_view(string $template, array $vars = [], string $app = null): Res
  * @param array $vars
  * @param string|null $app
  * @return Response
+ * @throws LoaderError
+ * @throws RuntimeError
+ * @throws SyntaxError
  */
 function twig_view(string $template, array $vars = [], string $app = null): Response
 {
@@ -517,11 +510,7 @@ function cpu_count(): int
         if (strtolower(PHP_OS) === 'darwin') {
             $count = (int)shell_exec('sysctl -n machdep.cpu.core_count');
         } else {
-            try {
-                $count = (int)shell_exec('nproc');
-            } catch (\Throwable $ex) {
-                // Do nothing
-            }
+            $count = (int)shell_exec('nproc');
         }
     }
     return $count > 0 ? $count : 4;

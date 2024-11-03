@@ -346,13 +346,13 @@ final class Path
         $extension = ltrim($extension, '.');
 
         // No extension for paths
-        if (str_ends_with($path, '/')) {
+        if ('/' === substr($path, -1)) {
             return $path;
         }
 
         // No actual extension in path
-        if (!$actualExtension) {
-            return $path.(str_ends_with($path, '.') ? '' : '.').$extension;
+        if (empty($actualExtension)) {
+            return $path.('.' === substr($path, -1) ? '' : '.').$extension;
         }
 
         return substr($path, 0, -\strlen($actualExtension)).$extension;
@@ -365,7 +365,7 @@ final class Path
         }
 
         // Strip scheme
-        if (false !== ($schemeSeparatorPosition = strpos($path, '://')) && 1 !== $schemeSeparatorPosition) {
+        if (false !== $schemeSeparatorPosition = strpos($path, '://')) {
             $path = substr($path, $schemeSeparatorPosition + 3);
         }
 
@@ -668,7 +668,7 @@ final class Path
             }
 
             // Only add slash if previous part didn't end with '/' or '\'
-            if (!\in_array(substr($finalPath, -1), ['/', '\\'], true)) {
+            if (!\in_array(substr($finalPath, -1), ['/', '\\'])) {
                 $finalPath .= '/';
             }
 

@@ -6,7 +6,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Webman\Console\Util;
 
 
@@ -43,18 +42,9 @@ class MakeCommandCommand extends Command
         foreach ($items as $item) {
             $name.=ucfirst($item);
         }
-        $file = app_path() . DIRECTORY_SEPARATOR . $command_str . DIRECTORY_SEPARATOR . "$name.php";
+        $file = app_path() . "/$command_str/$name.php";
         $upper = $command_str === 'Command';
         $namespace = $upper ? 'App\Command' : 'app\command';
-
-        if (is_file($file)) {
-            $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion("$file already exists. Do you want to override it? (yes/no)", false);
-            if (!$helper->ask($input, $output, $question)) {
-                return Command::SUCCESS;
-            }
-        }
-
         $this->createCommand($name, $namespace, $file, $command);
 
         return self::SUCCESS;
