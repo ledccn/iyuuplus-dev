@@ -106,6 +106,7 @@ class SystemServices
                 return "已是最新版本！";
             }
         } catch (RuntimeException $e) {
+            (new Process(['git', 'reset --hard origin/master'], base_path()))->run();
             NotifyAdmin::error($e->getMessage());
             return $e->getMessage();
         }

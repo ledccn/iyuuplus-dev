@@ -32,15 +32,25 @@ class ReseedProcess
     public function onWorkerStart(Worker $worker): void
     {
         clearstatcache();
+
+        // 修复：存在index.lock导致仓库更新失败的bug
+        $indexLock = base_path() . '/.git/index.lock';
+        if (current_git_commit() && is_file($indexLock) && is_readable($indexLock)) {
+            unlink($indexLock);
+        }
+
+        // 必须安装后才能往下走
         if (!Install::isInstalled()) {
             return;
         }
 
+        // 未加锁，导致服务器在2024年11月3日崩溃
         if (!Cache::has('ReseedProcess_onWorkerStart')) {
             Cache::set('ReseedProcess_onWorkerStart', time(), 3600 + mt_rand(100, 1000));
             SitesServices::sync();
         }
 
+        // 数据库迁移不能太靠前执行
         init_migrate();
 
         // docker s6环境
@@ -74,13 +84,14 @@ class ReseedProcess
             });
         }
 
-        // 每天执行
-        //SystemServices::checkRemoteUpdates();
+        // 自动更新 根据进程启动时间，设置一个随机10-20小时内的更新定时器
         Timer::add(mt_rand(36000, 72000), function () {
             SystemServices::checkRemoteUpdates();
         });
 
+        // 每天执行
         new Crontab('10 10 * * *', function () {
+            // 备份用户的各种配置
             exec(implode(' ', [PHP_BINARY, base_path('webman'), 'iyuu:backup', 'backup']));
         });
 
