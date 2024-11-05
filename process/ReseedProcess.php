@@ -34,10 +34,7 @@ class ReseedProcess
         clearstatcache();
 
         // 修复：存在index.lock导致仓库更新失败的bug
-        $indexLock = base_path() . '/.git/index.lock';
-        if (current_git_commit() && is_file($indexLock) && is_readable($indexLock)) {
-            unlink($indexLock);
-        }
+        clear_git_lock();
 
         // 必须安装后才能往下走
         if (!Install::isInstalled()) {

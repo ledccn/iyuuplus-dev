@@ -19,6 +19,7 @@ class SystemServices
      */
     public static function gitPull(): array
     {
+        clear_git_lock();
         $command = DIRECTORY_SEPARATOR === '\\' ? ['git', 'pull'] : ['sh', base_path('gg.sh')];
 
         $process = new Process($command, base_path(), null, null, 30);
@@ -80,6 +81,7 @@ class SystemServices
                 throw new RuntimeException('通过git拉取的代码，才支持自动更新！');
             }
 
+            clear_git_lock();
             $process = new Process(['git', 'fetch'], base_path());
             $process->run();
 
