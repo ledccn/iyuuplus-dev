@@ -89,6 +89,13 @@ class IndexController
         }
 
         [$total_seeding, $total_seeding_time] = TotalSeedingServices::get();
+        try {
+            $commit = shell_exec('git rev-parse HEAD');
+            $show_update = $commit && current_git_commit() && str_starts_with($commit, current_git_commit());
+        } catch (Throwable $e) {
+            $show_update = false;
+        }
+
         $vars = [
             'app_filemtime' => current_git_filemtime(),
             'app_commit_id' => current_git_commit(),
@@ -108,6 +115,7 @@ class IndexController
             'mysql_version' => $mysql_version,
             'os' => PHP_OS,
             'day7_detail' => array_reverse($day7_detail),
+            'show_update' => $show_update,
         ];
         return $request->input('json') ? json($vars) : raw_view('index/dashboard', $vars);
     }
