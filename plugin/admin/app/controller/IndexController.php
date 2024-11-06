@@ -26,13 +26,13 @@ class IndexController
      * 无需登录的方法
      * @var string[]
      */
-    protected $noNeedLogin = ['index'];
+    protected array $noNeedLogin = ['index'];
 
     /**
      * 不需要鉴权的方法
      * @var string[]
      */
-    protected $noNeedAuth = ['dashboard'];
+    protected array $noNeedAuth = ['dashboard'];
 
     /**
      * 后台主页
