@@ -90,7 +90,7 @@ class IndexController
 
         [$total_seeding, $total_seeding_time] = TotalSeedingServices::get();
         try {
-            $commit = shell_exec('git rev-parse origin/master');
+            $commit = shell_exec('git ls-remote origin master');
             $show_update = $commit && current_git_commit() && !str_starts_with($commit, current_git_commit());
         } catch (Throwable $e) {
             $show_update = false;
