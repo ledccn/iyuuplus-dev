@@ -228,6 +228,26 @@ function validate_password(string $password): string|true
 }
 
 /**
+ * 清理git产生的锁文件
+ * @return void
+ */
+function clear_git_lock(): void
+{
+    $map = [
+        base_path() . '/.git/index.lock',
+        base_path() . '/.git/refs/remotes/origin/master.lock',
+    ];
+
+    if (current_git_commit()) {
+        foreach ($map as $file) {
+            if (is_file($file) && is_readable($file)) {
+                unlink($file);
+            }
+        }
+    }
+}
+
+/**
  * 获取当前版本commit
  * @param string $branch
  * @param bool $short
