@@ -227,6 +227,7 @@ class Route
             if (in_array('create', $options)) static::get("/$name/create", [$controller, 'create'])->name("$name.create");
             if (in_array('store', $options)) static::post("/$name", [$controller, 'store'])->name("$name.store");
             if (in_array('update', $options)) static::put("/$name/{id}", [$controller, 'update'])->name("$name.update");
+            if (in_array('patch', $options)) static::patch("/$name/{id}", [$controller, 'patch'])->name("$name.patch");
             if (in_array('show', $options)) static::get("/$name/{id}", [$controller, 'show'])->name("$name.show");
             if (in_array('edit', $options)) static::get("/$name/{id}/edit", [$controller, 'edit'])->name("$name.edit");
             if (in_array('destroy', $options)) static::delete("/$name/{id}", [$controller, 'destroy'])->name("$name.destroy");
@@ -237,6 +238,7 @@ class Route
             if (method_exists($controller, 'create')) static::get("/$name/create", [$controller, 'create'])->name("$name.create");
             if (method_exists($controller, 'store')) static::post("/$name", [$controller, 'store'])->name("$name.store");
             if (method_exists($controller, 'update')) static::put("/$name/{id}", [$controller, 'update'])->name("$name.update");
+            if (method_exists($controller, 'patch')) static::patch("/$name/{id}", [$controller, 'patch'])->name("$name.patch");
             if (method_exists($controller, 'show')) static::get("/$name/{id}", [$controller, 'show'])->name("$name.show");
             if (method_exists($controller, 'edit')) static::get("/$name/{id}/edit", [$controller, 'edit'])->name("$name.edit");
             if (method_exists($controller, 'destroy')) static::delete("/$name/{id}", [$controller, 'destroy'])->name("$name.destroy");

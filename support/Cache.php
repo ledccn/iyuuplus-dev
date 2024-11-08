@@ -2,11 +2,15 @@
 
 namespace support;
 
+use InvalidArgumentException;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 
 /**
- * 自定义文件缓存类
+ * Class Cache
+ * @package support\bootstrap
  *
  * Strings methods
  * @method static mixed get($key, $default = null)
@@ -21,20 +25,52 @@ use Symfony\Component\Cache\Psr16Cache;
 class Cache
 {
     /**
-     * @var ?Psr16Cache
+     * @var Psr16Cache[]
      */
-    public static ?Psr16Cache $instance = null;
+    public static $instances = [];
 
-    /**
+    /***
+     * @param string|null $name
      * @return Psr16Cache
      */
-    public static function instance(): Psr16Cache
+    public static function store(?string $name = null): Psr16Cache
     {
-        if (!static::$instance) {
-            $adapter = new FilesystemAdapter('file_cache', 3600, runtime_path());
-            self::$instance = new Psr16Cache($adapter);
+        $name = $name ?: config('cache.default', 'file');
+        $stores = !config('cache') ? [
+            'redis' => [
+                'driver' => 'redis',
+                'connection' => 'default'
+            ],
+        ] : config('cache.stores', []);
+        if (!isset($stores[$name])) {
+            throw new InvalidArgumentException("cache.store.$name is not defined. Please check config/cache.php");
         }
-        return static::$instance;
+        if (!isset(static::$instances[$name])) {
+            $driver = $stores[$name]['driver'];
+            switch ($driver) {
+                case 'redis':
+                    $client = Redis::connection($stores[$name]['connection'])->client();
+                    $adapter = new RedisAdapter($client);
+                    break;
+                case 'file':
+                    $adapter = new FilesystemAdapter('', 0, $stores[$name]['path']);
+                    break;
+                case 'array':
+                    $adapter = new ArrayAdapter(0, $stores[$name]['serialize'] ?? false, 0, 0);
+                    break;
+                /**
+                 * Pdo can not reconnect when the connection is lost. So we can not use pdo as cache.
+                 */
+                /*case 'database':
+                    $adapter = new PdoAdapter(Db::connection($stores[$name]['connection'])->getPdo());
+                    break;*/
+                default:
+                    throw new InvalidArgumentException("cache.store.$name.driver=$driver is not supported.");
+            }
+            static::$instances[$name] = new Psr16Cache($adapter);
+        }
+
+        return static::$instances[$name];
     }
 
     /**
@@ -44,6 +80,6 @@ class Cache
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::instance()->{$name}(... $arguments);
+        return static::store()->{$name}(... $arguments);
     }
 }

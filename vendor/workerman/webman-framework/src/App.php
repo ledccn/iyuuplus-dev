@@ -142,10 +142,11 @@ class App
                 return null;
             }
 
+            $status = 200;
             if (
                 static::unsafeUri($connection, $path, $request) ||
                 static::findFile($connection, $path, $key, $request) ||
-                static::findRoute($connection, $path, $key, $request)
+                static::findRoute($connection, $path, $key, $request, $status)
             ) {
                 return null;
             }
@@ -156,7 +157,7 @@ class App
                 $request->plugin = $plugin;
                 $callback = static::getFallback($plugin);
                 $request->app = $request->controller = $request->action = '';
-                static::send($connection, $callback($request), $request);
+                static::send($connection, $callback($request, $status), $request);
                 return null;
             }
             $app = $controllerAndAction['app'];
@@ -208,13 +209,15 @@ class App
     {
         if (
             !$path ||
-            strpos($path, '..') !== false ||
+            $path[0] !== '/' ||
+            strpos($path, '/../') !== false ||
+            substr($path, -3) === '/..' ||
             strpos($path, "\\") !== false ||
             strpos($path, "\0") !== false
         ) {
             $callback = static::getFallback();
             $request->plugin = $request->app = $request->controller = $request->action = '';
-            static::send($connection, $callback($request), $request);
+            static::send($connection, $callback($request, 400), $request);
             return true;
         }
         return false;
@@ -227,7 +230,7 @@ class App
      */
     protected static function getFallback(string $plugin = ''): Closure
     {
-        // when route, controller and action not found, try to use Route::fallback
+        // When route, controller and action not found, try to use Route::fallback
         return Route::getFallback($plugin) ?: function () {
             try {
                 $notFoundContent = file_get_contents(static::$publicPath . '/404.html');
@@ -528,16 +531,18 @@ class App
      * @param TcpConnection $connection
      * @param string $path
      * @param string $key
-     * @param Request|mixed $request
+     * @param $request
+     * @param $status
      * @return bool
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
-    protected static function findRoute(TcpConnection $connection, string $path, string $key, $request): bool
+    protected static function findRoute(TcpConnection $connection, string $path, string $key, $request, &$status): bool
     {
         $routeInfo = Route::dispatch($request->method(), $path);
         if ($routeInfo[0] === Dispatcher::FOUND) {
+            $status = 200;
             $routeInfo[0] = 'route';
             $callback = $routeInfo[1]['callback'];
             $route = clone $routeInfo[1]['route'];
@@ -560,6 +565,7 @@ class App
             static::send($connection, $callback($request), $request);
             return true;
         }
+        $status = $routeInfo[0] === Dispatcher::METHOD_NOT_ALLOWED ? 405 : 404;
         return false;
     }
 
@@ -586,8 +592,8 @@ class App
         $pathExplodes = explode('/', trim($path, '/'));
         $plugin = '';
         if (isset($pathExplodes[1]) && $pathExplodes[0] === 'app') {
-            $publicDir = BASE_PATH . "/plugin/$pathExplodes[1]/public";
             $plugin = $pathExplodes[1];
+            $publicDir = static::config($plugin, 'app.public_path') ?: BASE_PATH . "/plugin/$pathExplodes[1]/public";
             $path = substr($path, strlen("/app/$pathExplodes[1]/"));
         } else {
             $publicDir = static::$publicPath;
@@ -616,7 +622,7 @@ class App
         static::collectCallbacks($key, [static::getCallback($plugin, '__static__', function ($request) use ($file, $plugin) {
             clearstatcache(true, $file);
             if (!is_file($file)) {
-                $callback = static::getFallback($plugin);
+                $callback = static::getFallback($plugin, 404);
                 return $callback($request);
             }
             return (new Response())->file($file);
@@ -654,7 +660,7 @@ class App
      */
     protected static function parseControllerAction(string $path)
     {
-        $path = str_replace('-', '', $path);
+        $path = str_replace(['-', '//'], ['', '/'], $path);
         static $cache = [];
         if (isset($cache[$path])) {
             return $cache[$path];
@@ -798,10 +804,10 @@ class App
     protected static function getAction(string $controllerClass, string $action)
     {
         $methods = get_class_methods($controllerClass);
-        $action = strtolower($action);
+        $lowerAction = strtolower($action);
         $found = false;
         foreach ($methods as $candidate) {
-            if (strtolower($candidate) === $action) {
+            if (strtolower($candidate) === $lowerAction) {
                 $action = $candidate;
                 $found = true;
                 break;

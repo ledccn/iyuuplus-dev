@@ -63,8 +63,10 @@ class LaravelDb implements Bootstrap
 
         $default = $config['default'] ?? false;
         if ($default) {
-            $defaultConfig = $connections[$config['default']];
-            $capsule->addConnection($defaultConfig);
+            $defaultConfig = $connections[$config['default']] ?? false;
+            if ($defaultConfig) {
+                $capsule->addConnection($defaultConfig);
+            }
         }
 
         foreach ($connections as $name => $config) {
@@ -84,7 +86,7 @@ class LaravelDb implements Bootstrap
             Timer::add(55, function () use ($default, $connections, $capsule) {
                 foreach ($capsule->getDatabaseManager()->getConnections() as $connection) {
                     /* @var MySqlConnection $connection **/
-                    if ($connection->getConfig('driver') == 'mysql') {
+                    if ($connection->getConfig('driver') == 'mysql' && $connection->getRawPdo()) {
                         try {
                             $connection->select('select 1');
                         } catch (Throwable $e) {}

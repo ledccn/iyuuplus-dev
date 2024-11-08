@@ -100,7 +100,7 @@ abstract class BaseCache
      */
     final public static function instance(): Psr16Cache
     {
-        return Cache::instance();
+        return Cache::store();
     }
 
     /**
@@ -110,6 +110,6 @@ abstract class BaseCache
      */
     final public function __call(string $name, array $arguments): mixed
     {
-        return Cache::instance()->{$name}(... $arguments);
+        return Cache::store()->{$name}(... $arguments);
     }
 }

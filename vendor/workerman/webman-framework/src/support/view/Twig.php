@@ -34,18 +34,14 @@ use function request;
 class Twig implements View
 {
     /**
-     * @var array
-     */
-    protected static $vars = [];
-
-    /**
      * Assign.
      * @param string|array $name
      * @param mixed $value
      */
     public static function assign($name, $value = null)
     {
-        static::$vars = array_merge(static::$vars, is_array($name) ? $name : [$name => $value]);
+        $request = request();
+        $request->_view_vars = array_merge((array) $request->_view_vars, is_array($name) ? $name : [$name => $value]);
     }
 
     /**
@@ -61,7 +57,7 @@ class Twig implements View
         static $views = [];
         $request = request();
         $plugin = $plugin === null ? ($request->plugin ?? '') : $plugin;
-        $app = $app === null ? $request->app : $app;
+        $app = $app === null ? ($request->app ?? '') : $app;
         $configPrefix = $plugin ? "plugin.$plugin." : '';
         $viewSuffix = config("{$configPrefix}view.options.view_suffix", 'html');
         $key = "$plugin-$app";
@@ -74,9 +70,9 @@ class Twig implements View
                 $extension($views[$key]);
             }
         }
-        $vars = array_merge(static::$vars, $vars);
-        $content = $views[$key]->render("$template.$viewSuffix", $vars);
-        static::$vars = [];
-        return $content;
+        if(isset($request->_view_vars)) {
+            $vars = array_merge((array)$request->_view_vars, $vars);
+        }
+        return $views[$key]->render("$template.$viewSuffix", $vars);
     }
 }
