@@ -5409,16 +5409,16 @@
         },
         {
             "name": "topthink/think-helper",
-            "version": "v3.1.6",
+            "version": "v3.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/think-helper.git",
-                "reference": "769acbe50a4274327162f9c68ec2e89a38eb2aff"
+                "reference": "d554a0a62e4c7034abc7343ee866005c3f399ae2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-helper/zipball/769acbe50a4274327162f9c68ec2e89a38eb2aff",
-                "reference": "769acbe50a4274327162f9c68ec2e89a38eb2aff",
+                "url": "https://api.github.com/repos/top-think/think-helper/zipball/d554a0a62e4c7034abc7343ee866005c3f399ae2",
+                "reference": "d554a0a62e4c7034abc7343ee866005c3f399ae2",
                 "shasum": ""
             },
             "require": {
@@ -5449,9 +5449,9 @@
             "description": "The ThinkPHP6 Helper Package",
             "support": {
                 "issues": "https://github.com/top-think/think-helper/issues",
-                "source": "https://github.com/top-think/think-helper/tree/v3.1.6"
+                "source": "https://github.com/top-think/think-helper/tree/v3.1.9"
             },
-            "time": "2021-12-15T04:27:55+00:00"
+            "time": "2024-10-15T02:24:05+00:00"
         },
         {
             "name": "topthink/think-validate",
