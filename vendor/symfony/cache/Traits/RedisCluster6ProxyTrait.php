@@ -11,12 +11,17 @@
 
 namespace Symfony\Component\Cache\Traits;
 
-if (version_compare(phpversion('redis'), '6.0.2', '>')) {
+if (version_compare(phpversion('redis'), '6.1.0-dev', '>')) {
     /**
      * @internal
      */
     trait RedisCluster6ProxyTrait
     {
+        public function getex($key, $options = []): \RedisCluster|string|false
+        {
+            return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->getex(...\func_get_args());
+        }
+
         public function publish($channel, $message): \RedisCluster|bool|int
         {
             return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->publish(...\func_get_args());
