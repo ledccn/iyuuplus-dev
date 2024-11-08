@@ -27,9 +27,11 @@ if (is_dir($command_path = Util::guessPath(app_path(), '/command', true))) {
 
 foreach (config('plugin', []) as $firm => $projects) {
     if (isset($projects['app'])) {
-        if ($command_str = Util::guessPath(base_path() . "/plugin/$firm", 'command')) {
-            $command_path = base_path() . "/plugin/$firm/$command_str";
-            $cli->installCommands($command_path, "plugin\\$firm\\$command_str");
+        foreach (['', '/app'] as $app) {
+            if ($command_str = Util::guessPath(base_path() . "/plugin/$firm{$app}", 'command')) {
+                $command_path = base_path() . "/plugin/$firm{$app}/$command_str";
+                $cli->installCommands($command_path, "plugin\\$firm" . str_replace('/', '\\', $app) . "\\$command_str");
+            }
         }
     }
     foreach ($projects as $name => $project) {

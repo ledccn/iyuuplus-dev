@@ -5750,16 +5750,16 @@
         },
         {
             "name": "webman/console",
-            "version": "v1.3.6",
+            "version": "v1.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webman-php/console.git",
-                "reference": "0096680820014b12c1f98129a9005e5f960ab292"
+                "reference": "cf7812603114c97bfdeb7d8e3e6eabe567357d77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/console/zipball/0096680820014b12c1f98129a9005e5f960ab292",
-                "reference": "0096680820014b12c1f98129a9005e5f960ab292",
+                "url": "https://api.github.com/repos/webman-php/console/zipball/cf7812603114c97bfdeb7d8e3e6eabe567357d77",
+                "reference": "cf7812603114c97bfdeb7d8e3e6eabe567357d77",
                 "shasum": ""
             },
             "require": {
@@ -5799,7 +5799,7 @@
                 "source": "https://github.com/webman-php/console",
                 "wiki": "http://www.workerman.net/doc/webman"
             },
-            "time": "2024-04-10T07:21:40+00:00"
+            "time": "2024-09-24T06:37:05+00:00"
         },
         {
             "name": "webman/event",
