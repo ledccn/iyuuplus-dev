@@ -1496,17 +1496,17 @@
         },
         {
             "name": "illuminate/database",
-            "version": "v10.48.8",
-            "version_normalized": "10.48.8.0",
+            "version": "v10.48.22",
+            "version_normalized": "10.48.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "cf468c45729ec39f0ab03b3c97e65b0cc937b22b"
+                "reference": "098df19dc27f8a1c938547fbaa0e308b405b61c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/cf468c45729ec39f0ab03b3c97e65b0cc937b22b",
-                "reference": "cf468c45729ec39f0ab03b3c97e65b0cc937b22b",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/098df19dc27f8a1c938547fbaa0e308b405b61c5",
+                "reference": "098df19dc27f8a1c938547fbaa0e308b405b61c5",
                 "shasum": ""
             },
             "require": {
@@ -1533,7 +1533,7 @@
                 "illuminate/pagination": "Required to paginate the result set (^10.0).",
                 "symfony/finder": "Required to use Eloquent model factories (^6.2)."
             },
-            "time": "2024-04-15T18:56:27+00:00",
+            "time": "2024-09-09T13:54:22+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1572,8 +1572,8 @@
         },
         {
             "name": "illuminate/events",
-            "version": "v10.48.8",
-            "version_normalized": "10.48.8.0",
+            "version": "v10.48.22",
+            "version_normalized": "10.48.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
@@ -1679,8 +1679,8 @@
         },
         {
             "name": "illuminate/pagination",
-            "version": "v10.48.8",
-            "version_normalized": "10.48.8.0",
+            "version": "v10.48.22",
+            "version_normalized": "10.48.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pagination.git",
