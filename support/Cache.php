@@ -37,9 +37,9 @@ class Cache
     {
         $name = $name ?: config('cache.default', 'file');
         $stores = !config('cache') ? [
-            'redis' => [
-                'driver' => 'redis',
-                'connection' => 'default'
+            'file' => [
+                'driver' => 'file',
+                'path' => runtime_path('cache')
             ],
         ] : config('cache.stores', []);
         if (!isset($stores[$name])) {
