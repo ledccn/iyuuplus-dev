@@ -5834,16 +5834,16 @@
         },
         {
             "name": "webman/push",
-            "version": "v1.0.17",
+            "version": "v1.0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webman-php/push.git",
-                "reference": "f87a588e6775a613a8cd2339bf90b76fdde626da"
+                "reference": "e349297adcd4aba711e7be11c0682766cd89c170"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/push/zipball/f87a588e6775a613a8cd2339bf90b76fdde626da",
-                "reference": "f87a588e6775a613a8cd2339bf90b76fdde626da",
+                "url": "https://api.github.com/repos/webman-php/push/zipball/e349297adcd4aba711e7be11c0682766cd89c170",
+                "reference": "e349297adcd4aba711e7be11c0682766cd89c170",
                 "shasum": ""
             },
             "require": {
@@ -5861,9 +5861,9 @@
             ],
             "support": {
                 "issues": "https://github.com/webman-php/push/issues",
-                "source": "https://github.com/webman-php/push/tree/v1.0.17"
+                "source": "https://github.com/webman-php/push/tree/v1.0.20"
             },
-            "time": "2024-02-04T14:03:32+00:00"
+            "time": "2024-08-15T01:57:19+00:00"
         },
         {
             "name": "workerman/crontab",
