@@ -64,7 +64,7 @@ readonly class AesCrypt
             // 使用 HMAC 方法生成带有密钥的散列值
             $hmac = hash_hmac($this->getHmacAlgo(), $payload, $key);
             // 验签
-            if (!hash_equals($signature, $hmac)) {
+            if (!hash_equals($hmac, $signature)) {
                 throw new InvalidArgumentException('签名验证失败');
             }
 

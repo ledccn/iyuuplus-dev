@@ -2073,17 +2073,17 @@
         },
         {
             "name": "ledc/crypt",
-            "version": "v8.1.2",
-            "version_normalized": "8.1.2.0",
+            "version": "v8.1.4",
+            "version_normalized": "8.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ledccn/ledc-crypt.git",
-                "reference": "00eb640031bfecb323764e5d272cab61fa215ba8"
+                "reference": "030151626ac63e5c0f09fc1c9b449e12a8729750"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ledccn/ledc-crypt/zipball/00eb640031bfecb323764e5d272cab61fa215ba8",
-                "reference": "00eb640031bfecb323764e5d272cab61fa215ba8",
+                "url": "https://api.github.com/repos/ledccn/ledc-crypt/zipball/030151626ac63e5c0f09fc1c9b449e12a8729750",
+                "reference": "030151626ac63e5c0f09fc1c9b449e12a8729750",
                 "shasum": ""
             },
             "require": {
@@ -2091,7 +2091,7 @@
                 "ext-openssl": "*",
                 "php": ">=8.2"
             },
-            "time": "2024-09-29T15:30:54+00:00",
+            "time": "2024-11-02T09:06:53+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2114,7 +2114,7 @@
             "description": "加密解密、加签验签",
             "support": {
                 "issues": "https://github.com/ledccn/ledc-crypt/issues",
-                "source": "https://github.com/ledccn/ledc-crypt/tree/v8.1.2"
+                "source": "https://github.com/ledccn/ledc-crypt/tree/v8.1.4"
             },
             "install-path": "../ledc/crypt"
         },
