@@ -126,6 +126,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
             'Ledc\\Crypt\\' => 11,
             'Ledc\\Container\\' => 15,
             'League\\Container\\' => 17,
+            'Laravel\\SerializableClosure\\' => 28,
         ),
         'I' => 
         array (
@@ -440,6 +441,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         'League\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/container/src',
+        ),
+        'Laravel\\SerializableClosure\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laravel/serializable-closure/src',
         ),
         'Iyuu\\SiteManager\\' => 
         array (

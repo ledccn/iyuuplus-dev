@@ -36,7 +36,7 @@ class InstallController extends Base
         }
 
         if (!class_exists(CaptchaBuilder::class) || !class_exists(Manager::class)) {
-            return $this->json(1, '请先restart重启webman后再进行此页面的设置');
+            return $this->json(1, '请运行 composer require -W illuminate/database 安装illuminate/database组件并重启');
         }
 
         $user = $request->post('user');

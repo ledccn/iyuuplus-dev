@@ -11,7 +11,8 @@
     "intervention/image": "^2.7",
     "webman/event": "^1.0",
     "webman/captcha": "^1.0.0",
-    "guzzlehttp/guzzle": "^7.5"
+    "guzzlehttp/guzzle": "^7.5",
+    "laravel/serializable-closure": "^1.0"
   },
   "autoload": {
     "psr-4": {

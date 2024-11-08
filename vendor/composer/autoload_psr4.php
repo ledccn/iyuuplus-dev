@@ -69,6 +69,7 @@ return array(
     'Ledc\\Crypt\\' => array($vendorDir . '/ledc/crypt/src'),
     'Ledc\\Container\\' => array($vendorDir . '/ledc/container/src'),
     'League\\Container\\' => array($vendorDir . '/league/container/src'),
+    'Laravel\\SerializableClosure\\' => array($vendorDir . '/laravel/serializable-closure/src'),
     'Iyuu\\SiteManager\\' => array($baseDir . '/composer/site-manager/src'),
     'Iyuu\\ReseedClient\\' => array($baseDir . '/composer/reseed-client/src'),
     'Iyuu\\PacificSdk\\' => array($baseDir . '/composer/pacific-sdk/src'),

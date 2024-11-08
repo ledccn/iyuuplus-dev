@@ -9,18 +9,18 @@ layui.$(function () {
         success: function (res) {
             let style = '';
             let codes = res.data || [];
-            let isSupperAdmin = false;
+            let isSuperAdmin = false;
             // codes里有*，说明是超级管理员，拥有所有权限
             if (codes.indexOf('*') !== -1) {
                 $("head").append("<style>*[permission]{display: initial}</style>");
-                isSupperAdmin = true;
+                isSuperAdmin = true;
             }
             if (self !== top) {
-                top.Admin.Account.isSupperAdmin = isSupperAdmin;
+                top.Admin.Account.isSuperAdmin = isSuperAdmin;
             } else {
-                window.Admin.Account.isSupperAdmin = isSupperAdmin;
+                window.Admin.Account.isSuperAdmin = isSuperAdmin;
             }
-            if (isSupperAdmin) return;
+            if (isSuperAdmin) return;
 
             // 细分权限
             layui.each(codes, function (k, code) {

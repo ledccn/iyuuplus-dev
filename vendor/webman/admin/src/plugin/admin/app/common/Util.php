@@ -490,7 +490,7 @@ class Util
             $values = trim(substr($item, $pos + 1));
             // values = a:v,c:d
             $pos = strpos($values, ':');
-            if ($pos !== false) {
+            if ($pos !== false && strpos($values, "#") !== 0) {
                 $options = explode(',', $values);
                 $values = [];
                 foreach ($options as $option) {

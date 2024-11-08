@@ -121,7 +121,7 @@ class AccountController extends Crud
             'avatar' => $admin['avatar'],
             'email' => $admin['email'],
             'mobile' => $admin['mobile'],
-            'isSupperAdmin' => Auth::isSupperAdmin(),
+            'isSuperAdmin' => Auth::isSuperAdmin(),
             'token' => $request->sessionId(),
         ];
         return $this->json(0, 'ok', $info);
