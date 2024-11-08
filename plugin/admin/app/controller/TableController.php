@@ -7,9 +7,9 @@ use Doctrine\Inflector\InflectorFactory;
 use Illuminate\Database\Schema\Blueprint;
 use plugin\admin\app\common\Layui;
 use plugin\admin\app\common\Util;
+use plugin\admin\app\model\Option;
 use plugin\admin\app\model\Role;
 use plugin\admin\app\model\Rule;
-use plugin\admin\app\model\Option;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
@@ -61,7 +61,7 @@ class TableController extends Base
      */
     public function show(Request $request): Response
     {
-        $table_name = $request->get('table_name','');
+        $table_name = $request->get('table_name', '');
         $limit = (int)$request->get('limit', 10);
         $page = (int)$request->get('page', 1);
         $offset = ($page - 1) * $limit;
@@ -281,7 +281,7 @@ class TableController extends Base
             if (!isset($type_method_map[$column['type']])) {
                 throw new BusinessException("不支持的类型{$column['type']}");
             }
-            $field = $column['old_field'] ?? $column['field'] ;
+            $field = $column['old_field'] ?? $column['field'];
             $old_column = $old_columns[$field] ?? [];
             // 类型更改
             foreach ($old_column as $key => $value) {
@@ -322,7 +322,7 @@ class TableController extends Base
         $drop_column_names = array_diff($old_columns_names, $exists_column_names);
         $drop_column_names = Util::filterAlphaNum($drop_column_names);
         foreach ($drop_column_names as $drop_column_name) {
-            Util::db()->statement("ALTER TABLE $table_name DROP COLUMN `$drop_column_name`");
+            Util::db()->statement("ALTER TABLE `$table_name` DROP COLUMN `$drop_column_name`");
         }
 
         $old_keys = Util::getSchema($table_name, 'keys');
@@ -384,9 +384,8 @@ class TableController extends Base
         $form_schema_map = json_encode($form_schema_map, JSON_UNESCAPED_UNICODE);
         $option_name = $this->updateSchemaOption($table_name, $form_schema_map);
 
-        return $this->json(0,$option_name);
+        return $this->json(0, $option_name);
     }
-
 
 
     /**
@@ -429,7 +428,7 @@ class TableController extends Base
         $controller_file_name = Util::filterAlphaNum($controller_info['filename'] ?? '');
         $model_file_name = Util::filterAlphaNum($model_info['filename'] ?? '');
 
-        if ($controller_info['extension'] !== 'php' || $model_info['extension'] !== 'php' ) {
+        if ($controller_info['extension'] !== 'php' || $model_info['extension'] !== 'php') {
             return $this->json(1, '控制器和model必须以.php为后缀');
         }
 
@@ -540,7 +539,7 @@ class TableController extends Base
         }
 
         // 不是超级管理员，则需要给当前管理员这个菜单的权限
-        if (!in_array('*', $rule_ids) && $roles){
+        if (!in_array('*', $rule_ids) && $roles) {
             $role = Role::find(current($roles));
             if ($role) {
                 $role->rules .= ",{$menu->id}";
@@ -585,14 +584,15 @@ class TableController extends Base
     public \$incrementing = false;
 
 EOF;
-;
                     }
                 }
                 $type = $this->getType($item->DATA_TYPE);
                 $properties .= " * @property $type \${$item->COLUMN_NAME} {$item->COLUMN_COMMENT}\n";
                 $columns[$item->COLUMN_NAME] = $item->COLUMN_NAME;
             }
-        } catch (Throwable $e) {echo $e;}
+        } catch (Throwable $e) {
+            echo $e;
+        }
         if (!isset($columns['created_at']) || !isset($columns['updated_at'])) {
             $timestamps = <<<EOF
 /**
@@ -739,11 +739,11 @@ EOF;
      * 创建控制器
      * @param $template_file_path
      * @param $table
-     * @param $template_path
      * @param $url_path_base
      * @param $primary_key
      * @param $controller_class_with_namespace
      * @return void
+     * @throws BusinessException
      */
     protected function createTemplate($template_file_path, $table, $url_path_base, $primary_key, $controller_class_with_namespace)
     {
@@ -966,9 +966,19 @@ EOF
                 }
 
                 // 刷新表格数据
-                window.refreshTable = function(param) {
+                window.refreshTable = function() {
                     table.reloadData("data-table", {
-                        scrollPos: "fixed"
+                        scrollPos: "fixed",
+                        done: function (res, curr) {
+                            if (curr > 1 && res.data && !res.data.length) {
+                                curr = curr - 1;
+                                table.reloadData("data-table", {
+                                    page: {
+                                        curr: curr
+                                    },
+                                })
+                            }
+                        }
                     });
                 }
             })
@@ -1223,7 +1233,7 @@ EOF;
         $format = $request->get('format', 'normal');
         $limit = $request->get('limit', $format === 'tree' ? 5000 : 10);
 
-        $allow_column = Util::db()->select("desc $table");
+        $allow_column = Util::db()->select("desc `$table`");
         if (!$allow_column) {
             return $this->json(2, '表不存在');
         }
@@ -1244,7 +1254,7 @@ EOF;
                     } elseif (in_array($value[0], ['>', '=', '<', '<>', 'not like'])) {
                         $paginator = $paginator->where($column, $value[0], $value[1]);
                     } else {
-                        if($value[0] !== '' || $value[1] !== '') {
+                        if ($value[0] !== '' || $value[1] !== '') {
                             $paginator = $paginator->whereBetween($column, $value);
                         }
                     }
@@ -1342,7 +1352,7 @@ EOF;
             $table_info = Util::getSchema($table, 'table');
             $primary_key = $table_info['primary_key'][0] ?? null;
             $value = htmlspecialchars($request->get($primary_key, ''));
-            $form = Layui::buildForm($table,'update');
+            $form = Layui::buildForm($table, 'update');
             return raw_view("table/update", [
                 'primary_key' => $primary_key,
                 'value' => $value,

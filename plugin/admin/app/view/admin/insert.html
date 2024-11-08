@@ -132,7 +132,7 @@
                     success: function (res) {
                         let value = layui.$("#roles").attr("value");
                         let initValue = value ? value.split(",") : [];
-                        if (!top.Admin.Account.isSupperAdmin) {
+                        if (!top.Admin.Account.isSuperAdmin) {
                             layui.each(res.data, function (k, v) {
                                 v.disabled = true;
                             });

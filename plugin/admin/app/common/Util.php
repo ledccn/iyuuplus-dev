@@ -2,13 +2,13 @@
 
 namespace plugin\admin\app\common;
 
-use process\Monitor;
-use Throwable;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Builder;
 use plugin\admin\app\model\Option;
-use support\exception\BusinessException;
+use process\Monitor;
 use support\Db;
+use support\exception\BusinessException;
+use Throwable;
 use Workerman\Timer;
 use Workerman\Worker;
 
@@ -95,11 +95,11 @@ class Util
     public static function formatBytes($file_size): string
     {
         $size = sprintf("%u", $file_size);
-        if($size == 0) {
-            return("0 Bytes");
+        if ($size == 0) {
+            return ("0 Bytes");
         }
         $size_name = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
-        return round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $size_name[$i];
+        return round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $size_name[$i];
     }
 
     /**
@@ -198,7 +198,7 @@ class Util
         $key = strtolower($controller_class);
         $action = '';
         if (strpos($key, '@')) {
-            [$key, $action] = explode( '@', $key, 2);
+            [$key, $action] = explode('@', $key, 2);
         }
         $prefix = 'plugin';
         $paths = explode('\\', $key);
@@ -281,7 +281,7 @@ class Util
      */
     public static function methodControlMap(): array
     {
-        return  [
+        return [
             //method=>[控件]
             'integer' => ['InputNumber'],
             'string' => ['Input'],
@@ -454,7 +454,7 @@ class Util
             return "{$schema->NUMERIC_PRECISION},{$schema->NUMERIC_SCALE}";
         }
         if ($type === 'enum') {
-            return implode(',', array_map(function($item){
+            return implode(',', array_map(function ($item) {
                 return trim($item, "'");
             }, explode(',', substr($schema->COLUMN_TYPE, 5, -1))));
         }
@@ -490,7 +490,7 @@ class Util
             $values = trim(substr($item, $pos + 1));
             // values = a:v,c:d
             $pos = strpos($values, ':');
-            if ($pos !== false) {
+            if ($pos !== false && !str_starts_with($values, "#")) {
                 $options = explode(',', $values);
                 $values = [];
                 foreach ($options as $option) {
@@ -533,7 +533,8 @@ class Util
             try {
                 posix_kill(posix_getppid(), SIGUSR1);
                 return true;
-            } catch (Throwable $e) {}
+            } catch (Throwable $e) {
+            }
         } else {
             Timer::add(1, function () {
                 Worker::stopAll();

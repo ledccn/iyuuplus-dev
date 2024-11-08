@@ -2,6 +2,7 @@
 
 namespace plugin\admin\app\controller;
 
+use Exception;
 use plugin\admin\app\common\Tree;
 use plugin\admin\app\common\Util;
 use plugin\admin\app\model\Role;
@@ -62,6 +63,7 @@ class RuleController extends Crud
      * 获取菜单
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     function get(Request $request): Response
     {
@@ -112,6 +114,7 @@ class RuleController extends Crud
      * 获取权限
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function permission(Request $request): Response
     {

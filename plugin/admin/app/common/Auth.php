@@ -1,11 +1,11 @@
 <?php
+
 namespace plugin\admin\app\common;
 
 
-use plugin\admin\app\model\Admin;
+use Exception;
 use plugin\admin\app\model\AdminRole;
 use plugin\admin\app\model\Role;
-use plugin\admin\app\model\Rule;
 
 class Auth
 {
@@ -47,11 +47,24 @@ class Auth
     }
 
     /**
+     * 兼容旧版本
+     * @param int $admin_id
+     * @return bool
+     * @deprecated
+     */
+    public static function isSupperAdmin(int $admin_id = 0): bool
+    {
+        return static::isSuperAdmin($admin_id);
+
+    }
+
+    /**
      * 是否是超级管理员
      * @param int $admin_id
      * @return bool
+     * @throws Exception
      */
-    public static function isSupperAdmin(int $admin_id = 0): bool
+    public static function isSuperAdmin(int $admin_id = 0): bool
     {
         if (!$admin_id) {
             if (!$roles = admin('roles')) {

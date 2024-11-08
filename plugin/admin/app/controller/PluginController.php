@@ -119,7 +119,7 @@ class PluginController extends Base
             // 解压zip到plugin目录
             if ($has_zip_archive) {
                 $zip = new ZipArchive;
-                $zip->open($zip_file, ZIPARCHIVE::CHECKCONS);
+                $zip->open($zip_file);
             }
 
             $context = null;

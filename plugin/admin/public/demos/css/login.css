@@ -45,16 +45,16 @@
 }
 
 .logo {
-	width: 60px !important;
+	width: 40px !important;
 	margin-top: 10px !important;
 	margin-bottom: 10px !important;
 	margin-left: 20px !important;
 }
 
 .title {
-	font-size: 30px !important;
+	font-size: 26px !important;
 	font-weight: 550 !important;
-	margin-left: 20px !important;
+	margin-left: 10px !important;
 	color: #5FB878 !important;
 	display: inline-block !important;
 	height: 60px !important;

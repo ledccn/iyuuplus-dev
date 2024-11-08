@@ -58,16 +58,13 @@ class ConfigController extends Base
         }
 
         // 获取环境变量中的值
-        $decodedConfig = json_decode($config, true);
-        $decodedConfig['iyuu_config']['iyuu_token'] = env('IYUU_TOKEN', '');
-        $decodedConfig['iyuu_config']['listen_ipv6'] = (bool)(getenv('IYUU_LISTEN_IPV6') ?: '');
-        $decodedConfig['iyuu_config']['cloud_access_token'] = getenv('CLOUD_ACCESS_TOKEN') ?: '';
-        $decodedConfig['iyuu_config']['cloud_sn'] = getenv('CLOUD_SN') ?: '';
+        $config = json_decode($config, true);
+        $config['iyuu_config']['iyuu_token'] = env('IYUU_TOKEN', '');
+        $config['iyuu_config']['listen_ipv6'] = (bool)(getenv('IYUU_LISTEN_IPV6') ?: '');
+        $config['iyuu_config']['cloud_access_token'] = getenv('CLOUD_ACCESS_TOKEN') ?: '';
+        $config['iyuu_config']['cloud_sn'] = getenv('CLOUD_SN') ?: '';
 
-        // 更新配置数组
-        $config = json_encode($decodedConfig);
-
-        return json_decode($config, true);
+        return $config;
     }
 
     /**
@@ -98,7 +95,7 @@ class ConfigController extends Base
                     $data[$section]['accordion'] = !empty($items['accordion']);
                     $data[$section]['collapse'] = !empty($items['collapse']);
                     $data[$section]['control'] = !empty($items['control']);
-                    $data[$section]['controlWidth'] = (int)$items['controlWidth'] ?? 500;
+                    $data[$section]['controlWidth'] = (int)($items['controlWidth'] ?? 2000);
                     $data[$section]['select'] = (int)$items['select'] ?? 0;
                     $data[$section]['async'] = true;
                     break;

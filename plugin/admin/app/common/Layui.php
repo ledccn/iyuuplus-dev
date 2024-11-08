@@ -1,7 +1,7 @@
 <?php
+
 namespace plugin\admin\app\common;
 
-use plugin\admin\app\common\Util;
 use support\exception\BusinessException;
 
 class Layui
@@ -46,7 +46,7 @@ class Layui
      */
     protected function options($options): array
     {
-        array_walk_recursive($options, function(&$item, $key){
+        array_walk_recursive($options, function (&$item, $key) {
             if (is_string($item)) {
                 $item = htmlspecialchars($item);
                 if ($key === 'url') {
@@ -54,11 +54,11 @@ class Layui
                 }
             }
         });
-        $field = $options['field']??'';
+        $field = $options['field'] ?? '';
         $props = !empty($options['props']) ? $options['props'] : [];
-        $verify_string = !empty($props['lay-verify']) ? ' lay-verify="'.$props['lay-verify'].'"' : '';
+        $verify_string = !empty($props['lay-verify']) ? ' lay-verify="' . $props['lay-verify'] . '"' : '';
         $required_string = strpos($verify_string, 'required') ? ' required' : '';
-        $label = !empty($options['label']) ? '<label class="layui-form-label'.$required_string.'">'.$options['label'].'</label>' : '';
+        $label = !empty($options['label']) ? '<label class="layui-form-label' . $required_string . '">' . $options['label'] . '</label>' : '';
         $value = $props['value'] ?? '';
         $class = $props['class'] ?? 'layui-input-block';
 
@@ -74,8 +74,8 @@ class Layui
     {
         [$label, $field, $value, $props, $verify_string, $required_string, $class] = $this->options($options);
 
-        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="'.$props['placeholder'].'"' : '';
-        $autocomplete_string = !empty($props['autocomplete']) ? ' autocomplete="'.$props['autocomplete'].'"' : '';
+        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="' . $props['placeholder'] . '"' : '';
+        $autocomplete_string = !empty($props['autocomplete']) ? ' autocomplete="' . $props['autocomplete'] . '"' : '';
         $disabled_string = !empty($props['disabled']) ? ' disabled' : '';
         $type = $props['type'] ?? 'text';
 
@@ -195,7 +195,7 @@ EOF;
     {
         [$label, $field, $value, $props, $verify_string, $required_string, $class] = $this->options($options);
 
-        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="'.$props['placeholder'].'"' : '';
+        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="' . $props['placeholder'] . '"' : '';
         $disabled_string = !empty($props['disabled']) ? ' disabled' : '';
 
         $this->htmlContent .= <<<EOF
@@ -219,7 +219,7 @@ EOF;
     {
         [$label, $field, $value, $props, $verify_string, $required_string, $class] = $this->options($options);
 
-        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="'.$props['placeholder'].'"' : '';
+        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="' . $props['placeholder'] . '"' : '';
         $disabled_string = !empty($props['disabled']) ? ' disabled' : '';
         $id = $field;
 
@@ -238,14 +238,8 @@ EOF;
         if (!isset($props['images_upload_url'])) {
             $props['images_upload_url'] = '/app/admin/upload/image';
         }
-        foreach ($props as $key => $item) {
-            if (is_array($item)) {
-                $item = json_encode($item, JSON_UNESCAPED_UNICODE);
-                $options_string .= "\n        '$key': $item,";
-            } else {
-                $options_string .= "\n        '$key': \"$item\",";
-            }
-        }
+        $props = $this->prepareProps($props);
+        $options_string .= "\n" . $this->preparePropsToJsObject($props, 1, true);
         $this->jsContent .= <<<EOF
 
 // 字段 {$options['label']} $field
@@ -271,12 +265,12 @@ EOF;
     {
         [$label, $field, $value, $props, $verify_string, $required_string, $class] = $this->options($options);
 
-        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="'.$props['placeholder'].'"' : '';
-        $autocomplete_string = !empty($props['autocomplete']) ? ' autocomplete="'.$props['autocomplete'].'"' : '';
+        $placeholder_string = !empty($props['placeholder']) ? ' placeholder="' . $props['placeholder'] . '"' : '';
+        $autocomplete_string = !empty($props['autocomplete']) ? ' autocomplete="' . $props['autocomplete'] . '"' : '';
         $disabled_string = !empty($props['disabled']) ? ' disabled' : '';
         $type = $props['type'] ?? 'text';
-        if (empty($value)){
-            $value='{}';
+        if (empty($value)) {
+            $value = '{}';
         }
         $this->htmlContent .= <<<EOF
 
@@ -314,14 +308,8 @@ EOF;
         $props['field'] = $props['field'] ?? '__file__';
         unset($props['lay-verify']);
         $options_string = '';
-        foreach ($props as $key => $item) {
-            if (is_array($item)) {
-                $item = json_encode($item, JSON_UNESCAPED_UNICODE);
-                $options_string .= "\n        $key: $item,";
-            } else {
-                $options_string .= "\n        $key: \"$item\",";
-            }
-        }
+        $props = $this->prepareProps($props);
+        $options_string .= "\n" . $this->preparePropsToJsObject($props, 1, true);
 
         $this->htmlContent .= <<<EOF
 
@@ -386,14 +374,8 @@ EOF;
         unset($props['lay-verify']);
         $props['field'] = $props['field'] ?? '__file__';
         $options_string = '';
-        foreach ($props as $key => $item) {
-            if (is_array($item)) {
-                $item = json_encode($item, JSON_UNESCAPED_UNICODE);
-                $options_string .= "\n        $key: $item,";
-            } else {
-                $options_string .= "\n        $key: \"$item\",";
-            }
-        }
+        $props = $this->prepareProps($props);
+        $options_string .= "\n" . $this->preparePropsToJsObject($props, 1, true);
 
         $this->htmlContent .= <<<EOF
 
@@ -463,15 +445,11 @@ EOF;
     public function datePicker($options)
     {
         [$label, $field, $value, $props, $verify_string, $required_string, $class] = $this->options($options);
-        $value_string = $value ? ' value="'.$value.'"' : '';
+        $value_string = $value ? ' value="' . $value . '"' : '';
         $options_string = '';
         unset($props['required'], $props['lay-verify'], $props['value']);
-        foreach ($props as $key => $item) {
-            if (is_array($item)) {
-                continue;
-            }
-            $options_string .= "\n        $key: \"$item\",";
-        }
+        $props = $this->prepareProps($props);
+        $options_string .= "\n" . $this->preparePropsToJsObject($props, 1, true);
         $id = $this->createId($field);
 
         $this->htmlContent .= <<<EOF
@@ -520,12 +498,8 @@ EOF;
         }
         $options_string = '';
         unset($props['required'], $props['lay-verify'], $props['value']);
-        foreach ($props as $key => $item) {
-            if (is_array($item)) {
-                continue;
-            }
-            $options_string .= "\n        $key: \"$item\",";
-        }
+        $props = $this->prepareProps($props);
+        $options_string .= "\n" . $this->preparePropsToJsObject($props, 1, true);
         $id = $this->createId($field);
         $id_start = "$id-date-start";
         $id_end = "$id-date-end";
@@ -575,17 +549,11 @@ EOF;
     {
         [$label, $field, $value, $props, $verify_string, $required_string, $class] = $this->options($options);
 
-        $value_string = $value ? ' value="'.$value.'"' : '';
+        $value_string = $value ? ' value="' . $value . '"' : '';
         $id = $this->createId($field);
         $options_string = '';
-        foreach ($props as $key => $item) {
-            if (is_array($item)) {
-                $item = json_encode($item, JSON_UNESCAPED_UNICODE);
-                $options_string .= "\n                $key: $item,";
-            } else {
-                $options_string .= "\n                $key: \"$item\",";
-            }
-        }
+        $props = $this->prepareProps($props);
+        $options_string .= "\n" . $this->preparePropsToJsObject($props, 1, true);
 
         $this->htmlContent .= <<<EOF
 
@@ -680,7 +648,7 @@ EOF;
     {
         $options['props']['toolbar'] = array_merge_recursive([
             'show' => true,
-            'list' => [ 'ALL', 'CLEAR', 'REVERSE' ]
+            'list' => ['ALL', 'CLEAR', 'REVERSE']
         ], $options['props']['toolbar'] ?? []);
         $this->apiSelect($options);
     }
@@ -719,7 +687,7 @@ EOF;
             '$expandedKeys' => '$initValue'], $options['props']['tree'] ?? []);
         $options['props']['toolbar'] = array_merge_recursive([
             '$show' => true,
-            '$list' => [ 'ALL', 'CLEAR', 'REVERSE' ]
+            '$list' => ['ALL', 'CLEAR', 'REVERSE']
         ], $options['props']['toolbar'] ?? []);
         $this->apiSelect($options);
     }
@@ -745,11 +713,11 @@ EOF;
             if (is_array($item)) {
                 $item = json_encode($item, JSON_UNESCAPED_UNICODE);
                 $item = preg_replace('/"\$([^"]+)"/', '$1', $item);
-                $options_string .= "\n".($url?'                ':'        ')."$key: $item,";
+                $options_string .= "\n" . ($url ? '                ' : '        ') . "$key: $item,";
             } else if (is_string($item)) {
-                $options_string .= "\n".($url?'                ':'        ')."$key: \"$item\",";
+                $options_string .= "\n" . ($url ? '                ' : '        ') . "$key: \"$item\",";
             } else {
-                $options_string .= "\n".($url?'                ':'        ')."$key: ".var_export($item, true).",";
+                $options_string .= "\n" . ($url ? '                ' : '        ') . "$key: " . var_export($item, true) . ",";
             }
         }
 
@@ -857,7 +825,7 @@ EOF;
             if ($filter == 'form_show' && !$columns[$key]['nullable'] && $default === null && ($field !== 'password' || $type === 'insert')) {
                 if (!isset($props['lay-verify'])) {
                     $props['lay-verify'] = 'required';
-                // 非类似字符串类型不允许传空
+                    // 非类似字符串类型不允许传空
                 } elseif (!in_array($columns[$key]['type'], ['string', 'text', 'mediumText', 'longText', 'char', 'binary', 'json'])
                     && strpos($props['lay-verify'], 'required') === false) {
                     $props['lay-verify'] = 'required|' . $props['lay-verify'];
@@ -1068,8 +1036,8 @@ function render()
         url: SELECT_API,
         page: true,
         cols: [cols],
-        skin: "line",
-        size: "lg",
+        //skin: "line",
+        size: "sm",
         toolbar: "#table-toolbar",
         autoSort: false,
         defaultToolbar: [{
@@ -1127,8 +1095,8 @@ table.render({
     url: SELECT_API,
     page: true,
     cols: [cols],
-    skin: "line",
-    size: "lg",
+    //skin: "line",
+    size: "sm",
     toolbar: "#table-toolbar",
     autoSort: false,
     defaultToolbar: [{
@@ -1148,6 +1116,49 @@ EOF;
 
         return str_replace("\n", "\n" . str_repeat('	', $indent), $codes);
 
+    }
+
+    /**
+     * 预处理props
+     */
+    private function prepareProps($props)
+    {
+        $raw_list = ['true', 'false', 'null', 'undefined'];
+        foreach ($props as $k => $v) {
+            if (is_array($v)) {
+                $props[$k] = $this->prepareProps($v);
+            } elseif (!in_array($v, $raw_list) && !is_numeric($v)) {
+                if (strpos($v, "#") === 0) {
+                    $props[$k] = substr($v, 1);
+                } else {
+                    $props[$k] = "\"$v\"";
+                }
+            }
+        }
+        return $props;
+    }
+
+    private function preparePropsToJsObject($props, $indent = 0, $sub = false)
+    {
+        $string = '';
+        $indent_string = str_repeat('    ', $indent);
+        if (!$sub) {
+            $string .= "$indent_string{\n";
+        }
+        foreach ($props as $k => $v) {
+            if (!preg_match("#^[a-zA-Z0-9_]+$#", $k)) {
+                $k = "'$k'";
+            }
+            if (is_array($v)) {
+                $string .= "$indent_string    $k: {\n{$this->preparePropsToJsObject($v, $indent + 1, true)}\n$indent_string    },\n";
+            } else {
+                $string .= "$indent_string    $k: $v,\n";
+            }
+        }
+        if (!$sub) {
+            $string .= "$indent_string}\n";
+        }
+        return trim($string, "\n");
     }
 
 

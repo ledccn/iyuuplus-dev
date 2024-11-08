@@ -55,6 +55,7 @@ class RoleController extends Crud
     {
         $id = $request->get('id');
         [$where, $format, $limit, $field, $order] = $this->selectInput($request);
+        $limit = 100000;
         $role_ids = Auth::getScopeRoleIds(true);
         if (!$id) {
             $where['id'] = ['in', $role_ids];
@@ -80,7 +81,7 @@ class RoleController extends Crud
             if (!$pid) {
                 return $this->json(1, '请选择父级角色组');
             }
-            if (!Auth::isSupperAdmin() && !in_array($pid, Auth::getScopeRoleIds(true))) {
+            if (!Auth::isSuperAdmin() && !in_array($pid, Auth::getScopeRoleIds(true))) {
                 return $this->json(1, '父级角色组超出权限范围');
             }
             $this->checkRules($pid, $data['rules'] ?? '');
@@ -103,7 +104,7 @@ class RoleController extends Crud
             return raw_view('role/update');
         }
         [$id, $data] = $this->updateInput($request);
-        $is_supper_admin = Auth::isSupperAdmin();
+        $is_supper_admin = Auth::isSuperAdmin();
         $descendant_role_ids = Auth::getScopeRoleIds();
         if (!$is_supper_admin && !in_array($id, $descendant_role_ids)) {
             return $this->json(1, '无数据权限');
@@ -171,7 +172,7 @@ class RoleController extends Crud
         if (in_array(1, $ids)) {
             return $this->json(1, '无法删除超级管理员角色');
         }
-        if (!Auth::isSupperAdmin() && array_diff($ids, Auth::getScopeRoleIds())) {
+        if (!Auth::isSuperAdmin() && array_diff($ids, Auth::getScopeRoleIds())) {
             return $this->json(1, '无删除权限');
         }
         $tree = new Tree(Role::get());
@@ -194,7 +195,7 @@ class RoleController extends Crud
         if (empty($role_id)) {
             return $this->json(0, 'ok', []);
         }
-        if (!Auth::isSupperAdmin() && !in_array($role_id, Auth::getScopeRoleIds(true))) {
+        if (!Auth::isSuperAdmin() && !in_array($role_id, Auth::getScopeRoleIds(true))) {
             return $this->json(1, '角色组超出权限范围');
         }
         $rule_id_string = Role::where('id', $role_id)->value('rules');

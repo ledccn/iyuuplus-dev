@@ -5,7 +5,6 @@ namespace plugin\admin\app\controller;
 use app\install\Installation;
 use Illuminate\Database\Capsule\Manager;
 use plugin\admin\app\common\Util;
-use plugin\admin\app\model\Admin;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
@@ -37,7 +36,7 @@ class InstallController extends Base
         }
 
         if (!class_exists(CaptchaBuilder::class) || !class_exists(Manager::class)) {
-            return $this->json(1, '请先restart重启webman后再进行此页面的设置');
+            return $this->json(1, '请运行 composer require -W illuminate/database 安装illuminate/database组件并重启');
         }
 
         $user = $request->post('user');
@@ -186,7 +185,8 @@ EOF;
 
         // 尝试reload
         if (function_exists('posix_kill')) {
-            set_error_handler(function () {});
+            set_error_handler(function () {
+            });
             posix_kill(posix_getppid(), SIGUSR1);
             restore_error_handler();
         }
@@ -268,7 +268,7 @@ EOF;
         foreach ($columns as $k => $column) {
             $columns[$k] = "`$column`";
         }
-        $sql = "insert into wa_rules (" .implode(',', $columns). ") values (" . implode(',', $values) . ")";
+        $sql = "insert into wa_rules (" . implode(',', $columns) . ") values (" . implode(',', $values) . ")";
         $smt = $pdo->prepare($sql);
         foreach ($data as $key => $value) {
             $smt->bindValue($key, $value);
@@ -322,7 +322,7 @@ EOF;
      */
     protected function removeComments($sql): string
     {
-        return preg_replace("/(\n--[^\n]*)/","", $sql);
+        return preg_replace("/(\n--[^\n]*)/", "", $sql);
     }
 
     /**

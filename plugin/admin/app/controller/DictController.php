@@ -10,7 +10,7 @@ use support\Response;
 use Throwable;
 
 /**
- * 字典管理 
+ * 字典管理
  */
 class DictController extends Base
 {
@@ -37,15 +37,20 @@ class DictController extends Base
     public function select(Request $request): Response
     {
         $name = $request->get('name', '');
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 10);
+        $offset = ($page - 1) * $limit;
         if ($name && is_string($name)) {
-            $items = Option::where('name', 'like', "dict_$name%")->get()->toArray();
+            $items = Option::where('name', 'like', "dict_$name%")->limit($limit)->offset($offset)->get()->toArray();
         } else {
-            $items = Option::where('name', 'like', 'dict_%')->get()->toArray();
+            $items = Option::where('name', 'like', 'dict_%')->limit($limit)->offset($offset)->get()->toArray();
         }
+        $get_items = Option::where('name', 'like', "dict_$name%")->get()->toArray();
+        $count = count($get_items);
         foreach ($items as &$item) {
             $item['name'] = Dict::optionNameTodictName($item['name']);
         }
-        return $this->json(0, 'ok', $items);
+        return json(['code' => 0, 'msg' => 'ok', 'count' => $count, 'data' => $items]);
     }
 
     /**
@@ -105,7 +110,7 @@ class DictController extends Base
      */
     public function get(Request $request, $name): Response
     {
-        return $this->json(0, 'ok', Dict::get($name));
+        return $this->json(0, 'ok', (array)Dict::get($name));
     }
 
 }
