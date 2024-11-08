@@ -194,6 +194,7 @@ class Request extends \Workerman\Psr7\Request
         if ($ssl) {
             $connection->transport = 'ssl';
         }
+        ProxyHelper::setConnectionProxy($connection, $context);
         $this->attachConnection($connection);
         $this->_selfConnection = true;
         $connection->connect();
@@ -252,7 +253,9 @@ class Request extends \Workerman\Psr7\Request
         }
 
         if (isset($this->_options['headers'])) {
-            $this->withHeaders($this->_options['headers']);
+            foreach ($this->_options['headers'] as $key => $value) {
+                $this->withHeader($key, $value);
+            }
         }
 
         $query = isset($this->_options['query']) ? $this->_options['query'] : '';

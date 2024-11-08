@@ -7,6 +7,8 @@ Asynchronous http client for PHP based on workerman.
 
 -  Build-in connection pool.
 
+-  Support Http proxy.
+
 -  Parallel Request. (use 'revolt/event-loop')
 
 # Installation
@@ -79,6 +81,42 @@ $worker->onWorkerStart = function(){
     });
 };
 Worker::runAll();
+```
+
+# Proxy
+```php
+require __DIR__ . '/vendor/autoload.php';
+use Workerman\Worker;
+$worker = new Worker();
+$worker->onWorkerStart = function(){
+    $options = [
+        'max_conn_per_addr' => 128,
+        'keepalive_timeout' => 15,
+        'connect_timeout'   => 30,
+        'timeout'           => 30,
+        // 'context' => [
+        //     'http' => [
+        //         // All use '$http' will cross proxy.  The highest priority here. !!!
+        //         'proxy' => 'http://127.0.0.1:1080',
+        //     ],
+        // ],
+    ];
+    $http = new Workerman\Http\Client($options);
+
+    $http->request('https://example.com/', [
+        'method' => 'GET',
+        'proxy' => 'http://127.0.0.1:1080',
+         // 'proxy' => 'socks5://127.0.0.1:1081',
+        'success' => function ($response) {
+            echo $response->getBody();
+        },
+        'error' => function ($exception) {
+            echo $exception;
+        }
+    ]);
+};
+Worker::runAll();
+
 ```
 
 # Parallel
