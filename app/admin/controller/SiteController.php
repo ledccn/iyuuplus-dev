@@ -171,7 +171,7 @@ class SiteController extends Crud
     }
 
     /**
-     * 合作站绑定
+     * 测试站点连通性
      * @param Request $request
      * @return Response
      */
