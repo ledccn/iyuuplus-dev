@@ -91,6 +91,13 @@ class SiteController extends Crud
         if ($request->method() === 'POST') {
             [$id, $data] = $this->updateInput($request);
             Site::backupToJson($this->model);
+            // trim过滤首尾空白字符 david 2024年11月9日23:45:25
+            $options = $data['options'] ?? [];
+            if (!empty($options)) {
+                $data['options'] = array_map(function ($item) {
+                    return is_string($item) || is_numeric($item) ? trim($item) : $item;
+                }, $options);
+            }
             $this->doUpdate($id, $data);
             return $this->json(0);
         }
