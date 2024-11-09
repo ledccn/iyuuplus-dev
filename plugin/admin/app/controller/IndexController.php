@@ -89,16 +89,26 @@ class IndexController
         }
 
         [$total_seeding, $total_seeding_time] = TotalSeedingServices::get();
+
+        $current_commit = current_git_commit();
+
         try {
-            $commit = shell_exec('git ls-remote origin master');
-            $show_update = $commit && current_git_commit() && false === str_starts_with($commit, current_git_commit());
+            $remote_commit = shell_exec('git ls-remote origin master');
+            $show_update = match (true) {
+                // 非git安装，不显示更新按钮
+                empty($current_commit) => false,
+                // 获取远端失败，显示更新按钮
+                empty($remote_commit) => true,
+                // 版本哈希不相同，显示更新按钮
+                default => false === str_starts_with($remote_commit, $current_commit)
+            };
         } catch (Throwable $e) {
-            $show_update = false;
+            $show_update = true;
         }
 
         $vars = [
             'app_filemtime' => current_git_filemtime(),
-            'app_commit_id' => current_git_commit(),
+            'app_commit_id' => $current_commit,
             'iyuu_version' => iyuu_version(),
             'count_value1' => Reseed::count(),
             'count_value2' => Client::count(),
