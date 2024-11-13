@@ -2,7 +2,8 @@ FROM alpine:3.20
 
 LABEL Maintainer="david <367013672@qq.com>"
 LABEL Description="IYUUPlus-dev container with PHP ^8.3 + nginx + mysql based on Alpine ^3.20 Linux."
-LABEL Version="8.3"
+LABEL Version="8.3.1"
+LABEL Release="20241113"
 
 # 使用国内镜像（mirrors.aliyun.com ｜ mirrors.ustc.edu.cn）
 ARG package_url=mirrors.ustc.edu.cn
