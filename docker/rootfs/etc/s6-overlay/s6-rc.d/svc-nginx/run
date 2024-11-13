@@ -1,4 +1,11 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
+NGINX_PORT="${NGINX_PORT:-8780}"
+if [[ -n "$NGINX_PORT" ]] && expr "$NGINX_PORT" + 0 >/dev/null; then
+    sed -e "s|listen [0-9]\+ default_server;|listen $NGINX_PORT default_server;|" \
+        -e "s|listen \[::\]:[0-9]\+ default_server;|listen \[::\]:$NGINX_PORT default_server;|" \
+        -i /etc/nginx/nginx.conf
+fi
+
 exec s6-setuidgid root nginx
