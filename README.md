@@ -1,7 +1,7 @@
 # IYUUPlus开发版
 
 <a href="https://detail.tmall.com/item.htm?abbucket=11&id=741062271304&ns=1&pisk=fecrKO_4KWmbrddMVzPFgTSyi1E8a7x6aXZQ-203PuquV243TmmByugH2DlUm2HWyJtR8ahqb61W2L3hTJNHfhO614Q89Wx_Z5pOMgUTz9AQqu4DVZVeGhO614389Wx6fbNHTe4T56VhETjDuyahZgm3Eo00DyUhqyfkuEzLmy43q_XcoPa1tgmhZrV0JPa3-_2umq4TmkV3xBMxsXI4R8Yt0PgvPBKQEl0uqa_SnMe5e4ZVntlV14ZM1o5htjzolR2Ef_AamYMnNSckmEPma0lu309h_Scr4b2qjn1qvglG9rDzkXHPx92lOrr6uEzCjAJ6JAKyZ9BLeUU4fU2lp9eudrr6uEWdp8U3ulTuE&priceTId=2147809817312259586813028eeb4d&skuId=5142579960406&spm=a21n57.1.item.2.78d4523cCdWixR&utparam=%7B%22aplus_abtest%22%3A%228982ad9ec8ae93e47701ff74b0f8cebb%22%7D&xxc=taobaoSearch" target="_blank">
-<img src="https://v.hilx.cn/app/admin/upload/img/20241112/6732ba5ed286.jpg" width="1080">
+<img src="https://v.hilx.cn/app/admin/upload/img/20241129/67494d7d4b9f.jpg" width="1080">
 </a>
 
 # 介绍
