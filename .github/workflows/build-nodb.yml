@@ -1,4 +1,4 @@
-name: 构建IYUUPlus-nodb镜像
+name: 构建IYUUPlus-dev-nodb镜像
 on:
   workflow_dispatch:
   schedule:
