@@ -99,6 +99,7 @@ class LayuiTemplate
             'raingfh',
             'njtupt',
             'ptzone',
+            'hdclone',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class], $default),
             'yemapt' => Decorator::make([OptionsRssUrl::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
