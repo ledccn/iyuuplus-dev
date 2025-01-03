@@ -19,7 +19,7 @@ class Request extends \Webman\Http\Request
      * @return self
      * @throws BusinessException
      */
-    public function isGet(): self
+    public function canOnlyGet(): self
     {
         if ($this->method() !== 'GET') {
             throw new BusinessException('仅允许GET请求');
@@ -32,7 +32,7 @@ class Request extends \Webman\Http\Request
      * @return $this
      * @throws BusinessException
      */
-    public function isPost(): self
+    public function canOnlyPost(): self
     {
         if ($this->method() !== 'POST') {
             throw new BusinessException('仅允许POST请求');

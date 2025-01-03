@@ -20,7 +20,7 @@ trait HasClear
      */
     public function clear(Request $request): Response
     {
-        $request->isPost();
+        $request->canOnlyPost();
         $rs = Util::db()->statement('TRUNCATE TABLE ' . $this->model->getTable());
         return $rs ? $this->success() : $this->fail('清理失败');
     }

@@ -77,7 +77,7 @@ class ReseedController extends Crud
      */
     public function refresh(Request $request): Response
     {
-        $request->isPost();
+        $request->canOnlyPost();
         if (!Reseed::getStatusEqFail()->count()) {
             return $this->fail('没有失败的种子，无需刷新');
         }

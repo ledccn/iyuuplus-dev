@@ -9,6 +9,5 @@ return [
         base_path() . '/support/Cache.php',
         base_path() . '/support/Model.php',
         base_path() . '/support/Request.php',
-        base_path() . '/support/Response.php',
     ]
 ];
