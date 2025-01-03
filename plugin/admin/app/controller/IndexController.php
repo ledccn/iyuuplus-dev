@@ -126,6 +126,7 @@ class IndexController
             'os' => PHP_OS,
             'day7_detail' => array_reverse($day7_detail),
             'show_update' => $show_update,
+            'is_docker_env' => isDockerEnvironment(),
         ];
         return $request->input('json') ? json($vars) : raw_view('index/dashboard', $vars);
     }
