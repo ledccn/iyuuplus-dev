@@ -138,4 +138,15 @@ class Client extends AbstractCurl
         $curl = $this->getCurl()->post(self::BASE_API . '/reseed/users/bind', $data);
         return $this->parseResponse($curl, '绑定合作站点失败');
     }
+
+    /**
+     * 获取用户信息
+     * @return array
+     * @throws InternalServerErrorException
+     */
+    public function profile(): array
+    {
+        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/users/profile');
+        return $this->parseResponse($curl, '获取用户信息失败');
+    }
 }

@@ -5,6 +5,7 @@
  */
 
 use Iyuu\BittorrentClient\ClientDownloader;
+use Iyuu\ReseedClient\Client;
 use Iyuu\SiteManager\SiteManager;
 use Ledc\Container\App;
 use plugin\admin\app\model\Base;
@@ -48,6 +49,15 @@ function clear_instance_cache(): void
     } catch (Error|Exception|Throwable $throwable) {
         Log::error('清理缓存驱动实例异常：' . $throwable->getMessage());
     }
+}
+
+/**
+ * 创建IYUU辅种客户端实例
+ * @return Client
+ */
+function iyuu_reseed_client(): Client
+{
+    return new Client(iyuu_token());
 }
 
 /**

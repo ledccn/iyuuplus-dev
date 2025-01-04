@@ -2,6 +2,7 @@
 
 namespace plugin\admin\app\controller;
 
+use Exception;
 use plugin\admin\app\common\Auth;
 use plugin\admin\app\common\Util;
 use plugin\admin\app\model\Admin;
@@ -47,9 +48,21 @@ class AccountController extends Crud
      * @return Response
      * @throws Throwable
      */
-    public function index()
+    public function index(): Response
     {
-        return raw_view('account/index');
+        $profile = null;
+        $is_ever_level = $is_vip = false;
+        $overdue_time = '';
+
+        try {
+            $profile = iyuu_reseed_client()->profile()['data'];
+            $is_ever_level = (bool)$profile['is_ever_level'];
+            $is_vip = $is_ever_level || time() < $profile['overdue_time'];
+            $overdue_time = time() < $profile['overdue_time'] ? date('Y-m-d H:i:s', $profile['overdue_time']) : '';
+        } catch (Throwable $throwable) {
+        }
+
+        return raw_view('account/index', compact('profile', 'is_vip', 'is_ever_level', 'overdue_time'));
     }
 
     /**
@@ -107,6 +120,7 @@ class AccountController extends Crud
      * 获取登录信息
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function info(Request $request): Response
     {
@@ -124,6 +138,7 @@ class AccountController extends Crud
             'isSuperAdmin' => Auth::isSuperAdmin(),
             'token' => $request->sessionId(),
         ];
+
         return $this->json(0, 'ok', $info);
     }
 
@@ -215,7 +230,7 @@ class AccountController extends Crud
             mkdir($limit_log_path, 0777, true);
         }
         $limit_file = $limit_log_path . '/' . md5($username) . '.limit';
-        $time = date('YmdH') . ceil(date('i')/5);
+        $time = date('YmdH') . ceil(date('i') / 5);
         $limit_info = [];
         if (is_file($limit_file)) {
             $json_str = file_get_contents($limit_file);
