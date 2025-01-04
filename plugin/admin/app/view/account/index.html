@@ -48,9 +48,8 @@
                                 <label class="layui-form-label">SVIP会员</label>
                                 <div class="layui-input-block">
                                     <?php if ($is_vip) { ?>
-                                    <button type="button" class="layui-btn layui-btn-radius layui-btn-fluid width-400">
-                                        <?=$is_ever_level ? '尊贵的永久SVIP会员' : '尊贵的SVIP会员 有效期至' . $overdue_time ?>
-                                    </button >
+                                    <img src="/statics/img/svip.png" width="100">
+                                    <?=$is_ever_level ? '' : '有效期至' . $overdue_time ?>
                                     <?php } else { ?>
                                     <a class="layui-btn layui-btn-primary layui-btn-sm" href="https://iyuu.cn/app/user/member" target="_blank">成为SVIP会员</a>
                                     <?php } ?>
