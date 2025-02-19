@@ -26,6 +26,11 @@ class DriverHdcity extends BaseDriver implements Processor, ProcessorXml
     use HasRss;
 
     /**
+     * 种子下载链接的正则表达式cuhash
+     */
+    public const REGEX = '#download\?id=\d+(?:&|&amp;)cuhash=([A-Za-z0-9]+)#i';
+
+    /**
      * 站点名称
      */
     public const SITE_NAME = 'hdcity';
