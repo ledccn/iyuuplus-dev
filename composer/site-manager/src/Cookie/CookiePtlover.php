@@ -25,6 +25,6 @@ class CookiePtlover extends BaseCookie
      */
     protected function isDebugCurrent(): bool
     {
-        return true;
+        return false;
     }
 }
