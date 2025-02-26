@@ -50,7 +50,7 @@ class Installation
                 Menu::import(include __DIR__ . '/menu.php');
             }
         } catch (\Error|\Exception|\Throwable $throwable) {
-            echo $throwable->getMessage() . PHP_EOL;
+            echo '【中间件安装必须插件】异常：'. $throwable->getMessage() . PHP_EOL;
         } finally {
             Util::resumeFileMonitor();
         }
