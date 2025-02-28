@@ -141,6 +141,9 @@ class SpiderCommand extends Command
             // 必须在循环外面获取当前页码（不记录page文件）
             $page = $baseCookie->currentPage();
             if (empty($params->uri)) {
+                if ($route) {
+                    $route = RouteEnum::{$route};
+                }
                 // uri为空时，确认结束页码的值
                 $endPage = $params->end ?: $baseCookie->crontabEndPage();
             } else {
