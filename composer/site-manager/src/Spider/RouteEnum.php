@@ -58,6 +58,10 @@ enum RouteEnum: string
      * 种子列表页【朱雀】
      */
     case N12 = 'api/torrent/advancedSearch?page={page}&size=20';
+    /**
+     * 种子列表页：海棠曲艺园 有声读物
+     */
+    case N13 = 'live.php?incldead=0&page={page}';
 
     /**
      * 检查枚举名字
