@@ -59,7 +59,6 @@ class LayuiTemplate
             'hdvideo',
             'hdzone',
             'hhanclub',
-            'hitpt',
             'hudbt',
             'joyhd',
             'kamept',
@@ -101,7 +100,9 @@ class LayuiTemplate
             'ptzone',
             'hdclone',
             'kufei',
-            'hspt',
+            'tmpt',
+            'sanpro',
+            'htpt',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class], $default),
             'yemapt' => Decorator::make([OptionsRssUrl::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
@@ -114,7 +115,7 @@ class LayuiTemplate
             'audiences' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsRsskey::class, OptionsLimit::class], $default),
             'hdhome', 'pthome', 'hddolby' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'zhuque' => Decorator::make([Zhuque::class, OptionsUid::class, OptionsLimit::class], $default),
-            'ourbits', 'chdbits', 'piggo', 'zmpt', 'agsvpt', 'hdfans', 'ptcafe', 'ptlgs', 'ptlover' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
+            'ourbits', 'chdbits', 'piggo', 'zmpt', 'agsvpt', 'hdfans', 'ptcafe', 'ptlgs', 'ptlover', 'hitpt', 'hspt', 'xingyunge', 'cspt' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
             default => $default,
         };
     }
