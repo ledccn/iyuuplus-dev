@@ -5,7 +5,9 @@ namespace app\admin\services;
 use app\model\Site;
 use Iyuu\ReseedClient\Client;
 use plugin\admin\app\common\Util;
+use plugin\admin\app\model\Option;
 use plugin\cron\app\support\PushNotify;
+use think\helper\Str;
 use Throwable;
 
 /**
@@ -13,6 +15,27 @@ use Throwable;
  */
 class SitesServices
 {
+    /**
+     * IYUU 浏览器助手配置键名
+     */
+    public const string SYSTEM_IYUU_HELPER = 'system_iyuu_helper';
+
+    /**
+     * 获取IYUU 浏览器助手密钥
+     * @return Option
+     */
+    public static function getIyuuHelper(): string
+    {
+        $option = Option::where('name', '=', self::SYSTEM_IYUU_HELPER)->first();
+        if (!$option) {
+            $option = new Option();
+            $option->name = self::SYSTEM_IYUU_HELPER;
+            $option->value = Str::random(40, 0);
+            $option->save();
+        }
+        return $option->value;
+    }
+
     /**
      * 同步站点表
      * @return void

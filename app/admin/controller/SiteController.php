@@ -13,6 +13,7 @@ use app\model\Site;
 use Iyuu\ReseedClient\Client;
 use Ledc\Container\App;
 use plugin\admin\app\controller\Crud;
+use support\Cache;
 use support\exception\BusinessException;
 use support\Log;
 use support\Request;
@@ -27,6 +28,12 @@ class SiteController extends Crud
     use HasDelete, HasValidate, HasBackupRecovery;
 
     /**
+     * 无需登录及鉴权的方法
+     * @var array
+     */
+    protected $noNeedLogin = ['helper'];
+
+    /**
      * @var Site
      */
     protected $model = null;
@@ -38,6 +45,38 @@ class SiteController extends Crud
     public function __construct()
     {
         $this->model = new Site;
+    }
+
+    /**
+     * IYUU浏览器助手
+     * @param Request $request
+     * @return Response
+     */
+    public function helper(Request $request): Response
+    {
+        try {
+            $system_iyuu_helper = SitesServices::getIyuuHelper();
+            $iyuu_helper = $request->header('x-iyuu-helper', '');
+            if (empty($iyuu_helper) || Cache::has(SitesServices::SYSTEM_IYUU_HELPER)) {
+                return $this->fail('非法请求');
+            }
+
+            if (!hash_equals($system_iyuu_helper, $iyuu_helper)) {
+                Cache::set(SitesServices::SYSTEM_IYUU_HELPER, time(), 600);
+                return $this->fail('非法请求验证失败！');
+            }
+
+            Cache::delete(SitesServices::SYSTEM_IYUU_HELPER);
+            if ($request->method() === 'POST') {
+                // 更新
+                return $this->success();
+            } else {
+                // 获取
+                return $this->select($request);
+            }
+        } catch (Throwable $e) {
+            return $this->fail($e->getMessage());
+        }
     }
 
     /**
