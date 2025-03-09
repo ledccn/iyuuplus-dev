@@ -72,7 +72,9 @@ class SiteController extends Crud
                 return $this->success();
             } else {
                 // 获取
-                return $this->select($request);
+                [$where, $format, $limit, $field, $order] = $this->selectInput($request);
+                $query = $this->doSelect($where, $field, $order);
+                return $this->doFormat($query, $format, 1000);
             }
         } catch (Throwable $e) {
             return $this->fail($e->getMessage());
