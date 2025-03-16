@@ -62,7 +62,7 @@ class SiteController extends Crud
             }
 
             if (!hash_equals($system_iyuu_helper, $iyuu_helper)) {
-                Cache::set(SitesServices::SYSTEM_IYUU_HELPER, time(), 600);
+                Cache::set(SitesServices::SYSTEM_IYUU_HELPER, time(), 3600);
                 return $this->fail('非法请求验证失败！');
             }
 
@@ -73,6 +73,7 @@ class SiteController extends Crud
             } else {
                 // 获取
                 [$where, $format, $limit, $field, $order] = $this->selectInput($request);
+                $where['disabled'] = 0;
                 $query = $this->doSelect($where, $field, $order);
                 return $this->doFormat($query, $format, 1000);
             }
