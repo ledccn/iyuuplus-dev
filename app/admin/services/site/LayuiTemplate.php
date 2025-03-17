@@ -109,7 +109,7 @@ class LayuiTemplate
             'redleaves', 'pter', 'pt', 'hdsky', 'ssd', 'lemonhd' => Decorator::make([NexusPHP::class, OptionsLimit::class], $default),
             'hdpost', 'monikadesign' => Decorator::make([NexusPHP::class, OptionsRsskey::class, OptionsRssUrl::class], $default),
             'dicmusic',
-            'greatposterwall' => Decorator::make([DicMusic::class, OptionsLimit::class], $default),
+            'greatposterwall' => Decorator::make([DicMusic::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'm-team' => Decorator::make([NexusPHP::class, OptionsXApiKey::class, OptionsLimit::class, OptionsUrlJoin::class, OptionsRssUrl::class], $default),
             'hdcity' => Decorator::make([NexusPHP::class, OptionsCuHashByHdcity::class], $default),
             'audiences' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsRsskey::class, OptionsLimit::class], $default),

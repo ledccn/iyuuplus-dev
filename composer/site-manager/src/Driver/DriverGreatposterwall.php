@@ -31,6 +31,7 @@ class DriverGreatposterwall extends BaseDriver implements Processor, ProcessorXm
             '{}' => $torrent->torrent_id,
             '{id}' => $torrent->torrent_id,
             '{authkey}' => $this->getConfig()->getOptions('authkey'),
+            // passkey === torrent_pass
             '{torrent_pass}' => $this->getConfig()->getOptions('torrent_pass'),
         ];
     }
