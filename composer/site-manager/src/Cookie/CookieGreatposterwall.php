@@ -31,7 +31,7 @@ class CookieGreatposterwall extends BaseCookie
      */
     protected function isDebugCurrent(): bool
     {
-        return true;
+        return false;
     }
 
     /**
