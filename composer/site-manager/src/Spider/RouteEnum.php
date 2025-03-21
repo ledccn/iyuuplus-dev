@@ -62,6 +62,10 @@ enum RouteEnum: string
      * 种子列表页：海棠曲艺园 有声读物
      */
     case N13 = 'live.php?incldead=0&page={page}';
+    /**
+     * 种子列表页：海豹种子列表页
+     */
+    case N14 = 'torrents.php?page={page}';
 
     /**
      * 检查枚举名字
