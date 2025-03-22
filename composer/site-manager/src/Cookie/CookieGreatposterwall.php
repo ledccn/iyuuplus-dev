@@ -54,8 +54,12 @@ class CookieGreatposterwall extends BaseCookie
 
         $items = [];
         foreach ($links as $v) {
-            $arr = [];
             $url = str_replace('&amp;', '&', $v);
+            if (str_contains($url, 'usetoken=1')) {
+                continue;
+            }
+
+            $arr = [];
             $matches = [];
             if (preg_match('/torrents.php\?action=download&id=(?<id>\d+)&authkey=([a-zA-Z0-9]+)&torrent_pass=([a-zA-Z0-9]+)/i', $url, $matches)) {
                 $details = $matches[0];
