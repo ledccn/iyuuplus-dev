@@ -159,6 +159,18 @@ class CookieGreatposterwall extends BaseCookie
         return 1;
     }
 
+
+    /**
+     * 爬虫的周期性定时任务，结束页码
+     * - 设置uri时，仅爬取uri指定的单页
+     * - 不设置uri时，才能使用当前方法
+     * @return int
+     */
+    public function crontabEndPage(): int
+    {
+        return 3;
+    }
+
     /**
      * 获取默认的列表路由规则
      * @return string
