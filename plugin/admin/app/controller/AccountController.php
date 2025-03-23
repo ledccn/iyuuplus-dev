@@ -2,6 +2,7 @@
 
 namespace plugin\admin\app\controller;
 
+use app\admin\services\SitesServices;
 use Exception;
 use plugin\admin\app\common\Auth;
 use plugin\admin\app\common\Util;
@@ -53,6 +54,7 @@ class AccountController extends Crud
         $profile = null;
         $is_ever_level = $is_vip = false;
         $overdue_time = '';
+        $system_iyuu_helper = SitesServices::getIyuuHelper();
 
         try {
             $profile = iyuu_reseed_client()->profile()['data'];
@@ -62,7 +64,7 @@ class AccountController extends Crud
         } catch (Throwable $throwable) {
         }
 
-        return raw_view('account/index', compact('profile', 'is_vip', 'is_ever_level', 'overdue_time'));
+        return raw_view('account/index', compact('profile', 'is_vip', 'is_ever_level', 'overdue_time', 'system_iyuu_helper'));
     }
 
     /**

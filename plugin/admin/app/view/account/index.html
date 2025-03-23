@@ -1,225 +1,255 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-    <head>
-        <meta charset="UTF-8">
-        <title></title>
-        <link rel="stylesheet" href="/app/admin/component/layui/css/layui.css?v=2.8.12" />
-        <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
-        <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
-    </head>
-    <body class="pear-container">
-        <style>
-            .layui-input-block input {
-                width: 300px;
-            }
-            .width-400 {
-                width: 330px;
-            }
-        </style>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/app/admin/component/layui/css/layui.css?v=2.8.12"/>
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css"/>
+</head>
+<body class="pear-container">
+<style>
+    .layui-input-block input {
+        width: 300px;
+    }
 
-        <div class="layui-card">
-            <div class="layui-card-body">
+    .width-400 {
+        width: 330px;
+    }
+</style>
 
-                <div class="layui-tab layui-tab-brief">
-                <ul class="layui-tab-title">
-                    <li class="layui-this">基本信息</li>
-                    <li>安全设置</li>
-                </ul>
-                <div class="layui-tab-content">
+<div class="layui-card">
+    <div class="layui-card-body">
 
-                    <!-- 基本信息 -->
-                    <div class="layui-tab-item layui-show">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基本信息</li>
+                <li>安全设置</li>
+            </ul>
+            <div class="layui-tab-content">
 
-                        <form class="layui-form" lay-filter="baseInfo">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">昵称</label>
-                                <div class="layui-input-block">
-                                    <input type="text" name="nickname" required  lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">邮箱</label>
-                                <div class="layui-input-block">
-                                    <input type="text" name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
-                                </div>
-                            </div>
-                            <?php if ($profile) { ?>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">SVIP会员</label>
-                                <div class="layui-input-block">
-                                    <?php if ($is_vip) { ?>
-                                    <?php if ($is_ever_level) { ?>
-                                    <img src="/statics/img/svip.png" width="110">
-                                    <?php } else { ?>
-                                    <img src="/statics/img/vip.png" width="100">有效期至<?=$overdue_time?>
-                                    <?php } ?>
-                                    <?php } else { ?>
-                                    <a class="layui-btn layui-btn-primary layui-btn-sm" href="https://iyuu.cn/app/user/member" target="_blank">成为SVIP会员</a>
-                                    <?php } ?>
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">Token状态</label>
-                                <div class="layui-input-block">
-                                    <?php if ($profile['state']) { ?>
-                                    <button type="button" class="layui-btn layui-btn-radius">已激活</button>
-                                    <?php } else { ?>
-                                    <a class="layui-btn layui-btn-warm layui-btn-sm" href="https://doc.iyuu.cn/guide/site#%E7%BB%91%E5%AE%9A%E5%90%88%E4%BD%9C%E7%AB%99%E7%82%B9" target="_blank">激活方法</a>
-                                    <?php } ?>
-                                </div>
-                            </div>
-                            <?php } ?>
-                            <div class="layui-form-item">
-                                <div class="layui-input-block">
-                                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit="" lay-filter="saveBaseInfo">
-                                        提交
-                                    </button>
-                                    <button type="reset" class="pear-btn pear-btn-md">
-                                        重置
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                <!-- 基本信息 -->
+                <div class="layui-tab-item layui-show">
 
-                    </div>
-
-                    <div class="layui-tab-item">
-
-                        <form class="layui-form" action="">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">原始密码</label>
-                                <div class="layui-input-block">
-                                    <input type="password" name="old_password" required  lay-verify="required" placeholder="请输入原始密码" autocomplete="off" class="layui-input">
+                    <form class="layui-form" lay-filter="baseInfo">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">昵称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="nickname" required lay-verify="required"
+                                       placeholder="请输入昵称" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮箱</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="email" placeholder="请输入邮箱" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">IYUU助手</label>
+                            <div class="layui-input-block">
+                                <input id="system_iyuu_helper" type="password" placeholder="请输入邮箱"
+                                       autocomplete="off"
+                                       lay-affix="eye"
+                                       class="layui-input"
+                                       value="/admin/site/helper?x-iyuu-helper=<?=$system_iyuu_helper?>"
+                                       readonly style="width: 100%">
+                                <div class="layui-form-mid layui-text-em">IYUU浏览器助手的连接地址与密钥，请勿泄露给别人。
                                 </div>
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">新密码</label>
-                                <div class="layui-input-block">
-                                    <input type="password" name="password" required  lay-verify="password" placeholder="请输入新密码" autocomplete="off" class="layui-input">
-                                </div>
+                        </div>
+                        <?php if ($profile) { ?>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">SVIP会员</label>
+                            <div class="layui-input-block">
+                                <?php if ($is_vip) { ?>
+                                <?php if ($is_ever_level) { ?>
+                                <img src="/statics/img/svip.png" width="110">
+                                <?php } else { ?>
+                                <img src="/statics/img/vip.png" width="100">有效期至<?=$overdue_time?>
+                                <?php } ?>
+                                <?php } else { ?>
+                                <a class="layui-btn layui-bg-purple layui-btn-radius layui-btn-sm"
+                                   href="https://iyuu.cn/app/user/member"
+                                   target="_blank">成为SVIP会员</a>
+                                <?php } ?>
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">确认新密码</label>
-                                <div class="layui-input-block">
-                                    <input type="password" name="password_confirm" required  lay-verify="required" placeholder="请再次输入新密码" autocomplete="off" class="layui-input">
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">Token状态</label>
+                            <div class="layui-input-block">
+                                <?php if ($profile['state']) { ?>
+                                <button type="button" class="layui-btn layui-btn-radius">已激活</button>
+                                <?php } else { ?>
+                                <a class="layui-btn layui-btn-warm layui-btn-sm"
+                                   href="https://doc.iyuu.cn/guide/site#%E7%BB%91%E5%AE%9A%E5%90%88%E4%BD%9C%E7%AB%99%E7%82%B9"
+                                   target="_blank">激活方法</a>
+                                <?php } ?>
                             </div>
-                            <div class="layui-form-item">
-                                <div class="layui-input-block">
-                                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit="" lay-filter="savePassword">
-                                        提交
-                                    </button>
-                                    <button type="reset" class="pear-btn pear-btn-md">
-                                        重置
-                                    </button>
-                                </div>
+                        </div>
+                        <?php } ?>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                                        lay-filter="saveBaseInfo">
+                                    提交
+                                </button>
+                                <button type="reset" class="pear-btn pear-btn-md">
+                                    重置
+                                </button>
                             </div>
-                        </form>
-
-                    </div>
+                        </div>
+                    </form>
 
                 </div>
-            </div>
+
+                <div class="layui-tab-item">
+
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">原始密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="old_password" required lay-verify="required"
+                                       placeholder="请输入原始密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">新密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="password" required lay-verify="password"
+                                       placeholder="请输入新密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">确认新密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="password_confirm" required lay-verify="required"
+                                       placeholder="请再次输入新密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                                        lay-filter="savePassword">
+                                    提交
+                                </button>
+                                <button type="reset" class="pear-btn pear-btn-md">
+                                    重置
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
 
             </div>
         </div>
 
+    </div>
+</div>
 
-        <script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
-        <script src="/app/admin/component/pear/pear.js"></script>
-        <script src="/app/admin/admin/js/permission.js"></script>
-        <script>
 
-            layui.use(["form", "popup"], function () {
-                let form = layui.form;
-                let $ = layui.$;
-                function checkPasswordStrength(password) {
-                    const minLength = 8;
-                    const hasLowercase = /[a-z]/;
-                    const hasUppercase = /[A-Z]/;
-                    const hasNumber = /\d/;
-                    const hasSpecialChar = /[\W_]/;
+<script src="/app/admin/component/layui/layui.js?v=2.8.12"></script>
+<script src="/app/admin/component/pear/pear.js"></script>
+<script src="/app/admin/admin/js/permission.js"></script>
+<script>
 
-                    // 检查密码长度
-                    if (password.length < minLength) {
-                        return '长度须大于等于8位';
-                    }
+    layui.use(["form", "popup"], function () {
+        let form = layui.form;
+        let $ = layui.$;
 
-                    // 检查是否包含小写字母
-                    if (!hasLowercase.test(password)) {
-                        return '密码须包含小写字母';
-                    }
+        const system_iyuu_helper = document.getElementById('system_iyuu_helper');
+        system_iyuu_helper.value = location.origin + '/admin/site/helper?x-iyuu-helper=<?=$system_iyuu_helper?>';
 
-                    // 检查是否包含大写字母
-                    if (!hasUppercase.test(password)) {
-                        return '密码须包含大写字母';
-                    }
+        function checkPasswordStrength(password) {
+            const minLength = 8;
+            const hasLowercase = /[a-z]/;
+            const hasUppercase = /[A-Z]/;
+            const hasNumber = /\d/;
+            const hasSpecialChar = /[\W_]/;
 
-                    // 检查是否包含数字
-                    if (!hasNumber.test(password)) {
-                        return '密码须包含数字';
-                    }
+            // 检查密码长度
+            if (password.length < minLength) {
+                return '长度须大于等于8位';
+            }
 
-                    // 检查是否包含特殊字符
-                    if (!hasSpecialChar.test(password)) {
-                        return '密码须包含特殊字符';
-                    }
+            // 检查是否包含小写字母
+            if (!hasLowercase.test(password)) {
+                return '密码须包含小写字母';
+            }
 
-                    // 密码符合强度要求
-                    //return true;
+            // 检查是否包含大写字母
+            if (!hasUppercase.test(password)) {
+                return '密码须包含大写字母';
+            }
+
+            // 检查是否包含数字
+            if (!hasNumber.test(password)) {
+                return '密码须包含数字';
+            }
+
+            // 检查是否包含特殊字符
+            if (!hasSpecialChar.test(password)) {
+                return '密码须包含特殊字符';
+            }
+
+            // 密码符合强度要求
+            //return true;
+        }
+
+        layui.form.verify({
+            password: function (value, item) {
+                if (/(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/.test(value)) {
+                    return '密码不能包含连续的数字序列';
                 }
-                layui.form.verify({
-                    password: function (value, item) {
-                        if (/(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/.test(value)) {
-                            return '密码不能包含连续的数字序列';
-                        }
-                        return checkPasswordStrength(value);
+                return checkPasswordStrength(value);
+            }
+        });
+
+        $.ajax({
+            url: "/app/admin/account/info",
+            dataType: "json",
+            success: function (res) {
+                form.val("baseInfo", res.data);
+            }
+        });
+
+        form.on("submit(saveBaseInfo)", function (data) {
+            $.ajax({
+                url: "/app/admin/account/update",
+                dataType: "json",
+                type: "POST",
+                data: data.field,
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
                     }
-                });
-
-                $.ajax({
-                    url: "/app/admin/account/info",
-                    dataType: "json",
-                    success: function (res) {
-                        form.val("baseInfo", res.data);
-                    }
-                });
-
-                form.on("submit(saveBaseInfo)", function(data){
-                    $.ajax({
-                        url: "/app/admin/account/update",
-                        dataType: "json",
-                        type: "POST",
-                        data: data.field,
-                        success: function (res) {
-                            if (res.code) {
-                                return layui.popup.failure(res.msg);
-                            }
-                            return layui.popup.success("操作成功");
-                        }
-                    });
-                    return false;
-                });
-
-                form.on("submit(savePassword)", function(data){
-                    $.ajax({
-                        url: "/app/admin/account/password",
-                        dataType: "json",
-                        type: "POST",
-                        data: data.field,
-                        success: function (res) {
-                            if (res.code) {
-                                return layui.popup.failure(res.msg);
-                            }
-                            return layui.popup.success("操作成功");
-                        }
-                    });
-                    return false;
-                });
-
+                    return layui.popup.success("操作成功");
+                }
             });
+            return false;
+        });
 
-        </script>
+        form.on("submit(savePassword)", function (data) {
+            $.ajax({
+                url: "/app/admin/account/password",
+                dataType: "json",
+                type: "POST",
+                data: data.field,
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return layui.popup.success("操作成功");
+                }
+            });
+            return false;
+        });
 
-    </body>
+    });
+
+</script>
+
+</body>
 </html>

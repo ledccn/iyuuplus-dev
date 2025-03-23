@@ -57,17 +57,42 @@ class SiteController extends Crud
         try {
             $system_iyuu_helper = SitesServices::getIyuuHelper();
             $iyuu_helper = $request->header('x-iyuu-helper', '');
-            if (empty($iyuu_helper) || Cache::has(SitesServices::SYSTEM_IYUU_HELPER)) {
+            if (empty($iyuu_helper)) {
                 return $this->fail('非法请求');
+            }
+
+            if (Cache::has(SitesServices::SYSTEM_IYUU_HELPER)) {
+                return $this->fail('非法请求，请稍后再试或者删除缓存！');
             }
 
             if (!hash_equals($system_iyuu_helper, $iyuu_helper)) {
                 Cache::set(SitesServices::SYSTEM_IYUU_HELPER, time(), 3600);
-                return $this->fail('非法请求验证失败！');
+                return $this->fail('请求验证失败！');
             }
 
             Cache::delete(SitesServices::SYSTEM_IYUU_HELPER);
             if ($request->method() === 'POST') {
+                $data = $request->postMore(['sid', 'site', 'cookie', 'options']);
+                $rule = [
+                    'sid|站点ID' => 'require|number',
+                    'site|站点' => 'require',
+                    'cookie|Cookie' => 'require',
+                    'options|选项' => 'require|array',
+                ];
+                self::validate($data, $rule);
+                $siteModel = Site::uniqueSite($data['site']);
+                if (!$siteModel) {
+                    return $this->fail('站点不存在');
+                }
+                $siteModel->cookie = $data['cookie'];
+                if ($data['options']) {
+                    $options = $siteModel->options;
+                    foreach ($data['options'] as $key => $value) {
+                        $options[$key] = $value;
+                    }
+                    $siteModel->options = $options;
+                }
+                $siteModel->save();
                 // 更新
                 return $this->success();
             } else {
