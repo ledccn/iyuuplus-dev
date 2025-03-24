@@ -56,17 +56,27 @@ class SiteController extends Crud
     {
         try {
             $system_iyuu_helper = SitesServices::getIyuuHelper();
-            $iyuu_helper = $request->header('x-iyuu-helper', '');
-            if (empty($iyuu_helper)) {
+            $timestamp = $request->header('iyuu-helper-timestamp');
+            $signature = $request->header('iyuu-helper-signature');
+            $algo = $request->header('iyuu-helper-algo', 'md5');
+            if (empty($timestamp) || empty($signature) || !ctype_digit($timestamp)) {
                 return $this->fail('非法请求');
+            }
+            if (empty($algo) || !in_array($algo, ['md5', 'sha1'])) {
+                return $this->fail('非法请求，请使用md5或sha1算法！');
             }
 
             if (Cache::has(SitesServices::SYSTEM_IYUU_HELPER)) {
                 return $this->fail('非法请求，请稍后再试或者删除缓存！');
             }
 
-            if (!hash_equals($system_iyuu_helper, $iyuu_helper)) {
-                Cache::set(SitesServices::SYSTEM_IYUU_HELPER, time(), 3600);
+            if (600 < abs(time() - $timestamp)) {
+                return $this->fail('时间戳无效，误差超过600秒！');
+            }
+
+            $known_string = hash_hmac($algo, $timestamp, $system_iyuu_helper);
+            if (!hash_equals($known_string, $signature)) {
+                Cache::set(SitesServices::SYSTEM_IYUU_HELPER, time(), 300);
                 return $this->fail('请求验证失败！');
             }
 

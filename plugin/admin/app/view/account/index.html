@@ -53,7 +53,7 @@
                                        autocomplete="off"
                                        lay-affix="eye"
                                        class="layui-input"
-                                       value="/admin/site/helper?x-iyuu-helper=<?=$system_iyuu_helper?>"
+                                       value="/admin/site/helper?iyuu_helper_secret=<?=$system_iyuu_helper?>"
                                        readonly style="width: 100%">
                                 <div class="layui-form-mid layui-text-em">IYUU浏览器助手的连接地址与密钥，请勿泄露给别人。
                                 </div>
@@ -160,7 +160,7 @@
         let $ = layui.$;
 
         const system_iyuu_helper = document.getElementById('system_iyuu_helper');
-        system_iyuu_helper.value = location.origin + '/admin/site/helper?x-iyuu-helper=<?=$system_iyuu_helper?>';
+        system_iyuu_helper.value = location.origin + '/admin/site/helper?iyuu_helper_secret=<?=$system_iyuu_helper?>';
 
         function checkPasswordStrength(password) {
             const minLength = 8;
