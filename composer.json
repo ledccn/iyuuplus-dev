@@ -69,7 +69,8 @@
     "robmorgan/phinx": "^0.16.0",
     "ledc/notify": "^8.0",
     "spomky-labs/otphp": "^11.3",
-    "ext-bcmath": "*"
+    "ext-bcmath": "*",
+    "ext-openssl": "*"
   },
   "autoload": {
     "psr-4": {

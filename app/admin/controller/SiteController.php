@@ -10,8 +10,11 @@ use app\common\HasBackupRecovery;
 use app\common\HasDelete;
 use app\common\HasValidate;
 use app\model\Site;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Iyuu\ReseedClient\Client;
 use Ledc\Container\App;
+use Ledc\Crypt\AesCrypt;
 use plugin\admin\app\controller\Crud;
 use support\Cache;
 use support\exception\BusinessException;
@@ -94,11 +97,17 @@ class SiteController extends Crud
                 if (!$siteModel) {
                     return $this->fail('站点不存在');
                 }
-                $siteModel->cookie = $data['cookie'];
+                // 仅更新真值
+                if ('' !== $data['cookie'] && null !== $data['cookie']) {
+                    $siteModel->cookie = $data['cookie'];
+                }
                 if ($data['options']) {
                     $options = $siteModel->options;
                     foreach ($data['options'] as $key => $value) {
-                        $options[$key] = $value;
+                        // 仅更新真值
+                        if ('' !== $value && null !== $value) {
+                            $options[$key] = $value;
+                        }
                     }
                     $siteModel->options = $options;
                 }
@@ -109,8 +118,14 @@ class SiteController extends Crud
                 // 获取
                 [$where, $format, $limit, $field, $order] = $this->selectInput($request);
                 $where['disabled'] = 0;
+                /** @var EloquentBuilder|QueryBuilder $query */
                 $query = $this->doSelect($where, $field, $order);
-                return $this->doFormat($query, $format, 1000);
+                $paginator = $query->paginate(1000);
+                $total = $paginator->total();
+                $items = $paginator->items();
+                //$aesCrypt = new AesCrypt($system_iyuu_helper, 'aes-128-cbc', 'md5', 86400);
+                //$data = $aesCrypt->encrypt(compact('items'));
+                return json(['code' => 0, 'msg' => 'ok', 'count' => $total, 'data' => $items]);
             }
         } catch (Throwable $e) {
             return $this->fail($e->getMessage());

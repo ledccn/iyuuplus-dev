@@ -3,7 +3,7 @@
         'name' => 'iyuuplus/iyuuplus',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '2ba55ca8d94d6c7504eebe7747bdb0dce3b1dea6',
+        'reference' => '9a27b252d7f1f423245701ee6b437d697e85a618',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -265,7 +265,7 @@
         'iyuuplus/iyuuplus' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '2ba55ca8d94d6c7504eebe7747bdb0dce3b1dea6',
+            'reference' => '9a27b252d7f1f423245701ee6b437d697e85a618',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
