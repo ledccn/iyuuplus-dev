@@ -89,7 +89,7 @@ class SiteController extends Crud
                 $rule = [
                     'sid|站点ID' => 'require|number',
                     'site|站点' => 'require',
-                    'cookie|Cookie' => 'require',
+                    'cookie|Cookie' => 'max:65535',
                     'options|选项' => 'require|array',
                 ];
                 self::validate($data, $rule);
