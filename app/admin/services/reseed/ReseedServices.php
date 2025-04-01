@@ -18,6 +18,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\Clients;
 use Iyuu\ReseedClient\InternalServerErrorException;
+use plugin\admin\app\model\Option;
 use plugin\cron\app\model\Crontab;
 use support\Log;
 use Throwable;
@@ -250,7 +251,8 @@ class ReseedServices
     {
         $br = PHP_EOL;
         $text = 'IYUU自动辅种-统计报表';
-        $desp = '### 版本号：' . iyuu_version() . $br;
+        $desp = '### 网站名称：' . get_system_title() . $br;
+        $desp .= '### 版本号：' . iyuu_version() . $br;
         $desp .= '**支持站点：' . $this->notifyData->supportSitesCount . '**  [当前支持自动辅种的站点数量]' . $br;
         $desp .= '**辅种站点：' . $this->notifyData->userSitesCount . '**  [勾选辅种的站点数量]' . $br;
         $desp .= '**总做种：' . $this->notifyData->hashCount . '**  [客户端做种的hash总数]' . $br;

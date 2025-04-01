@@ -9,11 +9,27 @@ use Iyuu\ReseedClient\Client;
 use Iyuu\SiteManager\SiteManager;
 use Ledc\Container\App;
 use plugin\admin\app\model\Base;
+use plugin\admin\app\model\Option;
 use support\Log;
 use support\Model;
 
 if (is_file(runtime_path('Bencode.php'))) {
     require_once runtime_path('Bencode.php');
+}
+
+/**
+ * 获取系统标题
+ * @return string
+ */
+function get_system_title(): string
+{
+    $config = Option::where('name', 'system_config')->value('value');
+    $title = 'IYUUPlus';
+    if (!empty($config)) {
+        $config = json_decode($config, true);
+        $title = $config['logo']['title'] ?? $title;
+    }
+    return $title;
 }
 
 /**
