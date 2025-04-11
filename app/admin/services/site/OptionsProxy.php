@@ -28,7 +28,7 @@ class OptionsProxy extends Decorator
             <div class="layui-form-item">
                 <label class="layui-form-label">代理验证</label>
                 <div class="layui-input-block">
-                    <input type="number" name="options[curl_opt_proxy_auth]" value="" placeholder="代理验证字符串，如：username:password" class="layui-input">
+                    <input type="text" name="options[curl_opt_proxy_auth]" value="" placeholder="代理验证字符串，如：username:password" class="layui-input">
                 </div>
             </div>
 
