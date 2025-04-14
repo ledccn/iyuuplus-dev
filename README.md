@@ -1,7 +1,7 @@
 # IYUUPlus开发版
 
 <a href="https://ccc-x.jd.com/dsp/tp?log=u_xfD6DLKZVBfrl4LYo4b22sVtFoumrWYGH2MM1CbFjfhNoLfvP5Z-uNCP0aAGGeU0lxjWpPNaQ2MQTuy3udFg&v=708&to=https%3A%2F%2Fitem.jd.com%2F100071457020.html&adt=3&mobiletype=__MOBILETYPE__&didmd5=__IMEI__&idfamd5=__IDFAMD5__&idfa=__IDFA__&aid=__ANDROIDID__&oaid=__OAID__&oaidmd5=__OAID1__&caid=__CAID__&mreqid=__REQUEST_ID__" target="_blank">
-<img src="https://v.hilx.cn/app/admin/upload/img/20250409/67f607d1a776.jpg" width="1080">
+<img src="https://v.hilx.cn/app/admin/upload/img/20250414/67fc989b1029.jpg" width="1080">
 </a>
 
 # 介绍
