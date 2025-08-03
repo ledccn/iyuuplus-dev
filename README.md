@@ -1,7 +1,7 @@
 # IYUUPlus开发版
 
-<a href="https://item.jd.com/100224682454.html" target="_blank">
-<img src="https://v.hilx.cn/app/admin/upload/img/20250602/683d56717e57.jpg" width="1080">
+<a href="https://item.jd.com/100058776147.html" target="_blank">
+<img src="https://v.hilx.cn/app/admin/upload/img/20250803/688f18c964e7.jpg" width="1080">
 </a>
 
 # 介绍
