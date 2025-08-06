@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'boot.php';
+
 /**
  * 应用配置
  */
