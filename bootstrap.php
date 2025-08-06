@@ -1,7 +1,4 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/support/bootstrap.php';
-
 // 限定CLI
 if (!in_array(PHP_SAPI, ['cli', 'mirco'], true)) {
     exit("You must run the CLI environment\n");
@@ -12,6 +9,9 @@ date_default_timezone_set('Asia/Shanghai');
 // 严格开发模式
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/support/bootstrap.php';
 
 // 永不超时
 ini_set('max_execution_time', 0);

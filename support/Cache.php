@@ -29,19 +29,15 @@ class Cache
      */
     public static array $instances = [];
 
-    /***
+    /**
+     * 缓存实例
      * @param string|null $name
      * @return Psr16Cache
      */
     public static function store(?string $name = null): Psr16Cache
     {
         $name = $name ?: config('cache.default', 'file');
-        $stores = !config('cache') ? [
-            'file' => [
-                'driver' => 'file',
-                'path' => runtime_path('cache')
-            ],
-        ] : config('cache.stores', []);
+        $stores = config('cache.stores', []);
         if (!isset($stores[$name])) {
             throw new InvalidArgumentException("cache.store.$name is not defined. Please check config/cache.php");
         }
@@ -68,11 +64,20 @@ class Cache
     }
 
     /**
-     * @param $name
-     * @param $arguments
+     * 获取Redis驱动的缓存
+     * @return Psr16Cache
+     */
+    public static function redis(): Psr16Cache
+    {
+        return static::store('redis');
+    }
+
+    /**
+     * @param string $name
+     * @param array $arguments
      * @return mixed
      */
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments)
     {
         return static::store()->{$name}(... $arguments);
     }
