@@ -95,7 +95,7 @@ class Route
      * @param mixed $middleware
      * @return $this|array
      */
-    public function middleware($middleware = null)
+    public function middleware(mixed $middleware = null)
     {
         if ($middleware === null) {
             return $this->middlewares;
@@ -143,10 +143,10 @@ class Route
     /**
      * Param.
      * @param string|null $name
-     * @param $default
-     * @return array|mixed|null
+     * @param mixed $default
+     * @return mixed
      */
-    public function param(string $name = null, $default = null)
+    public function param(?string $name = null, mixed $default = null)
     {
         if ($name === null) {
             return $this->params;

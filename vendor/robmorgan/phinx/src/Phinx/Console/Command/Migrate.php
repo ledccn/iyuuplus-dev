@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Phinx\Console\Command;
 
 use DateTime;
-use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,18 +38,20 @@ class Migrate extends AbstractCommand
         $this->setDescription('Migrate the database')
             ->addOption('--target', '-t', InputOption::VALUE_REQUIRED, 'The version number to migrate to')
             ->addOption('--date', '-d', InputOption::VALUE_REQUIRED, 'The date to migrate to')
+            ->addOption('--count', '-k', InputOption::VALUE_REQUIRED, 'The number of migrations to run')
             ->addOption('--dry-run', '-x', InputOption::VALUE_NONE, 'Dump query to standard output instead of executing it')
             ->addOption('--fake', null, InputOption::VALUE_NONE, "Mark any migrations selected as run, but don't actually execute them")
             ->setHelp(
                 <<<EOT
-The <info>migrate</info> command runs all available migrations, optionally up to a specific version
+The <info>migrate</info> command runs all available migrations, optionally up to a specific version, date, or count.
 
 <info>phinx migrate -e development</info>
 <info>phinx migrate -e development -t 20110103081132</info>
 <info>phinx migrate -e development -d 20110103</info>
+<info>phinx migrate -e development -k 5</info>
 <info>phinx migrate -e development -v</info>
 
-EOT
+EOT,
             );
     }
 
@@ -69,6 +70,7 @@ EOT
         /** @var string|null $environment */
         $environment = $input->getOption('environment');
         $date = $input->getOption('date');
+        $count = $input->getOption('count') !== null ? (int)$input->getOption('count') : null;
         $fake = (bool)$input->getOption('fake');
 
         $success = $this->writeInformationOutput($environment, $output);
@@ -86,18 +88,16 @@ EOT
         try {
             // run the migrations
             $start = microtime(true);
-            if ($date !== null) {
+            if ($count !== null) {
+                $this->getManager()->migrateToCount($environment, $count, $fake);
+            } elseif ($date !== null) {
                 $this->getManager()->migrateToDateTime($environment, new DateTime($date), $fake);
             } else {
                 $this->getManager()->migrate($environment, $version, $fake);
             }
             $end = microtime(true);
-        } catch (Exception $e) {
-            $output->writeln('<error>' . $e->__toString() . '</error>');
-
-            return self::CODE_ERROR;
         } catch (Throwable $e) {
-            $output->writeln('<error>' . $e->__toString() . '</error>');
+            self::getErrorOutput($output)->writeln('<error>' . $e->__toString() . '</error>');
 
             return self::CODE_ERROR;
         }

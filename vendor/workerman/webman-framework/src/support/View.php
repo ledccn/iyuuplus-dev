@@ -25,7 +25,7 @@ class View
      * @param mixed $value
      * @return void
      */
-    public static function assign($name, $value = null)
+    public static function assign($name, mixed $value = null)
     {
         $request = request();
         $plugin = $request->plugin ?? '';

@@ -188,6 +188,7 @@ class RoleController extends Crud
      * 获取角色权限
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function rules(Request $request): Response
     {

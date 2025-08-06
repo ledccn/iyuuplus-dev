@@ -14,7 +14,7 @@ use Dotenv\Dotenv;
 ini_set('display_errors', 'on');
 error_reporting(E_ALL);
 
-
+// 为了兼容老版保留的类，后续可以删除
 class Application
 {
     public static function run()

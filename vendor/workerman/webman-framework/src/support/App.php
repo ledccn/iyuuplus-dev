@@ -4,6 +4,7 @@ namespace support;
 
 use Dotenv\Dotenv;
 use RuntimeException;
+use Throwable;
 use Webman\Config;
 use Webman\Util;
 use Workerman\Connection\TcpConnection;
@@ -20,6 +21,7 @@ class App
     /**
      * Run.
      * @return void
+     * @throws Throwable
      */
     public static function run()
     {
@@ -34,14 +36,24 @@ class App
             }
         }
 
+        if (!$appConfigFile = config_path('app.php')) {
+            throw new RuntimeException('Config file not found: app.php');
+        }
+        $appConfig = require $appConfigFile;
+        if ($timezone = $appConfig['default_timezone'] ?? '') {
+            date_default_timezone_set($timezone);
+        }
+
         static::loadAllConfig(['route', 'container']);
+
+        if (DIRECTORY_SEPARATOR === '\\' && empty(config('server.listen'))) {
+            echo "Please run 'php windows.php' on windows system." . PHP_EOL;
+            exit;
+        }
 
         $errorReporting = config('app.error_reporting');
         if (isset($errorReporting)) {
             error_reporting($errorReporting);
-        }
-        if ($timezone = config('app.default_timezone')) {
-            date_default_timezone_set($timezone);
         }
 
         $runtimeLogsPath = runtime_path() . DIRECTORY_SEPARATOR . 'logs';
@@ -83,7 +95,7 @@ class App
             Worker::$stopTimeout = $config['stop_timeout'] ?? 2;
         }
 
-        if ($config['listen']) {
+        if ($config['listen'] ?? false) {
             $worker = new Worker($config['listen'], $config['context']);
             $propertyMap = [
                 'name',
@@ -111,6 +123,9 @@ class App
         // Windows does not support custom processes.
         if (DIRECTORY_SEPARATOR === '/') {
             foreach (config('process', []) as $processName => $config) {
+                if (isset($config['enable']) && $config['enable'] == false) {
+                    continue;
+                }
                 worker_start($processName, $config);
             }
             foreach (config('plugin', []) as $firm => $projects) {
@@ -119,10 +134,16 @@ class App
                         continue;
                     }
                     foreach ($project['process'] ?? [] as $processName => $config) {
+                        if (isset($config['enable']) && $config['enable'] == false) {
+                            continue;
+                        }
                         worker_start("plugin.$firm.$name.$processName", $config);
                     }
                 }
                 foreach ($projects['process'] ?? [] as $processName => $config) {
+                    if (isset($config['enable']) && $config['enable'] == false) {
+                        continue;
+                    }
                     worker_start("plugin.$firm.$processName", $config);
                 }
             }

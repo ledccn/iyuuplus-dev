@@ -1,6 +1,6 @@
 # [Phinx](https://phinx.org): Simple PHP Database Migrations
 
-[![Build Status](https://github.com/cakephp/phinx/workflows/CI/badge.svg?branch=0.x&event=push)](https://github.com/cakephp/phinx/actions?query=workflow%3A%22CI%22+branch%3A0.x+event%3Apush)
+[![CI](https://github.com/cakephp/phinx/actions/workflows/ci.yml/badge.svg?branch=0.x&event=push)](https://github.com/cakephp/phinx/actions/workflows/ci.yml)
 [![Code Coverage](https://codecov.io/gh/cakephp/phinx/branch/master/graph/badge.svg)](https://codecov.io/gh/cakephp/phinx)
 ![Packagist Version](https://img.shields.io/packagist/v/robmorgan/phinx)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)](https://php.net/)
@@ -10,7 +10,7 @@
 
 Phinx makes it ridiculously easy to manage the database migrations for your PHP app. In less than 5 minutes, you can install Phinx and create your first database migration. Phinx is just about migrations without all the bloat of a database ORM system or framework.
 
-**Check out [book.cakephp.org/phinx](https://book.cakephp.org/phinx) ([EN](https://book.cakephp.org/phinx), [ZH](https://tsy12321.gitbooks.io/phinx-doc/)) for the comprehensive documentation.**
+**Check out [book.cakephp.org/phinx](https://book.cakephp.org/phinx) for the comprehensive documentation.**
 
 ![phinxterm](https://cloud.githubusercontent.com/assets/178939/3887559/e6b5e524-21f2-11e4-8256-0ba6040725fc.gif)
 

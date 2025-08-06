@@ -892,6 +892,7 @@ Option     Description
 update     set an action to be triggered when the row is updated
 delete     set an action to be triggered when the row is deleted
 constraint set a name to be used by foreign key constraint
+deferrable set the foreign key constraint to be deferrable *(only applies to PostgreSQL)*
 ========== ===========
 
 You can pass one or more of these options to any column with the optional
@@ -1192,7 +1193,7 @@ where its value is the name of the column to position it after.
             }
         }
 
-This would create the new column ``city`` and position it after the ``email`` column. The 
+This would create the new column ``city`` and position it after the ``email`` column. The
 ``\Phinx\Db\Adapter\MysqlAdapter::FIRST`` constant can be used to specify that the new column should be
 created as the first column in that table.
 
@@ -1578,6 +1579,31 @@ We can add named foreign keys using the ``constraint`` parameter. This feature i
             }
         }
 
+For PostgreSQL, you can set if the foreign key is deferrable. The available options are ``DEFERRED`` (corresponds to
+``DEFERRABLE INITIALLY DEFERRED``), ``IMMEDIATE`` (corresponds to ``DEFERRABLE INITIALLY IMMEDIATE``), and ``NOT_DEFERRED``
+(corresponds to ``NOT DEFERRABLE``).
+
+.. code-block:: php
+
+        <?php
+
+        use Phinx\Migration\AbstractMigration;
+
+        class MyNewMigration extends AbstractMigration
+        {
+            public function change()
+            {
+                $table = $this->table('phones');
+                $table->addColumn('name', 'string')
+                      ->addColumn('manufacturer_name', 'string')
+                      ->addForeignKey('manufacturer_name',
+                                      'manufacturers ',
+                                      'name',
+                                      ['deferrable' => 'DEFERRED'])
+                      ->save();
+            }
+        }
+
 We can also easily check if a foreign key exists:
 
 .. code-block:: php
@@ -1674,6 +1700,34 @@ be easy to work with as it resembles very closely plain SQL. Accesing the query 
                 var_dump($statement->fetchAll());
             }
         }
+
+Alternatively, the following methods are available to enhance code organization and improve clarity:
+
+* ``getSelectBuilder()``: Returns a SelectQuery object for building SELECT statements.
+* ``getInsertBuilder()``: Returns an InsertQuery object for building INSERT statements.
+* ``getUpdateBuilder()``: Returns an UpdateQuery object for building UPDATE statements.
+* ``getDeleteBuilder()``: Returns a DeleteQuery object for building DELETE statements.
+
+
+.. code-block:: php
+
+        <?php
+
+        use Phinx\Migration\AbstractMigration;
+
+        class MyNewMigration extends AbstractMigration
+        {
+            /**
+             * Migrate Up.
+             */
+            public function up()
+            {
+                $builder = $this->getSelectBuilder();
+                $statement = $builder->select('*')->from('users')->execute();
+                var_dump($statement->fetchAll());
+            }
+        }
+
 
 Selecting Fields
 ~~~~~~~~~~~~~~~~

@@ -46,7 +46,7 @@ class Api
         }
         $query_params = array();
         $s_url = $this->_settings['base_path'] . '/events';
-        $data_encoded = json_encode($data);
+        $data_encoded = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $post_params = array();
         $post_params['name'] = $event;
         $post_params['data'] = $data_encoded;

@@ -31,6 +31,7 @@ class NodeBuilder implements NodeParentInterface
             'float' => FloatNodeDefinition::class,
             'array' => ArrayNodeDefinition::class,
             'enum' => EnumNodeDefinition::class,
+            'string' => StringNodeDefinition::class,
         ];
     }
 
@@ -100,6 +101,14 @@ class NodeBuilder implements NodeParentInterface
     public function variableNode(string $name): VariableNodeDefinition
     {
         return $this->node($name, 'variable');
+    }
+
+    /**
+     * Creates a child string node.
+     */
+    public function stringNode(string $name): StringNodeDefinition
+    {
+        return $this->node($name, 'string');
     }
 
     /**
@@ -185,13 +194,13 @@ class NodeBuilder implements NodeParentInterface
         $type = strtolower($type);
 
         if (!isset($this->nodeMapping[$type])) {
-            throw new \RuntimeException(sprintf('The node type "%s" is not registered.', $type));
+            throw new \RuntimeException(\sprintf('The node type "%s" is not registered.', $type));
         }
 
         $class = $this->nodeMapping[$type];
 
         if (!class_exists($class)) {
-            throw new \RuntimeException(sprintf('The node class "%s" does not exist.', $class));
+            throw new \RuntimeException(\sprintf('The node class "%s" does not exist.', $class));
         }
 
         return $class;

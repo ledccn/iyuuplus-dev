@@ -5,8 +5,22 @@ use Webman\Config;
 use Webman\Console\Command;
 use Webman\Console\Util;
 use support\Container;
-
+if (!Phar::running()) {
+    chdir(__DIR__);
+}
 require_once __DIR__ . '/vendor/autoload.php';
+
+if (!$appConfigFile = config_path('app.php')) {
+    throw new RuntimeException('Config file not found: app.php');
+}
+$appConfig = require $appConfigFile;
+if ($timezone = $appConfig['default_timezone'] ?? '') {
+    date_default_timezone_set($timezone);
+}
+
+if ($errorReporting = $appConfig['error_reporting'] ?? '') {
+    error_reporting($errorReporting);
+}
 
 if (!in_array($argv[1] ?? '', ['start', 'restart', 'stop', 'status', 'reload', 'connections'])) {
     require_once __DIR__ . '/support/bootstrap.php';

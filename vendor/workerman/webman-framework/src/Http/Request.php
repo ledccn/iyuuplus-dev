@@ -57,27 +57,27 @@ class Request extends \Workerman\Protocols\Http\Request
     public $route = null;
 
     /**
+     * @var bool
+     */
+    protected $isDirty = false;
+
+    /**
      * @return mixed|null
      */
     public function all()
     {
-        return $this->post() + $this->get();
+        return $this->get() + $this->post();
     }
 
     /**
      * Input
      * @param string $name
      * @param mixed $default
-     * @return mixed|null
+     * @return mixed
      */
-    public function input(string $name, $default = null)
+    public function input(string $name, mixed $default = null)
     {
-        $post = $this->post();
-        if (isset($post[$name])) {
-            return $post[$name];
-        }
-        $get = $this->get();
-        return $get[$name] ?? $default;
+        return $this->get($name, $this->post($name, $default));
     }
 
     /**
@@ -114,9 +114,9 @@ class Request extends \Workerman\Protocols\Http\Request
     /**
      * File
      * @param string|null $name
-     * @return null|UploadFile[]|UploadFile
+     * @return UploadFile|UploadFile[]|null
      */
-    public function file($name = null)
+    public function file(?string $name = null): array|null|UploadFile
     {
         $files = parent::file($name);
         if (null === $files) {
@@ -175,7 +175,7 @@ class Request extends \Workerman\Protocols\Http\Request
      */
     public function getRemoteIp(): string
     {
-        return $this->connection->getRemoteIp();
+        return $this->connection ? $this->connection->getRemoteIp() : '0.0.0.0';
     }
 
     /**
@@ -184,7 +184,7 @@ class Request extends \Workerman\Protocols\Http\Request
      */
     public function getRemotePort(): int
     {
-        return $this->connection->getRemotePort();
+        return $this->connection ? $this->connection->getRemotePort() : 0;
     }
 
     /**
@@ -193,7 +193,7 @@ class Request extends \Workerman\Protocols\Http\Request
      */
     public function getLocalIp(): string
     {
-        return $this->connection->getLocalIp();
+        return $this->connection ? $this->connection->getLocalIp() : '0.0.0.0';
     }
 
     /**
@@ -202,7 +202,7 @@ class Request extends \Workerman\Protocols\Http\Request
      */
     public function getLocalPort(): int
     {
-        return $this->connection->getLocalPort();
+        return $this->connection ? $this->connection->getLocalPort() : 0;
     }
 
     /**
@@ -254,6 +254,26 @@ class Request extends \Workerman\Protocols\Http\Request
     {
         return $this->header('X-Requested-With') === 'XMLHttpRequest';
     }
+
+    /**
+     * IsGet
+     * @return bool
+     */
+    public function isGet(): bool
+    {
+        return $this->method() === 'GET';
+    }
+
+
+    /**
+     * IsPost
+     * @return bool
+     */
+    public function isPost(): bool
+    {
+        return $this->method() === 'POST';
+    }
+
 
     /**
      * IsPjax
@@ -321,4 +341,67 @@ class Request extends \Workerman\Protocols\Http\Request
         return false;
     }
 
+    /**
+     * Set get.
+     * @param array|string $input
+     * @param mixed $value
+     * @return Request
+     */
+    public function setGet(array|string $input, mixed $value = null): Request
+    {
+        $this->isDirty = true;
+        $input = is_array($input) ? $input : array_merge($this->get(), [$input => $value]);
+        if (isset($this->data)) {
+            $this->data['get'] = $input;
+        } else {
+            $this->_data['get'] = $input;
+        }
+        return $this;
+    }
+
+    /**
+     * Set post.
+     * @param array|string $input
+     * @param mixed $value
+     * @return Request
+     */
+    public function setPost(array|string $input, mixed $value = null): Request
+    {
+        $this->isDirty = true;
+        $input = is_array($input) ? $input : array_merge($this->post(), [$input => $value]);
+        if (isset($this->data)) {
+            $this->data['post'] = $input;
+        } else {
+            $this->_data['post'] = $input;
+        }
+        return $this;
+    }
+
+    /**
+     * Set header.
+     * @param array|string $input
+     * @param mixed $value
+     * @return Request
+     */
+    public function setHeader(array|string $input, mixed $value = null): Request
+    {
+        $this->isDirty = true;
+        $input = is_array($input) ? $input : array_merge($this->header(), [$input => $value]);
+        if (isset($this->data)) {
+            $this->data['headers'] = $input;
+        } else {
+            $this->_data['headers'] = $input;
+        }
+        return $this;
+    }
+
+    /**
+     * @return void
+     */
+    public function __clone()
+    {
+        if ($this->isDirty) {
+            unset($this->data['get'], $this->data['post'], $this->data['headers']);
+        }
+    }
 }

@@ -10,7 +10,7 @@ use Wrench\Protocol\Protocol;
  */
 class InvalidOriginException extends HandshakeException
 {
-    public function __construct(string $message = '', int $code = null, Throwable $previous = null)
+    public function __construct(string $message = '', ?int $code = null, ?Throwable $previous = null)
     {
         parent::__construct($message, $code ?? Protocol::HTTP_FORBIDDEN, $previous);
     }

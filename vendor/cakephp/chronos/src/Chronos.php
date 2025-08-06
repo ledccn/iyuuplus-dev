@@ -56,8 +56,8 @@ use Stringable;
  * @property-read bool $utc checks if the timezone is UTC, true if UTC, false otherwise
  * @property-read string $timezoneName
  * @property-read string $tzName
- * @psalm-immutable
- * @psalm-consistent-constructor
+ * @immutable
+ * @phpstan-consistent-constructor
  */
 class Chronos extends DateTimeImmutable implements Stringable
 {
@@ -236,7 +236,7 @@ class Chronos extends DateTimeImmutable implements Stringable
      */
     public function __construct(
         ChronosDate|ChronosTime|DateTimeInterface|string|int|null $time = 'now',
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ) {
         if (is_int($time) || (is_string($time) && ctype_digit($time))) {
             parent::__construct("@{$time}");
@@ -468,7 +468,7 @@ class Chronos extends DateTimeImmutable implements Stringable
      */
     public static function parse(
         ChronosDate|ChronosTime|DateTimeInterface|string|int|null $time = 'now',
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ): static {
         return new static($time, $timezone);
     }
@@ -568,7 +568,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         ?int $minute = null,
         ?int $second = null,
         ?int $microsecond = null,
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ): static {
         $now = static::now();
         $year = $year ?? (int)$now->format('Y');
@@ -589,7 +589,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         $instance = static::createFromFormat(
             'Y-m-d H:i:s.u',
             sprintf('%s-%s-%s %s:%02s:%02s.%06s', 0, $month, $day, $hour, $minute, $second, $microsecond),
-            $timezone
+            $timezone,
         );
 
         return $instance->addYears($year);
@@ -608,7 +608,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         ?int $year = null,
         ?int $month = null,
         ?int $day = null,
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ): static {
         return static::create($year, $month, $day, null, null, null, null, $timezone);
     }
@@ -628,7 +628,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         ?int $minute = null,
         ?int $second = null,
         ?int $microsecond = null,
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ): static {
         return static::create(null, null, null, $hour, $minute, $second, $microsecond, $timezone);
     }
@@ -645,7 +645,7 @@ class Chronos extends DateTimeImmutable implements Stringable
     public static function createFromFormat(
         string $format,
         string $time,
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ): static {
         if ($timezone !== null) {
             $dateTime = parent::createFromFormat($format, $time, $timezone ? static::safeCreateDateTimeZone($timezone) : null);
@@ -725,7 +725,7 @@ class Chronos extends DateTimeImmutable implements Stringable
             $values['hour'],
             $values['minute'],
             $values['second'],
-            $values['microsecond']
+            $values['microsecond'],
         );
 
         assert(!is_int($values['timezone']), 'Timezone cannot be of type `int`');
@@ -736,13 +736,15 @@ class Chronos extends DateTimeImmutable implements Stringable
     /**
      * Create an instance from a timestamp
      *
-     * @param int $timestamp The timestamp to create an instance from.
+     * @param float|int $timestamp The timestamp to create an instance from.
      * @param \DateTimeZone|string|null $timezone The DateTimeZone object or timezone name the new instance should use.
      * @return static
      */
-    public static function createFromTimestamp(int $timestamp, DateTimeZone|string|null $timezone = null): static
+    public static function createFromTimestamp(float|int $timestamp, DateTimeZone|string|null $timezone = null): static
     {
-        return static::now($timezone)->setTimestamp($timestamp);
+        $instance = PHP_VERSION_ID >= 80400 ? parent::createFromTimestamp($timestamp) : new static('@' . $timestamp);
+
+        return $timezone ? $instance->setTimezone($timezone) : $instance;
     }
 
     /**
@@ -750,7 +752,6 @@ class Chronos extends DateTimeImmutable implements Stringable
      *
      * @param \DateTimeZone|string|null $object The value to convert.
      * @return \DateTimeZone
-     * @throws \InvalidArgumentException
      */
     protected static function safeCreateDateTimeZone(DateTimeZone|string|null $object): DateTimeZone
     {
@@ -879,7 +880,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         int $day,
         int $hour,
         int $minute,
-        int $second = 0
+        int $second = 0,
     ): static {
         return $this->setDate($year, $month, $day)->setTime($hour, $minute, $second);
     }
@@ -936,7 +937,7 @@ class Chronos extends DateTimeImmutable implements Stringable
     {
         $new = parent::modify($modifier);
         if ($new === false) {
-            throw new InvalidArgumentException('Unable to modify date using: ' . $modifier);
+            throw new InvalidArgumentException(sprintf('Unable to modify date using `%s`', $modifier));
         }
 
         return $new;
@@ -2316,7 +2317,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         callable $callback,
         ?DateTimeInterface $other = null,
         bool $absolute = true,
-        int $options = 0
+        int $options = 0,
     ): int {
         $start = $this;
         $end = $other ?? static::now($this->tz);
@@ -2429,7 +2430,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         callable $callback,
         ?DateTimeInterface $other = null,
         bool $absolute = true,
-        int $options = 0
+        int $options = 0,
     ): int {
         return $this->diffFiltered(new DateInterval('P1D'), $callback, $other, $absolute, $options);
     }
@@ -2447,7 +2448,7 @@ class Chronos extends DateTimeImmutable implements Stringable
         callable $callback,
         ?DateTimeInterface $other = null,
         bool $absolute = true,
-        int $options = 0
+        int $options = 0,
     ): int {
         return $this->diffFiltered(new DateInterval('PT1H'), $callback, $other, $absolute, $options);
     }
@@ -2665,7 +2666,7 @@ class Chronos extends DateTimeImmutable implements Stringable
                 return $this->getTimezone()->getName();
 
             default:
-                throw new InvalidArgumentException(sprintf("Unknown getter '%s'", $name));
+                throw new InvalidArgumentException(sprintf('Unknown getter `%s`', $name));
         }
     }
 
@@ -2673,7 +2674,7 @@ class Chronos extends DateTimeImmutable implements Stringable
      * Check if an attribute exists on the object
      *
      * @param string $name The property name to check.
-     * @return bool Whether or not the property exists.
+     * @return bool Whether the property exists.
      */
     public function __isset(string $name): bool
     {

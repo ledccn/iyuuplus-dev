@@ -1,10 +1,7 @@
 <?php
 namespace plugin\admin\api;
 
-use plugin\admin\app\model\Role;
 use plugin\admin\app\model\Rule;
-use support\exception\BusinessException;
-use function admin;
 
 /**
  * 对外提供的菜单接口

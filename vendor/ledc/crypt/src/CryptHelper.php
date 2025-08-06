@@ -59,8 +59,8 @@ class CryptHelper
     public static function aesDecrypt(string $payload, string $key, string $cipher): array
     {
         $_payload = json_decode(base64_decode($payload), true);
-        $iv = base64_decode($_payload['iv']);
-        $ciphertext_raw = base64_decode($_payload['data']);
+        $iv = base64_decode((string)$_payload['iv']);
+        $ciphertext_raw = base64_decode((string)$_payload['data']);
         $timestamp = $_payload['timestamp'];
         $expires_in = $_payload['expires_in'];
 

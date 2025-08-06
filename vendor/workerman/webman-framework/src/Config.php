@@ -53,7 +53,7 @@ class Config
      * @param string|null $key
      * @return void
      */
-    public static function load(string $configPath, array $excludeFile = [], string $key = null)
+    public static function load(string $configPath, array $excludeFile = [], ?string $key = null)
     {
         static::$configPath = $configPath;
         if (!$configPath) {
@@ -219,9 +219,9 @@ class Config
      * Get.
      * @param string|null $key
      * @param mixed $default
-     * @return array|mixed|void|null
+     * @return mixed
      */
-    public static function get(string $key = null, $default = null)
+    public static function get(?string $key = null, mixed $default = null)
     {
         if ($key === null) {
             return static::$config;
@@ -249,9 +249,9 @@ class Config
      * Read.
      * @param string $key
      * @param mixed $default
-     * @return array|mixed|null
+     * @return mixed
      */
-    protected static function read(string $key, $default = null)
+    protected static function read(string $key, mixed $default = null)
     {
         $path = static::$configPath;
         if ($path === '') {

@@ -61,12 +61,13 @@ final class HttpPost
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip,deflate');
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::$timeout);
         curl_setopt($ch, CURLOPT_TIMEOUT, self::$timeout);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);    // 自动跳转，跟随请求Location
         curl_setopt($ch, CURLOPT_MAXREDIRS, 2);         // 递归次数
         $response = curl_exec($ch);
-        $responseCode = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $responseCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         $curlErrorCode = curl_errno($ch);
         $curlErrorMessage = curl_error($ch);
         curl_close($ch);

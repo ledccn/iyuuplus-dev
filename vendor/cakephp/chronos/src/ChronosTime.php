@@ -21,7 +21,7 @@ use InvalidArgumentException;
 use Stringable;
 
 /**
- * @psalm-consistent-constructor
+ * @phpstan-consistent-constructor
  */
 class ChronosTime implements Stringable
 {
@@ -79,7 +79,7 @@ class ChronosTime implements Stringable
      */
     public function __construct(
         ChronosTime|DateTimeInterface|string|null $time = null,
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ) {
         if ($time === null) {
             $time = Chronos::getTestNow() ?? Chronos::now();
@@ -107,7 +107,7 @@ class ChronosTime implements Stringable
      */
     public static function parse(
         ChronosTime|DateTimeInterface|string|null $time = null,
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ): static {
         return new static($time, $timezone);
     }
@@ -120,7 +120,7 @@ class ChronosTime implements Stringable
     {
         if (!preg_match('/^\s*(\d{1,2})[:.](\d{1,2})(?|[:.](\d{1,2})[.](\d+)|[:.](\d{1,2}))?\s*$/', $time, $matches)) {
             throw new InvalidArgumentException(
-                'Time string is not in expected format: "HH[:.]mm" or "HH[:.]mm[:.]ss.u".'
+                sprintf('Time string `%s` is not in expected format `HH[:.]mm` or `HH[:.]mm[:.]ss.u`.', $time),
             );
         }
 
@@ -130,7 +130,7 @@ class ChronosTime implements Stringable
         $microseconds = (int)substr($matches[4] ?? '', 0, 6);
 
         if ($hours > 24 || $minutes > 59 || $seconds > 59 || $microseconds > 999_999) {
-            throw new InvalidArgumentException('Time string contains invalid values.');
+            throw new InvalidArgumentException(sprintf('Time string `%s` contains invalid values.', $time));
         }
 
         $ticks = $hours * self::TICKS_PER_HOUR;
@@ -474,7 +474,7 @@ class ChronosTime implements Stringable
             $this->getHours(),
             $this->getMinutes(),
             $this->getSeconds(),
-            $this->getMicroseconds()
+            $this->getMicroseconds(),
         );
     }
 

@@ -17,8 +17,14 @@ namespace Webman;
 use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteCollector;
 use FilesystemIterator;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionException;
+use Webman\Annotation\DisableDefaultRoute;
 use Webman\Route\Route as RouteObject;
 use function array_diff;
 use function array_values;
@@ -57,7 +63,12 @@ class Route
     protected static $collector = null;
 
     /**
-     * @var null|callable
+     * @var RouteObject[]
+     */
+    protected static $fallbackRoutes = [];
+
+    /**
+     * @var array
      */
     protected static $fallback = [];
 
@@ -74,7 +85,17 @@ class Route
     /**
      * @var bool
      */
-    protected static $disableDefaultRoute = [];
+    protected static $disabledDefaultRoutes = [];
+
+    /**
+     * @var array
+     */
+    protected static $disabledDefaultRouteControllers = [];
+
+    /**
+     * @var array
+     */
+    protected static $disabledDefaultRouteActions = [];
 
     /**
      * @var RouteObject[]
@@ -187,7 +208,7 @@ class Route
      * @param callable|null $callback
      * @return static
      */
-    public static function group($path, callable $callback = null): Route
+    public static function group($path, ?callable $callback = null): Route
     {
         if ($callback === null) {
             $callback = $path;
@@ -257,20 +278,88 @@ class Route
     /**
      * disableDefaultRoute.
      *
-     * @return void
+     * @param array|string $plugin
+     * @param string|null $app
+     * @return bool
      */
-    public static function disableDefaultRoute($plugin = '')
+    public static function disableDefaultRoute(array|string $plugin = '', ?string $app = null): bool
     {
-        static::$disableDefaultRoute[$plugin] = true;
+        // Is [controller action]
+        if (is_array($plugin)) {
+            $controllerAction = $plugin;
+            if (!isset($controllerAction[0]) || !is_string($controllerAction[0]) ||
+                !isset($controllerAction[1]) || !is_string($controllerAction[1])) {
+                return false;
+            }
+            $controller = $controllerAction[0];
+            $action = $controllerAction[1];
+            static::$disabledDefaultRouteActions[$controller][$action] = $action;
+            return true;
+        }
+        // Is plugin
+        if (is_string($plugin) && (preg_match('/^[a-zA-Z0-9_]+$/', $plugin) || $plugin === '')) {
+            if (!isset(static::$disabledDefaultRoutes[$plugin])) {
+                static::$disabledDefaultRoutes[$plugin] = [];
+            }
+            $app = $app ?? '*';
+            static::$disabledDefaultRoutes[$plugin][$app] = $app;
+            return true;
+        }
+        // Is controller
+        if (is_string($plugin) && class_exists($plugin)) {
+            static::$disabledDefaultRouteControllers[$plugin] = $plugin;
+            return true;
+        }
+        return false;
     }
 
     /**
-     * @param string $plugin
+     * @param array|string $plugin
+     * @param string|null $app
      * @return bool
      */
-    public static function hasDisableDefaultRoute(string $plugin = ''): bool
+    public static function isDefaultRouteDisabled(array|string $plugin = '', ?string $app = null): bool
     {
-        return static::$disableDefaultRoute[$plugin] ?? false;
+        // Is [controller action]
+        if (is_array($plugin)) {
+            if (!isset($plugin[0]) || !is_string($plugin[0]) ||
+                !isset($plugin[1]) || !is_string($plugin[1])) {
+                return false;
+            }
+            return isset(static::$disabledDefaultRouteActions[$plugin[0]][$plugin[1]]) || static::isDefaultRouteDisabledByAnnotation($plugin[0], $plugin[1]);
+        }
+        // Is plugin
+        if (is_string($plugin) && (preg_match('/^[a-zA-Z0-9_]+$/', $plugin) || $plugin === '')) {
+            $app = $app ?? '*';
+            return isset(static::$disabledDefaultRoutes[$plugin]['*']) || isset(static::$disabledDefaultRoutes[$plugin][$app]);
+        }
+        // Is controller
+        if (is_string($plugin) && class_exists($plugin)) {
+            return isset(static::$disabledDefaultRouteControllers[$plugin]);
+        }
+        return false;
+    }
+
+    /**
+     * @param string $controller
+     * @param string|null $action
+     * @return bool
+     */
+    protected static function isDefaultRouteDisabledByAnnotation(string $controller, ?string $action = null): bool
+    {
+        if (class_exists($controller)) {
+            $reflectionClass = new ReflectionClass($controller);
+            if ($reflectionClass->getAttributes(DisableDefaultRoute::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                return true;
+            }
+            if ($action && $reflectionClass->hasMethod($action)) {
+                $reflectionMethod = $reflectionClass->getMethod($action);
+                if ($reflectionMethod->getAttributes(DisableDefaultRoute::class, ReflectionAttribute::IS_INSTANCEOF)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -447,17 +536,28 @@ class Route
      */
     public static function fallback(callable $callback, string $plugin = '')
     {
-        static::$fallback[$plugin] = $callback;
+        $route = new RouteObject([], '', $callback);
+        static::$fallbackRoutes[$plugin] = $route;
+        return $route;
     }
 
     /**
      * GetFallBack.
      * @param string $plugin
+     * @param int $status
      * @return callable|null
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
-    public static function getFallback(string $plugin = ''): ?callable
+    public static function getFallback(string $plugin = '', int $status = 404)
     {
-        return static::$fallback[$plugin] ?? null;
+        if (!isset(static::$fallback[$plugin])) {
+            $callback = null;
+            $route = static::$fallbackRoutes[$plugin] ?? null;
+            static::$fallback[$plugin] = $route ? App::getCallback($plugin, 'NOT_FOUND', $route->getCallback(), ['status' => $status], false, $route) : null;
+        }
+        return static::$fallback[$plugin];
     }
 
     /**

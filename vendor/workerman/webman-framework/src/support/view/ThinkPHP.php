@@ -37,7 +37,7 @@ class ThinkPHP implements View
      * @param string|array $name
      * @param mixed $value
      */
-    public static function assign($name, $value = null)
+    public static function assign(string|array $name, mixed $value = null): void
     {
         $request = request();
         $request->_view_vars = array_merge((array) $request->_view_vars, is_array($name) ? $name : [$name => $value]);
@@ -49,9 +49,9 @@ class ThinkPHP implements View
      * @param array $vars
      * @param string|null $app
      * @param string|null $plugin
-     * @return false|string
+     * @return string
      */
-    public static function render(string $template, array $vars, string $app = null, string $plugin = null): string
+    public static function render(string $template, array $vars, ?string $app = null, ?string $plugin = null): string
     {
         $request = request();
         $plugin = $plugin === null ? ($request->plugin ?? '') : $plugin;
@@ -59,7 +59,17 @@ class ThinkPHP implements View
         $configPrefix = $plugin ? "plugin.$plugin." : '';
         $viewSuffix = config("{$configPrefix}view.options.view_suffix", 'html');
         $baseViewPath = $plugin ? base_path() . "/plugin/$plugin/app" : app_path();
-        $viewPath = $app === '' ? "$baseViewPath/view/" : "$baseViewPath/$app/view/";
+        if ($template[0] === '/') {
+            if (strpos($template, '/view/') !== false) {
+                [$viewPath, $template] = explode('/view/', $template, 2);
+                $viewPath = base_path("$viewPath/view/");
+            } else {
+                $viewPath = base_path() . dirname($template) . '/';
+                $template = basename($template);
+            }
+        } else {
+            $viewPath = $app === '' ? "$baseViewPath/view/" : "$baseViewPath/$app/view/";
+        }
         $defaultOptions = [
             'view_path' => $viewPath,
             'cache_path' => runtime_path() . '/views/',

@@ -24,9 +24,9 @@
     "source": "https://github.com/walkor/webman-framework"
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=8.0",
     "ext-json": "*",
-    "workerman/workerman": "^4.0.4 || ^5.0.0",
+    "workerman/workerman": "^4.2.1 || ^5.0.0 || dev-master",
     "nikic/fast-route": "^1.3",
     "psr/container": ">=1.0"
   },
@@ -41,7 +41,11 @@
       "Support\\Bootstrap\\": "./src/support/bootstrap",
       "Support\\Exception\\": "./src/support/exception",
       "Support\\View\\": "./src/support/view"
-    }
+    },
+    "files": [
+      "./src/support/helpers.php"
+    ]
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

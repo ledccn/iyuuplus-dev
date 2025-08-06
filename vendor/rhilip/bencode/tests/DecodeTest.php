@@ -15,6 +15,19 @@ class DecodeTest extends TestCase
         $this->assertEquals(213, Bencode::decode('i213e'));
         $this->assertEquals(-314, Bencode::decode('i-314e'));
         $this->assertEquals(0, Bencode::decode('i0e'));
+
+        $this->assertEquals(PHP_INT_MAX, Bencode::decode('i' . PHP_INT_MAX . 'e'));
+        $this->assertEquals(PHP_INT_MIN, Bencode::decode('i' . PHP_INT_MIN . 'e'));
+    }
+
+    /**
+     * @group integer
+     */
+    public function testDecodeIntegerEmpty()
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Invalid integer format or integer overflow');
+        Bencode::decode('ie');
     }
 
     /**
@@ -51,6 +64,20 @@ class DecodeTest extends TestCase
         $this->expectException(ParseException::class);
         $this->expectExceptionMessage('Invalid integer format or integer overflow');
         Bencode::decode('i-0e');
+    }
+
+    public function testDecodeIntegerWithMinusInsertedIn()
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Invalid integer format or integer overflow');
+        Bencode::decode('i35412-5633e');
+    }
+
+    public function testDecodeIntegerWithInvalidDigitsInsertedIn()
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Invalid integer format or integer overflow');
+        Bencode::decode('i92337203t854775807e');
     }
 
     /**
@@ -101,7 +128,7 @@ class DecodeTest extends TestCase
     public function testDecodeString()
     {
         // simple string
-        $this->assertEquals('String', Bencode::decode('6:String'));
+        $this->assertEquals('abcdefghijklmnopqrstuvwxyz', Bencode::decode('26:abcdefghijklmnopqrstuvwxyz'));
         // empty string
         $this->assertEquals('', Bencode::decode('0:'));
         // special chars
@@ -221,6 +248,16 @@ class DecodeTest extends TestCase
         $this->expectExceptionMessage('Non string key found in the dictionary');
 
         Bencode::decode('di123ei321ee');
+    }
+
+    /**
+     * @group dictionary
+     */
+    public function testDecodeDictionaryWithKeyButWithoutValue()
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Invalid integer format or integer overflow');  // FIXME
+        Bencode::decode('d1:ai1e1:be');
     }
 
     /**

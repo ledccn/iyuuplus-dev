@@ -97,13 +97,6 @@ class Configure
             if (static::$_hasIniSet) {
                 ini_set('display_errors', $config['debug'] ? '1' : '0');
             }
-
-            if ($config['debug'] && PHP_SAPI !== 'cli' && ini_get('zend.assertions') === '-1') {
-                trigger_error(
-                    'You should set `zend.assertions` to `1` in your php.ini for your development environment.',
-                    E_USER_WARNING
-                );
-            }
         }
     }
 
@@ -338,8 +331,8 @@ class Configure
                 sprintf(
                     'Config %s engine not found when attempting to load %s.',
                     $config,
-                    $key
-                )
+                    $key,
+                ),
             );
         }
 
@@ -378,7 +371,7 @@ class Configure
      * @param string $key The identifier to create in the config adapter.
      *   This could be a filename or a cache key depending on the adapter being used.
      * @param string $config The name of the configured adapter to dump data with.
-     * @param list<string> $keys The name of the top-level keys you want to dump.
+     * @param array<string> $keys The name of the top-level keys you want to dump.
      *   This allows you save only some data stored in Configure.
      * @return bool Success
      * @throws \Cake\Core\Exception\CakeException if the adapter does not implement a `dump` method.

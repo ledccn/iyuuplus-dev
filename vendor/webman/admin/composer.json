@@ -12,7 +12,8 @@
     "webman/event": "^1.0",
     "webman/captcha": "^1.0.0",
     "guzzlehttp/guzzle": "^7.5",
-    "laravel/serializable-closure": "^1.0"
+    "laravel/serializable-closure": "^1.0",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {

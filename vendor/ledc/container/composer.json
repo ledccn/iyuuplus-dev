@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=8.2",
-        "topthink/think-container": "^2.0"
+        "topthink/think-container": ">=2.0"
     },
     "autoload": {
         "psr-4": {

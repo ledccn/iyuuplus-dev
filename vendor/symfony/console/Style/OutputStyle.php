@@ -23,11 +23,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class OutputStyle implements OutputInterface, StyleInterface
 {
-    private OutputInterface $output;
-
-    public function __construct(OutputInterface $output)
-    {
-        $this->output = $output;
+    public function __construct(
+        private OutputInterface $output,
+    ) {
     }
 
     public function newLine(int $count = 1): void
@@ -78,6 +76,12 @@ abstract class OutputStyle implements OutputInterface, StyleInterface
     public function getFormatter(): OutputFormatterInterface
     {
         return $this->output->getFormatter();
+    }
+
+    public function isSilent(): bool
+    {
+        // @deprecated since Symfony 7.2, change to $this->output->isSilent() in 8.0
+        return method_exists($this->output, 'isSilent') ? $this->output->isSilent() : self::VERBOSITY_SILENT === $this->output->getVerbosity();
     }
 
     public function isQuiet(): bool

@@ -77,6 +77,9 @@ class ExceptionHandler implements ExceptionHandlerInterface
      */
     public function render(Request $request, Throwable $exception): Response
     {
+        if (method_exists($exception, 'render') && ($response = $exception->render($request))) {
+            return $response;
+        }
         $code = $exception->getCode();
         if ($request->expectsJson()) {
             $json = ['code' => $code ?: 500, 'msg' => $this->debug ? $exception->getMessage() : 'Server internal error'];

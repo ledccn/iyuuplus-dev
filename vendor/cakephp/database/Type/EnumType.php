@@ -53,7 +53,7 @@ class EnumType extends BaseType
      */
     public function __construct(
         string $name,
-        string $enumClassName
+        string $enumClassName,
     ) {
         parent::__construct($name);
         $this->enumClassName = $enumClassName;
@@ -65,14 +65,14 @@ class EnumType extends BaseType
                 'Unable to use `%s` for type `%s`. %s.',
                 $enumClassName,
                 $name,
-                $e->getMessage()
+                $e->getMessage(),
             ));
         }
 
         $namedType = $reflectionEnum->getBackingType();
         if ($namedType == null) {
             throw new DatabaseException(
-                sprintf('Unable to use enum `%s` for type `%s`, must be a backed enum.', $enumClassName, $name)
+                sprintf('Unable to use enum `%s` for type `%s`, must be a backed enum.', $enumClassName, $name),
             );
         }
 
@@ -98,7 +98,7 @@ class EnumType extends BaseType
                     'Given value type `%s` does not match associated `%s` backed enum in `%s`',
                     get_debug_type($value),
                     $this->backingType,
-                    $this->enumClassName
+                    $this->enumClassName,
                 ));
             }
 
@@ -109,7 +109,7 @@ class EnumType extends BaseType
             throw new InvalidArgumentException(sprintf(
                 'Cannot convert value `%s` of type `%s` to string or int',
                 print_r($value, true),
-                get_debug_type($value)
+                get_debug_type($value),
             ));
         }
 
@@ -117,7 +117,7 @@ class EnumType extends BaseType
             throw new InvalidArgumentException(sprintf(
                 '`%s` is not a valid value for `%s`',
                 $value,
-                $this->enumClassName
+                $this->enumClassName,
             ));
         }
 
@@ -167,7 +167,7 @@ class EnumType extends BaseType
      */
     public function marshal(mixed $value): ?BackedEnum
     {
-        if ($value === null || $value === '') {
+        if ($value === null) {
             return null;
         }
 
@@ -175,8 +175,23 @@ class EnumType extends BaseType
             return $value;
         }
 
-        if ($this->backingType === 'int' && is_numeric($value) && is_string($value)) {
-            $value = (int)$value;
+        if (!is_string($value) && !is_int($value)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unable to marshal value `%s` of type `%s` to `%s`',
+                print_r($value, true),
+                get_debug_type($value),
+                $this->enumClassName,
+            ));
+        }
+
+        if ($this->backingType === 'int') {
+            if ($value === '') {
+                return null;
+            }
+
+            if (is_numeric($value)) {
+                $value = (int)$value;
+            }
         }
 
         if (get_debug_type($value) !== $this->backingType) {
@@ -184,12 +199,16 @@ class EnumType extends BaseType
                 'Given value type `%s` does not match associated `%s` backed enum in `%s`',
                 get_debug_type($value),
                 $this->backingType,
-                $this->enumClassName
+                $this->enumClassName,
             ));
         }
 
         $enumInstance = $this->enumClassName::tryFrom($value);
         if ($enumInstance === null) {
+            if ($value === '' && $this->backingType === 'string') {
+                return null;
+            }
+
             throw new InvalidArgumentException(sprintf(
                 'Unable to marshal value `%s` of type `%s` to `%s`',
                 print_r($value, true),

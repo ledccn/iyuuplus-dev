@@ -36,7 +36,7 @@ class Text
     /**
      * Default transliterator id string.
      *
-     * @var string $_defaultTransliteratorId Transliterator identifier string.
+     * @var string Transliterator identifier string.
      */
     protected static string $_defaultTransliteratorId = 'Any-Latin; Latin-ASCII; [\u0080-\u7fff] remove';
 
@@ -49,6 +49,13 @@ class Text
         'style',
         'script',
     ];
+
+    /**
+     * Whether to use I18n functions for translating default error messages
+     *
+     * @var bool
+     */
+    protected static bool $useI18n;
 
     /**
      * Generate a random UUID version 4
@@ -81,7 +88,7 @@ class Text
             // 48 bits for "node"
             random_int(0, 65535),
             random_int(0, 65535),
-            random_int(0, 65535)
+            random_int(0, 65535),
         );
     }
 
@@ -99,7 +106,7 @@ class Text
         string $data,
         string $separator = ',',
         string $leftBound = '(',
-        string $rightBound = ')'
+        string $rightBound = ')',
     ): array {
         if (!$data) {
             return [];
@@ -140,15 +147,13 @@ class Text
                     if ($char === $rightBound) {
                         $depth--;
                     }
-                } else {
-                    if ($char === $leftBound) {
-                        if (!$open) {
-                            $depth++;
-                            $open = true;
-                        } else {
-                            $depth--;
-                            $open = false;
-                        }
+                } elseif ($char === $leftBound) {
+                    if (!$open) {
+                        $depth++;
+                        $open = true;
+                    } else {
+                        $depth--;
+                        $open = false;
                     }
                 }
                 $tmpOffset += 1;
@@ -195,10 +200,7 @@ class Text
      */
     public static function insert(string $str, array $data, array $options = []): string
     {
-        $defaults = [
-            'before' => ':', 'after' => '', 'escape' => '\\', 'format' => null, 'clean' => false,
-        ];
-        $options += $defaults;
+        $options += ['before' => ':', 'after' => '', 'escape' => '\\', 'format' => null, 'clean' => false];
         if (!$data) {
             return $options['clean'] ? static::cleanInsert($str, $options) : $str;
         }
@@ -208,11 +210,14 @@ class Text
             '/(?<!%s)%s%%s%s/',
             preg_quote($options['escape'], '/'),
             str_replace('%', '%%', preg_quote($options['before'], '/')),
-            str_replace('%', '%%', preg_quote($options['after'], '/'))
+            str_replace('%', '%%', preg_quote($options['after'], '/')),
         );
 
         $dataKeys = array_keys($data);
-        $hashKeys = array_map('md5', $dataKeys);
+        $hashKeys = array_map(
+            fn($str) => hash('xxh128', $str),
+            $dataKeys,
+        );
         /** @var array<string, string> $tempData */
         $tempData = array_combine($dataKeys, $hashKeys);
         krsort($tempData);
@@ -228,7 +233,7 @@ class Text
             $str = (string)str_replace($tmpHash, $tmpValue, $str);
         }
 
-        if (!isset($options['format']) && isset($options['before'])) {
+        if ($options['format'] === null && $options['before'] !== null) {
             $str = (string)str_replace($options['escape'] . $options['before'], $options['before'], $str);
         }
 
@@ -269,7 +274,7 @@ class Text
                     '/[\s]*[a-z]+=(")(%s%s%s[\s]*)+\\1/i',
                     preg_quote($options['before'], '/'),
                     $clean['word'],
-                    preg_quote($options['after'], '/')
+                    preg_quote($options['after'], '/'),
                 );
                 $str = (string)preg_replace($kleenex, $clean['replacement'], $str);
                 if ($clean['andText']) {
@@ -293,7 +298,7 @@ class Text
                     $clean['gap'],
                     preg_quote($options['before'], '/'),
                     $clean['word'],
-                    preg_quote($options['after'], '/')
+                    preg_quote($options['after'], '/'),
                 );
                 $str = (string)preg_replace($kleenex, $clean['replacement'], $str);
                 break;
@@ -318,7 +323,7 @@ class Text
      */
     public static function wrap(string $text, array|int $options = []): string
     {
-        if (is_numeric($options)) {
+        if (is_int($options)) {
             $options = ['width' => $options];
         }
         $options += ['width' => 72, 'wordWrap' => true, 'indent' => null, 'indentAt' => 0];
@@ -331,7 +336,7 @@ class Text
             }
             $wrapped = trim(chunk_split($text, $length, "\n"));
         }
-        if (!empty($options['indent'])) {
+        if ($options['indent']) {
             $chunks = explode("\n", $wrapped);
             for ($i = $options['indentAt'], $len = count($chunks); $i < $len; $i++) {
                 $chunks[$i] = $options['indent'] . $chunks[$i];
@@ -359,14 +364,14 @@ class Text
      */
     public static function wrapBlock(string $text, array|int $options = []): string
     {
-        if (is_numeric($options)) {
+        if (is_int($options)) {
             $options = ['width' => $options];
         }
         $options += ['width' => 72, 'wordWrap' => true, 'indent' => null, 'indentAt' => 0];
 
         $wrapped = self::wrap($text, $options);
 
-        if (!empty($options['indent'])) {
+        if ($options['indent']) {
             $indentationLength = mb_strlen($options['indent']);
             $chunks = explode("\n", $wrapped);
             $count = count($chunks);
@@ -483,13 +488,12 @@ class Text
             return $text;
         }
 
-        $defaults = [
+        $options += [
             'format' => '<span class="highlight">\1</span>',
             'html' => false,
             'regex' => '|%s|iu',
             'limit' => -1,
         ];
-        $options += $defaults;
 
         if (is_array($phrase)) {
             $replace = [];
@@ -498,7 +502,7 @@ class Text
             foreach ($phrase as $key => $segment) {
                 $segment = '(' . preg_quote($segment, '|') . ')';
                 if ($options['html']) {
-                    $segment = "(?![^<]+>)$segment(?![^<]+>)";
+                    $segment = "(?![^<]+>){$segment}(?![^<]+>)";
                 }
 
                 $with[] = is_array($options['format']) ? $options['format'][$key] : $options['format'];
@@ -510,14 +514,14 @@ class Text
 
         $phrase = '(' . preg_quote($phrase, '|') . ')';
         if ($options['html']) {
-            $phrase = "(?![^<]+>)$phrase(?![^<]+>)";
+            $phrase = "(?![^<]+>){$phrase}(?![^<]+>)";
         }
 
         return (string)preg_replace(
             sprintf($options['regex'], $phrase),
             $options['format'],
             $text,
-            $options['limit']
+            $options['limit'],
         );
     }
 
@@ -539,10 +543,7 @@ class Text
      */
     public static function tail(string $text, int $length = 100, array $options = []): string
     {
-        $default = [
-            'ellipsis' => '...', 'exact' => true,
-        ];
-        $options += $default;
+        $options += ['ellipsis' => '…', 'exact' => true];
         $ellipsis = $options['ellipsis'];
 
         if (mb_strlen($text) <= $length) {
@@ -580,7 +581,7 @@ class Text
     public static function truncate(string $text, int $length = 100, array $options = []): string
     {
         $default = [
-            'ellipsis' => '...', 'exact' => true, 'html' => false, 'trimWidth' => false,
+            'ellipsis' => '…', 'exact' => true, 'html' => false, 'trimWidth' => false,
         ];
         if (!empty($options['html']) && strtolower(mb_internal_encoding()) === 'utf-8') {
             $default['ellipsis'] = "\xe2\x80\xa6";
@@ -609,7 +610,7 @@ class Text
                     if (
                         !preg_match(
                             '/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/i',
-                            $tag[2]
+                            $tag[2],
                         )
                     ) {
                         if (preg_match('/<[\w]+[^>]*>/', $tag[0])) {
@@ -717,7 +718,7 @@ class Text
 
                 return str_repeat(' ', $strlen($utf8, 'UTF-8'));
             },
-            $text
+            $text,
         );
 
         return $strlen($replace);
@@ -833,7 +834,7 @@ class Text
             // Some languages are written without word separation.
             // We recognize a string as a word if it doesn't contain any full-width characters.
             if (mb_strwidth($lastWord) === mb_strlen($lastWord)) {
-                $text = mb_substr($text, 0, $spacepos);
+                return mb_substr($text, 0, $spacepos);
             }
 
             return $text;
@@ -853,13 +854,13 @@ class Text
      * @return string Modified string
      * @link https://book.cakephp.org/5/en/core-libraries/text.html#extracting-an-excerpt
      */
-    public static function excerpt(string $text, string $phrase, int $radius = 100, string $ellipsis = '...'): string
+    public static function excerpt(string $text, string $phrase, int $radius = 100, string $ellipsis = '…'): string
     {
-        if (!$text || !$phrase) {
+        if ($text === '' || $phrase === '') {
             return static::truncate($text, $radius * 2, ['ellipsis' => $ellipsis]);
         }
-
-        $append = $prepend = $ellipsis;
+        $append = $ellipsis;
+        $prepend = $ellipsis;
 
         $phraseLen = mb_strlen($phrase);
         $textLen = mb_strlen($text);
@@ -889,7 +890,7 @@ class Text
     /**
      * Creates a comma separated list where the last two items are joined with 'and', forming natural language.
      *
-     * @param list<string> $list The list to be joined.
+     * @param array<string> $list The list to be joined.
      * @param string|null $and The word used to join the last and second last items together with. Defaults to 'and'.
      * @param string $separator The separator used to join all the other items together. Defaults to ', '.
      * @return string The glued together string.
@@ -897,7 +898,9 @@ class Text
      */
     public static function toList(array $list, ?string $and = null, string $separator = ', '): string
     {
-        $and ??= __d('cake', 'and');
+        static::$useI18n ??= function_exists('Cake\I18n\__d');
+        $and ??= static::$useI18n ? __d('cake', 'and') : 'and';
+
         if (count($list) > 1) {
             return implode($separator, array_slice($list, 0, -1)) . ' ' . $and . ' ' . array_pop($list);
         }

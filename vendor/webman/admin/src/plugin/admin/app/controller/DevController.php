@@ -2,7 +2,6 @@
 
 namespace plugin\admin\app\controller;
 
-use support\Request;
 use support\Response;
 use Throwable;
 

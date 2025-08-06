@@ -62,6 +62,7 @@ class LaravelDb implements Bootstrap
         });
 
         $default = $config['default'] ?? false;
+        $persistent = $config['persistent'] ?? true;
         if ($default) {
             $defaultConfig = $connections[$config['default']] ?? false;
             if ($defaultConfig) {
@@ -82,7 +83,7 @@ class LaravelDb implements Bootstrap
         $capsule->bootEloquent();
 
         // Heartbeat
-        if ($worker) {
+        if ($worker && $persistent) {
             Timer::add(55, function () use ($default, $connections, $capsule) {
                 foreach ($capsule->getDatabaseManager()->getConnections() as $connection) {
                     /* @var MySqlConnection $connection **/

@@ -4,7 +4,6 @@ namespace plugin\admin\app\controller;
 
 use Illuminate\Database\Capsule\Manager;
 use plugin\admin\app\common\Util;
-use plugin\admin\app\model\Admin;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;

@@ -199,12 +199,12 @@ class Curl
      */
     public function exec(): int
     {
-        $this->setOpt(CURLOPT_HEADERFUNCTION, array($this, 'addResponseHeaderLine'));
+        $this->setOpt(CURLOPT_HEADERFUNCTION, [$this, 'addResponseHeaderLine']);
         $this->response_headers = [];
         $this->response = curl_exec($this->curl);
         $this->curl_error_code = curl_errno($this->curl);
         $this->curl_error_message = curl_error($this->curl);
-        $this->curl_error = !($this->getErrorCode() === 0);
+        $this->curl_error = $this->getErrorCode() !== 0;
         $this->http_status_code = intval(curl_getinfo($this->curl, CURLINFO_HTTP_CODE));
         $this->http_error = $this->isError();
         $this->error = $this->curl_error || $this->http_error;
@@ -225,7 +225,7 @@ class Curl
 
         if (is_array($data) || is_object($data)) {
             $skip = false;
-            foreach ($data as $key => $value) {
+            foreach ($data as $value) {
                 if (($value instanceof CurlFile) || ($value instanceof CURLStringFile)) {
                     $skip = true;
                 }
@@ -303,7 +303,7 @@ class Curl
      * @param string|null $hostName An optional hostname which will be sent as http host header
      * @return self
      */
-    public function purge(string $url, string $hostName = null): static
+    public function purge(string $url, ?string $hostName = null): static
     {
         $this->setOpt(CURLOPT_URL, $url);
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'PURGE');
@@ -704,7 +704,7 @@ class Curl
      * @return bool|string|array
      * @since 1.9
      */
-    public function getResponseHeaders(string $headerKey = null): bool|array|string
+    public function getResponseHeaders(?string $headerKey = null): bool|array|string
     {
         $headers = [];
         if (!is_null($headerKey)) {
@@ -712,7 +712,7 @@ class Curl
         }
 
         foreach ($this->response_headers as $header) {
-            $parts = explode(":", $header, 2);
+            $parts = explode(":", (string)$header, 2);
 
             $key = $parts[0] ?? '';
             $value = $parts[1] ?? '';
@@ -769,7 +769,7 @@ class Curl
      */
     public static function make(): static
     {
-        return new static();
+        return (new static())->setTimeout(5, 8);
     }
 
     /**
@@ -873,7 +873,7 @@ class Curl
         $body = '';
 
         // 拼接文件流
-        $build_file_parameters = function (array $files) use (&$body, $boundary, $disallow, $eol) {
+        $build_file_parameters = function (array $files) use (&$body, $boundary, $disallow, $eol): void {
             // 拼接文件流 build file parameters
             /**
              * @var string $name
@@ -1015,6 +1015,18 @@ class Curl
         foreach ($herders as $key => $value) {
             $this->setHeader($key, $value);
         }
+        return $this;
+    }
+
+    /**
+     * 设置客户端支持的内容编码类型
+     * - 它允许 cURL 自动处理压缩内容（如 gzip 或 deflate），并在接收到压缩数据时自动解码。
+     * @param string $value
+     * @return static
+     */
+    public function setEncoding(string $value = 'gzip,deflate'): static
+    {
+        $this->setOpt(CURLOPT_ENCODING, $value);
         return $this;
     }
 }

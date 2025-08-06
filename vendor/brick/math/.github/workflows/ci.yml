@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  PSALM_PHP_VERSION: "8.4"
+  COVERAGE_PHP_VERSION: "8.4"
+
+jobs:
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PSALM_PHP_VERSION }}
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Run Psalm
+        run: vendor/bin/psalm --show-info=false --find-unused-psalm-suppress --no-progress
+
+  phpunit:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - "8.1"
+          - "8.2"
+          - "8.3"
+          - "8.4"
+        calculator:
+          - GMP
+          - BCMath
+          - Native
+        deps:
+          - "highest"
+        include:
+          - php-version: "8.1"
+            calculator: GMP
+            deps: "lowest"
+          - php-version: "8.1"
+            calculator: BCMath
+            deps: "lowest"
+          - php-version: "8.1"
+            calculator: Native
+            deps: "lowest"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: pcov
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: ${{ matrix.deps }}
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
+        env:
+          CALCULATOR: ${{ matrix.calculator }}
+        if: ${{ matrix.php-version != env.COVERAGE_PHP_VERSION }}
+
+      - name: Run PHPUnit with coverage
+        run: |
+          mkdir -p build/logs
+          vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+        env:
+          CALCULATOR: ${{ matrix.calculator }}
+        if: ${{ matrix.php-version == env.COVERAGE_PHP_VERSION }}
+
+      - name: Run PHPUnit with bcscale()
+        run: vendor/bin/phpunit
+        env:
+          CALCULATOR: BCMath
+          BCMATH_DEFAULT_SCALE: 8
+        if: ${{ matrix.calculator == 'BCMath' }}
+
+      - name: Upload coverage report to Coveralls
+        run: vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ matrix.php-version == env.COVERAGE_PHP_VERSION }}

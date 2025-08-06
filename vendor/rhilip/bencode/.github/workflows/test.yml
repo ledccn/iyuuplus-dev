@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: [ 7.3, 7.4, 8.0, 8.1 ]
+        php-versions: [ 7.3, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5 ]
     steps:
       - uses: actions/checkout@master
 
@@ -28,14 +28,14 @@ jobs:
         run: |
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
+      - name: Cache dependencies
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          key: ${{ runner.os }}-composer-${{ matrix.php-versions }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-${{ matrix.php-versions }}-
 
-      - name: Composer install
+      - name: Install dependencies
         run: composer install --no-interaction --dev
 
       - name: Run PHPUnit

@@ -25,6 +25,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         '948ad5488880985ff1c06721a4e447fe' => __DIR__ . '/..' . '/cakephp/utility/bootstrap.php',
         'ef65a1626449d89d0811cf9befce46f0' => __DIR__ . '/..' . '/illuminate/events/functions.php',
         'f88f8987adfe3f7cf9978fa9a9d148bc' => __DIR__ . '/..' . '/workerman/psr7/src/functions_include.php',
+        'd2136ff22b54ac75cd96a40e0022218e' => __DIR__ . '/..' . '/workerman/webman-framework/src/support/helpers.php',
         'f716c9d0b070426654dd8fc2efbd8901' => __DIR__ . '/..' . '/ledc/notify/src/Foundation/Support/helpers.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '950818617bd7dfe7017a2cd7db4a96d7' => __DIR__ . '/../..' . '/support/helpers.php',
@@ -53,6 +54,7 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
             'Workerman\\Psr7\\' => 15,
             'Workerman\\Http\\' => 15,
             'Workerman\\Crontab\\' => 18,
+            'Workerman\\Coroutine\\' => 20,
             'Workerman\\' => 10,
             'Webman\\Push\\' => 12,
             'Webman\\Event\\' => 13,
@@ -193,9 +195,9 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         ),
         'think\\' => 
         array (
-            0 => __DIR__ . '/..' . '/topthink/think-container/src',
-            1 => __DIR__ . '/..' . '/topthink/think-helper/src',
-            2 => __DIR__ . '/..' . '/topthink/think-validate/src',
+            0 => __DIR__ . '/..' . '/topthink/think-validate/src',
+            1 => __DIR__ . '/..' . '/topthink/think-container/src',
+            2 => __DIR__ . '/..' . '/topthink/think-helper/src',
         ),
         'support\\' => 
         array (
@@ -221,9 +223,14 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         array (
             0 => __DIR__ . '/..' . '/workerman/crontab/src',
         ),
+        'Workerman\\Coroutine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/coroutine/src',
+        ),
         'Workerman\\' => 
         array (
-            0 => __DIR__ . '/..' . '/workerman/workerman',
+            0 => __DIR__ . '/..' . '/workerman/workerman/src',
+            1 => __DIR__ . '/..' . '/workerman/coroutine/src',
         ),
         'Webman\\Push\\' => 
         array (
@@ -468,10 +475,10 @@ class ComposerStaticInit6ec3c93a41026fd9ff565142f2ec2413
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/collections',
-            1 => __DIR__ . '/..' . '/illuminate/conditionable',
-            2 => __DIR__ . '/..' . '/illuminate/macroable',
-            3 => __DIR__ . '/..' . '/illuminate/support',
+            0 => __DIR__ . '/..' . '/illuminate/support',
+            1 => __DIR__ . '/..' . '/illuminate/collections',
+            2 => __DIR__ . '/..' . '/illuminate/conditionable',
+            3 => __DIR__ . '/..' . '/illuminate/macroable',
         ),
         'Illuminate\\Pipeline\\' => 
         array (

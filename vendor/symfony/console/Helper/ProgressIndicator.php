@@ -31,15 +31,15 @@ class ProgressIndicator
         'very_verbose_no_ansi' => ' %message% (%elapsed:6s%, %memory:6s%)',
     ];
 
-    private OutputInterface $output;
     private int $startTime;
     private ?string $format = null;
     private ?string $message = null;
     private array $indicatorValues;
     private int $indicatorCurrent;
-    private int $indicatorChangeInterval;
+    private string $finishedIndicatorValue;
     private float $indicatorUpdateTime;
     private bool $started = false;
+    private bool $finished = false;
 
     /**
      * @var array<string, callable>
@@ -50,21 +50,25 @@ class ProgressIndicator
      * @param int        $indicatorChangeInterval Change interval in milliseconds
      * @param array|null $indicatorValues         Animated indicator characters
      */
-    public function __construct(OutputInterface $output, ?string $format = null, int $indicatorChangeInterval = 100, ?array $indicatorValues = null)
-    {
-        $this->output = $output;
-
+    public function __construct(
+        private OutputInterface $output,
+        ?string $format = null,
+        private int $indicatorChangeInterval = 100,
+        ?array $indicatorValues = null,
+        ?string $finishedIndicatorValue = null,
+    ) {
         $format ??= $this->determineBestFormat();
         $indicatorValues ??= ['-', '\\', '|', '/'];
         $indicatorValues = array_values($indicatorValues);
+        $finishedIndicatorValue ??= '✔';
 
         if (2 > \count($indicatorValues)) {
             throw new InvalidArgumentException('Must have at least 2 indicator value characters.');
         }
 
         $this->format = self::getFormatDefinition($format);
-        $this->indicatorChangeInterval = $indicatorChangeInterval;
         $this->indicatorValues = $indicatorValues;
+        $this->finishedIndicatorValue = $finishedIndicatorValue;
         $this->startTime = time();
     }
 
@@ -89,6 +93,7 @@ class ProgressIndicator
 
         $this->message = $message;
         $this->started = true;
+        $this->finished = false;
         $this->startTime = time();
         $this->indicatorUpdateTime = $this->getCurrentTimeInMilliseconds() + $this->indicatorChangeInterval;
         $this->indicatorCurrent = 0;
@@ -123,13 +128,25 @@ class ProgressIndicator
 
     /**
      * Finish the indicator with message.
+     *
+     * @param ?string $finishedIndicator
      */
-    public function finish(string $message): void
+    public function finish(string $message/* , ?string $finishedIndicator = null */): void
     {
+        $finishedIndicator = 1 < \func_num_args() ? func_get_arg(1) : null;
+        if (null !== $finishedIndicator && !\is_string($finishedIndicator)) {
+            throw new \TypeError(\sprintf('Argument 2 passed to "%s()" must be of the type string or null, "%s" given.', __METHOD__, get_debug_type($finishedIndicator)));
+        }
+
         if (!$this->started) {
             throw new LogicException('Progress indicator has not yet been started.');
         }
 
+        if (null !== $finishedIndicator) {
+            $this->finishedIndicatorValue = $finishedIndicator;
+        }
+
+        $this->finished = true;
         $this->message = $message;
         $this->display();
         $this->output->writeln('');
@@ -172,7 +189,7 @@ class ProgressIndicator
             return;
         }
 
-        $this->overwrite(preg_replace_callback("{%([a-z\-_]+)(?:\:([^%]+))?%}i", function ($matches) {
+        $this->overwrite(preg_replace_callback('{%([a-z\-_]+)(?:\:([^%]+))?%}i', function ($matches) {
             if ($formatter = self::getPlaceholderFormatterDefinition($matches[1])) {
                 return $formatter($this);
             }
@@ -216,7 +233,7 @@ class ProgressIndicator
     private static function initPlaceholderFormatters(): array
     {
         return [
-            'indicator' => fn (self $indicator) => $indicator->indicatorValues[$indicator->indicatorCurrent % \count($indicator->indicatorValues)],
+            'indicator' => fn (self $indicator) => $indicator->finished ? $indicator->finishedIndicatorValue : $indicator->indicatorValues[$indicator->indicatorCurrent % \count($indicator->indicatorValues)],
             'message' => fn (self $indicator) => $indicator->message,
             'elapsed' => fn (self $indicator) => Helper::formatTime(time() - $indicator->startTime, 2),
             'memory' => fn () => Helper::formatMemory(memory_get_usage(true)),

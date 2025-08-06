@@ -24,6 +24,7 @@ return array(
     '948ad5488880985ff1c06721a4e447fe' => $vendorDir . '/cakephp/utility/bootstrap.php',
     'ef65a1626449d89d0811cf9befce46f0' => $vendorDir . '/illuminate/events/functions.php',
     'f88f8987adfe3f7cf9978fa9a9d148bc' => $vendorDir . '/workerman/psr7/src/functions_include.php',
+    'd2136ff22b54ac75cd96a40e0022218e' => $vendorDir . '/workerman/webman-framework/src/support/helpers.php',
     'f716c9d0b070426654dd8fc2efbd8901' => $vendorDir . '/ledc/notify/src/Foundation/Support/helpers.php',
     '667aeda72477189d0494fecd327c3641' => $vendorDir . '/symfony/var-dumper/Resources/functions/dump.php',
     '950818617bd7dfe7017a2cd7db4a96d7' => $baseDir . '/support/helpers.php',

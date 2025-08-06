@@ -199,6 +199,12 @@ class Client
             $uri = $new_request->getUri();
             $url = (string)$uri;
             $options = $new_request->getOptions();
+            // According to RFC 7231, for HTTP status codes 301, 302, or 303, the client should switch the request
+            // method to GET and remove any payload data
+            if (in_array($response->getStatusCode(), [301, 302, 303])) {
+                $options['method'] = 'GET';
+                $options['data'] = NULL;
+            }
             $address = $this->parseAddress($url);
             $task = [
                 'url'      => $url,

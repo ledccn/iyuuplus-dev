@@ -246,7 +246,7 @@ class Connection extends Configurable implements LoggerAwareInterface
      *
      * @return bool
      */
-    public function close(int $code = Protocol::CLOSE_NORMAL, string $reason = null): bool
+    public function close(int $code = Protocol::CLOSE_NORMAL, ?string $reason = null): bool
     {
         try {
             if (!$this->handshaked) {

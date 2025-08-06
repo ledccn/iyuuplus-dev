@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Cake\Utility;
 
+use BackedEnum;
 use Cake\Core\Exception\CakeException;
 use Cake\Utility\Exception\XmlException;
 use Closure;
@@ -25,6 +26,7 @@ use DOMNode;
 use DOMText;
 use Exception;
 use SimpleXMLElement;
+use UnitEnum;
 
 /**
  * XML handling for CakePHP.
@@ -157,7 +159,7 @@ class Xml
                 }
 
                 return $xml;
-            }
+            },
         );
     }
 
@@ -185,11 +187,11 @@ class Xml
                 $xml->loadHTML($input, $flags);
 
                 if ($options['return'] === 'simplexml' || $options['return'] === 'simplexmlelement') {
-                    $xml = simplexml_import_dom($xml);
+                    return simplexml_import_dom($xml);
                 }
 
                 return $xml;
-            }
+            },
         );
     }
 
@@ -269,7 +271,10 @@ class Xml
             $input = $input->toArray();
         }
         if (!is_array($input) || count($input) !== 1) {
-            throw new XmlException('Invalid input.');
+            throw new XmlException(
+                'Invalid input of type `' . gettype($input) . '`'
+                . (is_array($input) ? ' (Count of ' . count($input) . ')' : '') . '.',
+            );
         }
         $key = key($input);
         if (is_int($key)) {
@@ -313,7 +318,7 @@ class Xml
         DOMDocument $dom,
         DOMDocument|DOMElement $node,
         mixed $data,
-        string $format
+        string $format,
     ): void {
         if (!$data || !is_array($data)) {
             return;
@@ -335,19 +340,26 @@ class Xml
                         $node->setAttributeNS('http://www.w3.org/2000/xmlns/', $key, (string)$value);
                         continue;
                     }
-                    if ($key[0] !== '@' && $format === 'tags') {
+                    if (!str_starts_with($key, '@') && $format === 'tags') {
                         if (!is_numeric($value)) {
                             // Escape special characters
                             // https://www.w3.org/TR/REC-xml/#syntax
                             // https://bugs.php.net/bug.php?id=36795
                             $child = $dom->createElement($key, '');
-                            $child->appendChild(new DOMText((string)$value));
+                            if ($value instanceof BackedEnum) {
+                                $value = (string)$value->value;
+                            } elseif ($value instanceof UnitEnum) {
+                                $value = $value->name;
+                            } else {
+                                $value = (string)$value;
+                            }
+                            $child->appendChild(new DOMText($value));
                         } else {
                             $child = $dom->createElement($key, (string)$value);
                         }
                         $node->appendChild($child);
                     } else {
-                        if ($key[0] === '@') {
+                        if (str_starts_with($key, '@')) {
                             $key = substr($key, 1);
                         }
                         $attribute = $dom->createAttribute($key);
@@ -355,7 +367,7 @@ class Xml
                         $node->appendChild($attribute);
                     }
                 } else {
-                    if ($key[0] === '@') {
+                    if (str_starts_with($key, '@')) {
                         throw new XmlException('Invalid array');
                     }
                     if (is_numeric(implode('', array_keys($value)))) {
@@ -381,7 +393,7 @@ class Xml
      *
      * @param array<string, mixed> $data Array with information to create children
      * @return void
-     * @psalm-param {dom: \DOMDocument, node: \DOMDocument|\DOMElement, key: string, format: string, ?value: mixed} $data
+     * @phpstan-param array{dom: \DOMDocument, node: \DOMNode, key: string, format: string, value?: mixed} $data
      */
     protected static function _createChild(array $data): void
     {
@@ -392,12 +404,10 @@ class Xml
         $key = $data['key'];
         $format = $data['format'];
         $value = $data['value'];
-        /** @var \DOMDocument $dom */
         $dom = $data['dom'];
-        /** @var \DOMNode $node */
         $node = $data['node'];
-
-        $childNS = $childValue = null;
+        $childNS = null;
+        $childValue = null;
         if (is_object($value) && method_exists($value, 'toArray') && is_callable([$value, 'toArray'])) {
             $value = $value->toArray();
         }
@@ -456,7 +466,7 @@ class Xml
      * @param \SimpleXMLElement $xml SimpleXMLElement object
      * @param array<string, mixed> $parentData Parent array with data
      * @param string $ns Namespace of current child
-     * @param list<string> $namespaces List of namespaces in XML
+     * @param array<string> $namespaces List of namespaces in XML
      * @return void
      */
     protected static function _toArray(SimpleXMLElement $xml, array &$parentData, string $ns, array $namespaces): void
@@ -464,9 +474,7 @@ class Xml
         $data = [];
 
         foreach ($namespaces as $namespace) {
-            /** @var \SimpleXMLElement $attributes */
             $attributes = $xml->attributes($namespace, true);
-            /** @var string $key */
             foreach ($attributes as $key => $value) {
                 if ($namespace) {
                     $key = $namespace . ':' . $key;

@@ -50,11 +50,12 @@ class DateTimeType extends BaseType implements BatchCastingInterface
     protected array $_marshalFormats = [
         'Y-m-d H:i',
         'Y-m-d H:i:s',
+        'Y-m-d H:i:s.u',
         'Y-m-d\TH:i',
         'Y-m-d\TH:i:s',
         'Y-m-d\TH:i:sP',
-        'Y-m-d H:i:s.P',
-        'Y-m-d H:i:s.u',
+        'Y-m-d\TH:i:s.u',
+        'Y-m-d\TH:i:s.uP',
     ];
 
     /**
@@ -133,7 +134,7 @@ class DateTimeType extends BaseType implements BatchCastingInterface
         if ($value === null || is_string($value)) {
             return $value;
         }
-        if (is_int($value)) {
+        if (is_int($value) || is_float($value)) {
             $class = $this->_className;
             $value = new $class('@' . $value);
         }
@@ -182,7 +183,7 @@ class DateTimeType extends BaseType implements BatchCastingInterface
     /**
      * Set user timezone.
      *
-     * This is the time zone used when marshalling strings to DateTime instances.
+     * This is the time zone used when marshaling strings to DateTime instances.
      *
      * @param \DateTimeZone|string|null $timezone User timezone.
      * @return $this
@@ -211,7 +212,7 @@ class DateTimeType extends BaseType implements BatchCastingInterface
         }
 
         $class = $this->_className;
-        if (is_int($value)) {
+        if (is_numeric($value)) {
             $instance = new $class('@' . $value);
         } elseif (str_starts_with($value, '0000-00-00')) {
             return null;
@@ -224,7 +225,7 @@ class DateTimeType extends BaseType implements BatchCastingInterface
             && $instance->getTimezone()
             && $instance->getTimezone()->getName() !== $this->defaultTimezone->getName()
         ) {
-            $instance = $instance->setTimezone($this->defaultTimezone);
+            return $instance->setTimezone($this->defaultTimezone);
         }
 
         return $instance;
@@ -323,12 +324,12 @@ class DateTimeType extends BaseType implements BatchCastingInterface
                 }
 
                 if ($dateTime) {
-                    $dateTime = $dateTime->setTimezone($this->defaultTimezone);
+                    return $dateTime->setTimezone($this->defaultTimezone);
                 }
 
                 return $dateTime;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
 
@@ -362,7 +363,7 @@ class DateTimeType extends BaseType implements BatchCastingInterface
             $value['hour'],
             $value['minute'],
             $value['second'],
-            $value['microsecond']
+            $value['microsecond'],
         );
 
         $dateTime = new $class($format, $value['timezone'] ?? $this->userTimezone);
@@ -390,7 +391,7 @@ class DateTimeType extends BaseType implements BatchCastingInterface
             return $this;
         }
         throw new DatabaseException(
-            sprintf('Cannot use locale parsing with the %s class', $this->_className)
+            sprintf('Cannot use locale parsing with the %s class', $this->_className),
         );
     }
 

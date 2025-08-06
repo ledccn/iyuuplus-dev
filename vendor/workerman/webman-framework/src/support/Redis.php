@@ -234,6 +234,27 @@ class Redis
     ];
 
     /**
+     * The Redis server configurations.
+     *
+     * @var array
+     */
+    protected static $config = [];
+
+    /**
+     * Static timers facilitate deletion during callbacks.
+     *
+     * @var array
+     */
+    protected static $timers = [];
+
+    /**
+     * The number of seconds an idle connection will be terminated.
+     *
+     * @var int
+     */
+    protected static $idle_time = 0;
+
+    /**
      * @return RedisManager
      */
     public static function instance(): ?RedisManager
@@ -246,6 +267,7 @@ class Redis
                 $client = self::PHPREDIS_CLIENT;
             }
 
+            static::$config = $config;
             static::$instance = new RedisManager('', $client, $config);
         }
         return static::$instance;
@@ -254,16 +276,27 @@ class Redis
     /**
      * Connection.
      * @param string $name
-     * @return Connection
+     * @return Connection|\Redis
      */
     public static function connection(string $name = 'default'): Connection
     {
-        static $timers = [];
+        if (!empty(static::$config[$name]['idle_timeout'])) {
+            static::$idle_time = time();
+        }
+
         $connection = static::instance()->connection($name);
-        if (!isset($timers[$name])) {
-            $timers[$name] = Worker::getAllWorkers() ? Timer::add(55, function () use ($connection) {
+        if (!isset(static::$timers[$name])) {
+            static::$timers[$name] = Worker::getAllWorkers() ? Timer::add(55, function () use ($connection, $name) {
+                if (!empty(static::$config[$name]['idle_timeout'])
+                    && time() - static::$idle_time > static::$config[$name]['idle_timeout']) {
+                    Timer::del(static::$timers[$name]);
+                    unset(static::$timers[$name]);
+                    return $connection->client()->close();
+                }
+
                 $connection->get('ping');
             }) : 1;
+
             if (class_exists(Dispatcher::class)) {
                 $connection->setEventDispatcher(new Dispatcher());
             }

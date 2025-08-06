@@ -15,7 +15,7 @@ class BuildPharCommand extends Command
 
     protected $buildDir = '';
 
-    public function __construct(string $name = null)
+    public function __construct(?string $name = null)
     {
         parent::__construct($name);
         $this->buildDir = config('plugin.webman.console.app.build_dir', base_path() . '/build');
