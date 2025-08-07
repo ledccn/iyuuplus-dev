@@ -20,18 +20,18 @@ use Throwable;
 class SiteManager extends Manager implements DownloaderInterface
 {
     /**
-     * 驱动类的前缀
+     * 驱动的目录名称和类前缀
      */
     public const string DRIVER_PREFIX = 'Driver';
     /**
      * 驱动的命名空间
      */
-    public const string DRIVER_NAMESPACE = __NAMESPACE__ . '\\Driver\\' . self::DRIVER_PREFIX;
+    private const string DRIVER_NAMESPACE = __NAMESPACE__ . '\\Driver\\';
     /**
-     * 驱动的命名空间
+     * 驱动的命名空间（包含类前缀）
      * @var string|null
      */
-    protected ?string $namespace = self::DRIVER_NAMESPACE;
+    protected ?string $namespace = self::DRIVER_NAMESPACE . self::DRIVER_PREFIX;
     /**
      * 始终创建新的驱动对象实例
      * @var bool
@@ -84,15 +84,6 @@ class SiteManager extends Manager implements DownloaderInterface
     public function download(Torrent $torrent): Response
     {
         return $this->select($torrent->site)->download($torrent);
-    }
-
-    /**
-     * 清理所有驱动实例
-     * @return void
-     */
-    public function clearDriver(): void
-    {
-        $this->clearDrivers();
     }
 
     /**

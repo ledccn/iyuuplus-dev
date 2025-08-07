@@ -89,13 +89,4 @@ class ClientDownloader extends Manager
     {
         return $this->driver($name);
     }
-
-    /**
-     * 清理所有驱动实例
-     * @return void
-     */
-    public function clearDriver(): void
-    {
-        $this->clearDrivers();
-    }
 }

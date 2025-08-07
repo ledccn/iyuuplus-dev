@@ -23,15 +23,6 @@ class IndexController
      * @param Request $request
      * @return Response
      */
-    public function view(Request $request): Response
-    {
-        return view('index/view', ['name' => 'webman']);
-    }
-
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function json(Request $request): Response
     {
         return json([

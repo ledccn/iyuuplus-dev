@@ -58,10 +58,10 @@ function clear_instance_cache(): void
     try {
         /** @var SiteManager $siteManager */
         $siteManager = App::pull(SiteManager::class);
-        $siteManager->clearDriver();
+        $siteManager->clearDrivers();
         /** @var ClientDownloader $clientDownloader */
         $clientDownloader = App::pull(ClientDownloader::class);
-        $clientDownloader->clearDriver();
+        $clientDownloader->clearDrivers();
     } catch (Error|Exception|Throwable $throwable) {
         Log::error('清理缓存驱动实例异常：' . $throwable->getMessage());
     }
@@ -137,11 +137,12 @@ function is_iyuu_token(string $token): bool
  */
 function check_iyuu_token(string $token = ''): bool
 {
+    $suffix = '通用设置->系统设置->爱语飞飞token配置';
     if (!$token) {
-        throw new RuntimeException("未配置IYUU_TOKEN：通用设置->系统设置->爱语飞飞token配置");
+        throw new RuntimeException("未配置IYUU_TOKEN：$suffix");
     }
     if (!is_iyuu_token($token)) {
-        throw new RuntimeException("IYUU_TOKEN格式错误 请重新配置: 通用设置->系统设置->爱语飞飞token配置");
+        throw new RuntimeException("IYUU_TOKEN格式错误 请重新配置: $suffix");
     }
     return true;
 }

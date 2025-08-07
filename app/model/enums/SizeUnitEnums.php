@@ -48,8 +48,8 @@ enum SizeUnitEnums: string
 
     /**
      * 转换为字节
-     * @param string $value
-     * @param SizeUnitEnums $enums
+     * @param string $value 当前值
+     * @param SizeUnitEnums $enums 当前值单位
      * @return string
      */
     public static function convert(string $value, self $enums): string
