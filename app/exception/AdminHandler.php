@@ -2,6 +2,9 @@
 
 namespace app\exception;
 
+use InvalidArgumentException;
+use LogicException;
+use RuntimeException;
 use support\exception\BusinessException;
 use support\exception\NotFoundException;
 use think\exception\ClassNotFoundException;
@@ -48,6 +51,12 @@ class AdminHandler extends ExceptionHandler
         ValidateException::class,
         // 异常：文件
         FileException::class,
+        // 异常：无效参数
+        InvalidArgumentException::class,
+        // 异常：运行时
+        RuntimeException::class,
+        // 异常：逻辑错误
+        LogicException::class,
     ];
 
     /**
