@@ -513,7 +513,7 @@ class Util
      * @param string $package
      * @return mixed|string
      */
-    public static function getPackageVersion(string $package)
+    public static function getPackageVersion(string $package): mixed
     {
         $installed_php = base_path('vendor/composer/installed.php');
         if (is_file($installed_php)) {
@@ -522,12 +522,11 @@ class Util
         return substr($packages['versions'][$package]['version'] ?? 'unknown  ', 0, -2);
     }
 
-
     /**
      * Reload webman
      * @return bool
      */
-    public static function reloadWebman()
+    public static function reloadWebman(): bool
     {
         if (function_exists('posix_kill')) {
             try {
@@ -547,7 +546,7 @@ class Util
      * Pause file monitor
      * @return void
      */
-    public static function pauseFileMonitor()
+    public static function pauseFileMonitor(): void
     {
         if (method_exists(Monitor::class, 'pause')) {
             Monitor::pause();
@@ -558,7 +557,7 @@ class Util
      * Resume file monitor
      * @return void
      */
-    public static function resumeFileMonitor()
+    public static function resumeFileMonitor(): void
     {
         if (method_exists(Monitor::class, 'resume')) {
             Monitor::resume();

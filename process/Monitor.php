@@ -1,16 +1,4 @@
 <?php
-/**
- * This file is part of webman.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the MIT-LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @author    walkor<walkor@workerman.net>
- * @copyright walkor<walkor@workerman.net>
- * @link      http://www.workerman.net/
- * @license   http://www.opensource.org/licenses/mit-license.php MIT License
- */
 
 namespace process;
 
@@ -22,33 +10,36 @@ use Workerman\Timer;
 use Workerman\Worker;
 
 /**
- * Class FileMonitor
- * @package process
+ * FileMonitor
  */
 class Monitor
 {
     /**
      * @var array
      */
-    protected $paths = [];
+    protected array $paths = [];
 
     /**
      * @var array
      */
-    protected $extensions = [];
+    protected array $extensions = [];
 
     /**
-     * @var string
+     * Lock file
+     * @return string
      */
-    public static $lockFile = __DIR__ . '/../runtime/monitor.lock';
+    protected static function lockFile(): string
+    {
+        return runtime_path('monitor.lock');
+    }
 
     /**
      * Pause monitor
      * @return void
      */
-    public static function pause()
+    public static function pause(): void
     {
-        file_put_contents(static::$lockFile, time());
+        file_put_contents(static::lockFile(), time());
     }
 
     /**
@@ -58,8 +49,8 @@ class Monitor
     public static function resume(): void
     {
         clearstatcache();
-        if (is_file(static::$lockFile)) {
-            unlink(static::$lockFile);
+        if (is_file(static::lockFile())) {
+            unlink(static::lockFile());
         }
     }
 
@@ -70,7 +61,7 @@ class Monitor
     public static function isPaused(): bool
     {
         clearstatcache();
-        return file_exists(static::$lockFile);
+        return file_exists(static::lockFile());
     }
 
     /**
@@ -127,7 +118,7 @@ class Monitor
         }
         $count = 0;
         foreach ($iterator as $file) {
-            $count ++;
+            $count++;
             /** var SplFileInfo $file */
             if (is_dir($file->getRealPath())) {
                 continue;
@@ -135,7 +126,7 @@ class Monitor
             // check mtime
             if (in_array($file->getExtension(), $this->extensions, true) && $lastMtime < $file->getMTime()) {
                 $var = 0;
-                exec('"'.PHP_BINARY . '" -l ' . $file, $out, $var);
+                exec('"' . PHP_BINARY . '" -l ' . $file, $out, $var);
                 $lastMtime = $file->getMTime();
                 if ($var) {
                     continue;
