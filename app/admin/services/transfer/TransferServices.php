@@ -3,6 +3,7 @@
 namespace app\admin\services\transfer;
 
 use app\admin\services\client\ClientServices;
+use app\enums\EventTransferEnums;
 use app\model\Client;
 use app\model\enums\DownloaderMarkerEnums;
 use app\model\enums\ReseedSubtypeEnums;
@@ -126,7 +127,7 @@ class TransferServices
         $move = $torrentList[Clients::TORRENT_LIST];
 
         // 调度事件：转移前
-        Event::dispatch('transfer.action.before', [$hashDict, $fromBittorrentClient, $toBittorrentClient]);
+        Event::dispatch(EventTransferEnums::transfer_action_before->value, [$hashDict, $fromBittorrentClient, $toBittorrentClient]);
 
         // 第一层循环：哈希目录字典
         foreach ($hashDict as $infohash => $downloadDirOriginal) {

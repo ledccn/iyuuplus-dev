@@ -3,6 +3,7 @@
 namespace app\admin\services\reseed;
 
 use app\admin\services\client\ClientServices;
+use app\enums\EventReseedEnums;
 use app\model\Client;
 use app\model\enums\DownloaderMarkerEnums;
 use app\model\enums\ReseedStatusEnums;
@@ -139,7 +140,7 @@ class ReseedDownloadServices
             $cache->set(time(), $limitSleep);
             $step = '2.种子下载成功';
             // 调度事件：下载种子之后
-            Event::dispatch('reseed.torrent.download.after', [$response, $reseed]);
+            Event::dispatch(EventReseedEnums::reseed_torrent_download_after->value, [$response, $reseed]);
             $step = '3.调度事件，下载种子后';
 
             $clientModel = ClientServices::getClient($reseed->client_id);
@@ -150,13 +151,13 @@ class ReseedDownloadServices
             // 调度事件：把种子发送给下载器之前
             $step = '4.调度事件，种子发送给下载器之前';
             self::sendBefore($contractsTorrent, $bittorrentClients, $clientModel, $reseed);
-            Event::dispatch('reseed.torrent.send.before', [$contractsTorrent, $bittorrentClients, $clientModel, $reseed]);
+            Event::dispatch(EventReseedEnums::reseed_torrent_send_before->value, [$contractsTorrent, $bittorrentClients, $clientModel, $reseed]);
 
             $result = $bittorrentClients->addTorrent($contractsTorrent);
 
             // 调度事件：把种子发送给下载器之后
             self::sendAfter($result, $bittorrentClients, $clientModel, $reseed);
-            Event::dispatch('reseed.torrent.send.after', [$result, $bittorrentClients, $clientModel, $reseed]);
+            Event::dispatch(EventReseedEnums::reseed_torrent_send_after->value, [$result, $bittorrentClients, $clientModel, $reseed]);
             $step = '5.调度事件，种子发送给下载器之后';
 
             // 更新模型数据

@@ -3,22 +3,25 @@
  * 事件配置
  */
 
+use app\enums\EventReseedEnums;
+use app\enums\EventTransferEnums;
+
 return [
     // 自动辅种：下载种子之后
-    'reseed.torrent.download.after' => [],
+    EventReseedEnums::reseed_torrent_download_after->value => [],
     // 自动辅种：把种子发送给下载器之前
-    'reseed.torrent.send.before' => [],
+    EventReseedEnums::reseed_torrent_send_before->value => [],
     // 自动辅种：把种子发送给下载器之后
-    'reseed.torrent.send.after' => [],
+    EventReseedEnums::reseed_torrent_send_after->value => [],
     // 自动辅种：当前客户端辅种开始前
-    'reseed.current.before' => [],
+    EventReseedEnums::reseed_current_before->value => [],
     // 自动辅种：当前客户端辅种结束后
-    'reseed.current.after' => [],
+    EventReseedEnums::reseed_current_after->value => [],
     // 自动辅种：全部客户端辅种结束
-    'reseed.all.done' => [],
+    EventReseedEnums::reseed_all_done->value => [],
 
     // 自动转移做种客户端：转移前
-    'transfer.action.before' => [],
+    EventTransferEnums::transfer_action_before->value => [],
     // 自动转移做种客户端：转移后
-    'transfer.action.after' => [],
+    EventTransferEnums::transfer_action_after->value => [],
 ];

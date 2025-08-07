@@ -5,6 +5,7 @@ namespace app\admin\services\reseed;
 use app\admin\services\client\ClientServices;
 use app\admin\support\NotifyAdmin;
 use app\admin\support\NotifyHelper;
+use app\enums\EventReseedEnums;
 use app\model\Client;
 use app\model\enums\DownloaderMarkerEnums;
 use app\model\enums\NotifyChannelEnums;
@@ -152,7 +153,7 @@ class ReseedServices
             }
 
             // 调度事件：当前客户端辅种开始前
-            Event::emit('reseed.current.before', [$hashDict, $this->bittorrentClient, $this->clientModel]);
+            Event::emit(EventReseedEnums::reseed_current_before->value, [$hashDict, $this->bittorrentClient, $this->clientModel]);
 
             $this->notifyData->hashCount += $total;
             if (self::RESEED_GROUP_NUMBER < $total) {
@@ -190,11 +191,11 @@ class ReseedServices
             }
 
             // 调度事件：当前客户端辅种结束后
-            Event::emit('reseed.current.after', [$hashDict, $this->bittorrentClient, $this->clientModel]);
+            Event::emit(EventReseedEnums::reseed_current_after->value, [$hashDict, $this->bittorrentClient, $this->clientModel]);
         }
 
         // 调度事件：全部客户端辅种结束
-        Event::emit('reseed.all.done', [$this->notifyData, $this->crontabModel, $this->crontabClients]);
+        Event::emit(EventReseedEnums::reseed_all_done->value, [$this->notifyData, $this->crontabModel, $this->crontabClients]);
 
         try {
             $this->sendNotify();
