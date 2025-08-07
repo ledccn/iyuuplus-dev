@@ -2,6 +2,7 @@
 
 namespace app\middleware;
 
+use Exception;
 use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\MiddlewareInterface;
@@ -16,6 +17,7 @@ class SessionId implements MiddlewareInterface
      * @param \support\Request|Request $request
      * @param callable $handler
      * @return Response
+     * @throws Exception
      */
     public function process(\support\Request|Request $request, callable $handler): Response
     {
