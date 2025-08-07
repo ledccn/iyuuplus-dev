@@ -4,6 +4,6 @@
  */
 
 return [
-    '' => support\exception\Handler::class,
+    '' => app\exception\AdminHandler::class,
     'admin' => app\exception\AdminHandler::class,
 ];
