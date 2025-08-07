@@ -2,7 +2,6 @@
 
 namespace Iyuu\SiteManager;
 
-use InvalidArgumentException;
 use Iyuu\SiteManager\Contracts\ConfigInterface;
 use Iyuu\SiteManager\Contracts\DownloaderInterface;
 use Iyuu\SiteManager\Contracts\DownloaderLinkInterface;
@@ -11,7 +10,6 @@ use Iyuu\SiteManager\Contracts\ProcessorXml;
 use Iyuu\SiteManager\Contracts\Response;
 use Iyuu\SiteManager\Contracts\Torrent;
 use Iyuu\SiteManager\Exception\TorrentException;
-use Ledc\Container\App;
 use Ledc\Container\Manager;
 use think\helper\Str;
 use Throwable;
@@ -24,25 +22,28 @@ class SiteManager extends Manager implements DownloaderInterface
     /**
      * 驱动类的前缀
      */
-    public const DRIVER_PREFIX = 'Driver';
+    public const string DRIVER_PREFIX = 'Driver';
     /**
      * 驱动的命名空间
      */
-    public const DRIVER_NAMESPACE = __NAMESPACE__ . '\\Driver\\';
+    public const string DRIVER_NAMESPACE = __NAMESPACE__ . '\\Driver\\' . self::DRIVER_PREFIX;
     /**
      * 驱动的命名空间
      * @var string|null
      */
     protected ?string $namespace = self::DRIVER_NAMESPACE;
+    /**
+     * 始终创建新的驱动对象实例
+     * @var bool
+     */
+    protected bool $alwaysNewInstance = true;
 
     /**
      * 构造函数
-     * @param App $app App
      * @param ConfigInterface $config 当前站点配置
      */
-    public function __construct(App $app, public readonly ConfigInterface $config)
+    public function __construct(public readonly ConfigInterface $config)
     {
-        parent::__construct($app);
     }
 
     /**
@@ -52,24 +53,6 @@ class SiteManager extends Manager implements DownloaderInterface
     public function getDefaultDriver(): ?string
     {
         return null;
-    }
-
-    /**
-     * 获取驱动类
-     * @param string $type
-     * @return string
-     */
-    protected function resolveClass(string $type): string
-    {
-        if ($this->namespace || str_contains($type, '\\')) {
-            $className = static::siteToClassname($type);
-            $class = str_contains($type, '\\') ? $type : $this->namespace . $className;
-            if (class_exists($class)) {
-                return $class;
-            }
-        }
-
-        throw new InvalidArgumentException("Driver [$type] not supported.");
     }
 
     /**
@@ -109,7 +92,7 @@ class SiteManager extends Manager implements DownloaderInterface
      */
     public function clearDriver(): void
     {
-        $this->drivers = [];
+        $this->clearDrivers();
     }
 
     /**

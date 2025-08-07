@@ -2115,24 +2115,24 @@
         },
         {
             "name": "ledc/container",
-            "version": "v8.1.2",
-            "version_normalized": "8.1.2.0",
+            "version": "v8.3.7",
+            "version_normalized": "8.3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ledccn/ledc-container.git",
-                "reference": "63ca7d8c9697b4827f7c1294319b82fef9c8f700"
+                "reference": "6e551386704abdec8eb456bc2aa167470c02b28f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ledccn/ledc-container/zipball/63ca7d8c9697b4827f7c1294319b82fef9c8f700",
-                "reference": "63ca7d8c9697b4827f7c1294319b82fef9c8f700",
+                "url": "https://api.github.com/repos/ledccn/ledc-container/zipball/6e551386704abdec8eb456bc2aa167470c02b28f",
+                "reference": "6e551386704abdec8eb456bc2aa167470c02b28f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2",
                 "topthink/think-container": ">=2.0"
             },
-            "time": "2025-07-05T07:16:32+00:00",
+            "time": "2025-08-07T00:25:19+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2153,7 +2153,7 @@
             "description": "容器管理类、驱动管理类、Facade管理类",
             "support": {
                 "issues": "https://github.com/ledccn/ledc-container/issues",
-                "source": "https://github.com/ledccn/ledc-container/tree/v8.1.2"
+                "source": "https://github.com/ledccn/ledc-container/tree/v8.3.7"
             },
             "install-path": "../ledc/container"
         },

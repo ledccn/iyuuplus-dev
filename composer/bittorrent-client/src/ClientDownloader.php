@@ -2,9 +2,8 @@
 
 namespace Iyuu\BittorrentClient;
 
-use InvalidArgumentException;
 use Iyuu\BittorrentClient\Contracts\ConfigInterface;
-use Ledc\Container\App;
+use Iyuu\BittorrentClient\Driver\qBittorrent\Client;
 use Ledc\Container\Manager;
 
 /**
@@ -17,15 +16,18 @@ class ClientDownloader extends Manager
      * @var string|null
      */
     protected ?string $namespace = __NAMESPACE__ . '\\Driver\\';
+    /**
+     * 始终创建新的驱动对象实例
+     * @var bool
+     */
+    protected bool $alwaysNewInstance = true;
 
     /**
      * 构造函数
-     * @param App $app App
      * @param ConfigInterface $config 当前站点配置
      */
-    public function __construct(App $app, public readonly ConfigInterface $config)
+    public function __construct(public readonly ConfigInterface $config)
     {
-        parent::__construct($app);
     }
 
     /**
@@ -59,18 +61,23 @@ class ClientDownloader extends Manager
     }
 
     /**
-     * 获取驱动类
-     * @param string $type
-     * @return string
+     * 创建驱动
+     * @param array $params
+     * @return mixed
      */
-    protected function resolveClass(string $type): string
+    protected function createQBittorrentDriver(array $params): mixed
     {
-        $class = str_contains($type, '\\') ? $type : $this->namespace . $type . '\\Client';
-        if (class_exists($class)) {
-            return $class;
-        }
+        return static::app()->invokeClass(Client::class, $params);
+    }
 
-        throw new InvalidArgumentException("Driver [$type] not supported.");
+    /**
+     * 创建驱动
+     * @param array $params
+     * @return mixed
+     */
+    protected function createTransmissionDriver(array $params): mixed
+    {
+        return static::app()->invokeClass(Driver\transmission\Client::class, $params);
     }
 
     /**
@@ -89,6 +96,6 @@ class ClientDownloader extends Manager
      */
     public function clearDriver(): void
     {
-        $this->drivers = [];
+        $this->clearDrivers();
     }
 }

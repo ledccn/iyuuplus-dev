@@ -86,7 +86,7 @@ class ClientServices
      */
     public static function testBittorrent(Client $client): Clients
     {
-        $clientDownloader = new ClientDownloader(App::getInstance(), new ConfigTemporary($client->toArray()));
+        $clientDownloader = new ClientDownloader(new ConfigTemporary($client->toArray()));
         $name = $clientDownloader->config->encode(0, $client->brand);
         return $clientDownloader->select($name);
     }
