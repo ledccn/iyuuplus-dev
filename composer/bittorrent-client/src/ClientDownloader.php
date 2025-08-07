@@ -65,7 +65,7 @@ class ClientDownloader extends Manager
      * @param array $params
      * @return mixed
      */
-    protected function createQBittorrentDriver(array $params): mixed
+    protected function createQBittorrentDriver(array ...$params): mixed
     {
         return static::app()->invokeClass(Client::class, $params);
     }
@@ -75,7 +75,7 @@ class ClientDownloader extends Manager
      * @param array $params
      * @return mixed
      */
-    protected function createTransmissionDriver(array $params): mixed
+    protected function createTransmissionDriver(array ...$params): mixed
     {
         return static::app()->invokeClass(Driver\transmission\Client::class, $params);
     }
