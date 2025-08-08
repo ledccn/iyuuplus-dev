@@ -73,8 +73,7 @@ class ClientServices
      */
     public static function createBittorrent(Client $client): Clients
     {
-        /** @var ClientDownloader $clientDownloader */
-        $clientDownloader = App::pull(ClientDownloader::class);
+        $clientDownloader = ClientDownloader::getInstance();
         $name = $clientDownloader->config->encode($client->id, $client->brand);
         return $clientDownloader->select($name);
     }

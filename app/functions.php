@@ -7,7 +7,6 @@
 use Iyuu\BittorrentClient\ClientDownloader;
 use Iyuu\ReseedClient\Client;
 use Iyuu\SiteManager\SiteManager;
-use Ledc\Container\App;
 use plugin\admin\app\model\Base;
 use plugin\admin\app\model\Option;
 use support\Log;
@@ -56,12 +55,8 @@ function echo_system_info(): void
 function clear_instance_cache(): void
 {
     try {
-        /** @var SiteManager $siteManager */
-        $siteManager = App::pull(SiteManager::class);
-        $siteManager->clearDrivers();
-        /** @var ClientDownloader $clientDownloader */
-        $clientDownloader = App::pull(ClientDownloader::class);
-        $clientDownloader->clearDrivers();
+        SiteManager::getInstance()->clearDrivers();
+        ClientDownloader::getInstance()->clearDrivers();
     } catch (Error|Exception|Throwable $throwable) {
         Log::error('清理缓存驱动实例异常：' . $throwable->getMessage());
     }
