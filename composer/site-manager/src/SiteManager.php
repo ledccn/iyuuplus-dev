@@ -155,10 +155,9 @@ class SiteManager extends Manager implements DownloaderInterface
         }
 
         //多维数组排序
-        $_site = [];
-        foreach ($rows as $key => $value) {
-            $_site[$key] = $value[0];
-        }
+        $_site = array_map(function ($value) {
+            return $value[0];
+        }, $rows);
         array_multisort($_site, SORT_ASC, $rows);
 
         return $rows;
