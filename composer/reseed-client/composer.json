@@ -11,8 +11,7 @@
     "ext-dom": "*",
     "ext-simplexml": "*",
     "ext-libxml": "*",
-    "ledc/container": "^8.0",
-    "ledc/curl": "^2.0"
+    "ledc/curl": ">=8.1"
   },
   "autoload": {
     "psr-4": {
