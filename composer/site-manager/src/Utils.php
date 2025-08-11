@@ -2,6 +2,7 @@
 
 namespace Iyuu\SiteManager;
 
+use Iyuu\SiteManager\Spider\SpiderClient;
 use RuntimeException;
 
 /**
@@ -9,6 +10,15 @@ use RuntimeException;
  */
 class Utils
 {
+    /**
+     * 创建种子已存在异常
+     * @return RuntimeException
+     */
+    public static function createTorrentExistsException(): RuntimeException
+    {
+        return new RuntimeException('-----种子：在远端服务器已存在！！！', SpiderClient::TORRENT_EXIST_CODE);
+    }
+
     /**
      * 判断windows操作系统
      * @return bool

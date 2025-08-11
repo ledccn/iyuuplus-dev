@@ -3,6 +3,7 @@
 namespace Iyuu\SiteManager\Spider;
 
 use Iyuu\SiteManager\Exception\BadRequestException;
+use Iyuu\SiteManager\Utils;
 use Ledc\Container\App;
 use Ledc\Curl\Curl;
 use RuntimeException;
@@ -12,6 +13,10 @@ use RuntimeException;
  */
 class SpiderClient
 {
+    /**
+     * 爬虫服务返回的种子已存在
+     */
+    public const int TORRENT_EXIST_CODE = 202;
     /**
      * 爬虫服务主域名
      */
@@ -130,8 +135,8 @@ class SpiderClient
             return;
         }
         throw match ($code) {
-            202 => new RuntimeException('-----种子：在远端服务器已存在！！！'),
-            405 => new RuntimeException('-----种子：' . $msg),
+            self::TORRENT_EXIST_CODE => Utils::createTorrentExistsException(),
+            405 => new RuntimeException('-----种子：' . $msg, 405),
             default => new BadRequestException('-----错误消息：' . $msg . PHP_EOL),
         };
     }
