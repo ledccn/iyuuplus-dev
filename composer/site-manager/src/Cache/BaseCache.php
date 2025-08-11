@@ -3,6 +3,7 @@
 namespace Iyuu\SiteManager\Cache;
 
 use Iyuu\SiteManager\SiteManagerCache as Cache;
+use LogicException;
 
 /**
  * 缓存基础类
@@ -13,7 +14,7 @@ abstract class BaseCache
      * 缓存KEY
      * @var string
      */
-    private string $key;
+    private string $key = '';
 
     /**
      * 构造函数
@@ -83,6 +84,9 @@ abstract class BaseCache
      */
     final public function getKey(): string
     {
+        if (empty($this->key)) {
+            throw new LogicException('缓存KEY未设置');
+        }
         return md5(get_class($this)) . $this->key;
     }
 
