@@ -98,6 +98,6 @@ abstract class BaseCache
      */
     final public function __call(string $name, array $arguments): mixed
     {
-        return Cache::getInstance()()->{$name}(... $arguments);
+        return Cache::getInstance()->{$name}(... $arguments);
     }
 }
