@@ -2,14 +2,12 @@
 
 namespace app\common\cache;
 
+use LogicException;
 use support\Cache;
 use Symfony\Component\Cache\Psr16Cache;
 
 /**
  * 缓存基础类
- * @method iterable getMultiple($keys, $default = null)
- * @method bool setMultiple($values, $ttl = null)
- * @method bool deleteMultiple($keys)
  */
 abstract class BaseCache
 {
@@ -21,12 +19,8 @@ abstract class BaseCache
 
     /**
      * 构造函数
-     * @param string $key
      */
-    public function __construct(string $key)
-    {
-        $this->key = $key;
-    }
+    abstract public function __construct();
 
     /**
      * 获取缓存
@@ -91,6 +85,9 @@ abstract class BaseCache
      */
     final public function getKey(): string
     {
+        if (empty($this->key)) {
+            throw new LogicException('缓存KEY未设置');
+        }
         return md5(get_class($this)) . $this->key;
     }
 
@@ -101,15 +98,5 @@ abstract class BaseCache
     final public static function instance(): Psr16Cache
     {
         return Cache::store();
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    final public function __call(string $name, array $arguments): mixed
-    {
-        return Cache::store()->{$name}(... $arguments);
     }
 }

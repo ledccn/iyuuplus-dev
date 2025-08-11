@@ -89,15 +89,4 @@ abstract class BaseCache
         }
         return md5(get_class($this)) . $this->key;
     }
-
-    /**
-     * 动态调用缓存句柄对象方法
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    final public function __call(string $name, array $arguments): mixed
-    {
-        return Cache::getInstance()->{$name}(... $arguments);
-    }
 }
