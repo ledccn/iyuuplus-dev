@@ -258,16 +258,15 @@ class SchedulerProcess
     {
         $crontab_id = $model->crontab_id;
         if ($crontabRocket = static::getPoolByCrontabId($crontab_id)) {
-            $cb = $crontabRocket->getCrontab()->getCallback();
-            $process = $crontabRocket->getProcess();
-            if (null === $process) {
-                call_user_func($cb);
-                echo 'Success 手动运行 计划任务，ID ' . $crontab_id . PHP_EOL;
-                return true;
-            } else {
+            if ($crontabRocket->getProcess()) {
                 echo 'Fail 任务运行中，本轮忽略；ID ' . $crontab_id . PHP_EOL;
                 PushNotify::info(sprintf('任务d%运行中，本轮忽略', $model->crontab_id));
                 return false;
+            } else {
+                $cb = $crontabRocket->getCrontab()->getCallback();
+                call_user_func($cb, $crontabRocket);
+                echo 'Success 手动运行 计划任务，ID ' . $crontab_id . PHP_EOL;
+                return true;
             }
         } else {
             echo 'Success 手动运行 计划任务（空的）' . PHP_EOL;

@@ -45,7 +45,8 @@ abstract class CrontabAbstract implements CrontabTaskTypeEnumsInterface, Crontab
                 $startTime = microtime(true);
                 $time = time();
                 try {
-                    if ($rocket->getProcess() || $rocket->getProcess()?->isRunning()) {
+                    // 存在进程，可忽略进程状态，直接返回
+                    if ($rocket->getProcess()) {
                         echo '当前' . $tips . '运行中，本轮忽略！' . PHP_EOL;
                         PushNotify::info(sprintf('任务d%运行中，本轮忽略', $model->crontab_id));
                         return;
