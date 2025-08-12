@@ -85,6 +85,7 @@ class SiteController extends Crud
 
             Cache::delete(SitesServices::SYSTEM_IYUU_HELPER);
             if ($request->method() === 'POST') {
+                // 更新
                 $data = $request->postMore(['sid', 'site', 'cookie', 'options']);
                 $rule = [
                     'sid|站点ID' => 'require|number',
@@ -112,7 +113,7 @@ class SiteController extends Crud
                     $siteModel->options = $options;
                 }
                 $siteModel->save();
-                // 更新
+
                 return $this->success();
             } else {
                 // 获取
