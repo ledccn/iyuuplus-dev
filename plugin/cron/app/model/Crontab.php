@@ -30,6 +30,10 @@ use Symfony\Component\Process\Process;
 class Crontab extends Base
 {
     /**
+     * 进程最大执行时间（单位秒）
+     */
+    public const int MAX_EXECUTION_TIME = 1200;
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -176,7 +180,7 @@ class Crontab extends Base
             }
         }
 
-        $process = new Process($command, base_path());
+        $process = new Process($command, base_path(), null, null, self::MAX_EXECUTION_TIME);
         $process->start($callback);
         return $process;
     }

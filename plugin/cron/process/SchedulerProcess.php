@@ -11,6 +11,7 @@ use plugin\cron\app\model\Crontab;
 use plugin\cron\app\services\CrontabEventEnums;
 use plugin\cron\app\services\CrontabRocket;
 use plugin\cron\app\services\Scheduler;
+use plugin\cron\app\support\PushNotify;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -102,12 +103,10 @@ class SchedulerProcess
                             static::deleteCrontab($crontab_id);
                             break;
                         case CrontabEventEnums::start->name:
-                            $model = Crontab::find($crontab_id);
-                            static::startCrontabProcess($model);
+                            static::startCrontabProcess(Crontab::find($crontab_id));
                             break;
                         case CrontabEventEnums::stop->name:
-                            $model = Crontab::find($crontab_id);
-                            static::stopCrontabProcess($model);
+                            static::stopCrontabProcess(Crontab::find($crontab_id));
                             break;
                         default:
                             // 其他未处理的事件
@@ -137,6 +136,12 @@ class SchedulerProcess
             return;
         }
 
+//        Timer::add(5, function () {
+//            // 打印内存占用
+//            echo sprintf('Memory usage: %.2f MB', memory_get_usage() / 1024 / 1024) . PHP_EOL;
+//            // 打印Crontab 列表
+//            echo 'Crontab List: ' . implode(', ', array_keys(\Workerman\Crontab\Crontab::getAll())) . PHP_EOL;
+//        });
         $this->initPoolsCrontab();
     }
 
@@ -234,7 +239,7 @@ class SchedulerProcess
     {
         if ($crontabRocket = static::getPoolByCrontabId($crontab_id)) {
             $crontabRocket->getCrontab()->destroy();
-            $crontabRocket->getProcess()?->stop(2);
+            $crontabRocket->stopProcess();
             unset(static::$pools[$crontab_id]);
             echo 'Success 删除计划任务，ID ' . $crontab_id . PHP_EOL;
             return true;
@@ -255,11 +260,15 @@ class SchedulerProcess
         if ($crontabRocket = static::getPoolByCrontabId($crontab_id)) {
             $cb = $crontabRocket->getCrontab()->getCallback();
             $process = $crontabRocket->getProcess();
-            if (!$process || !$process->isRunning()) {
+            if (null === $process) {
                 call_user_func($cb);
+                echo 'Success 手动运行 计划任务，ID ' . $crontab_id . PHP_EOL;
+                return true;
+            } else {
+                echo 'Fail 任务运行中，本轮忽略；ID ' . $crontab_id . PHP_EOL;
+                PushNotify::info(sprintf('任务d%运行中，本轮忽略', $model->crontab_id));
+                return false;
             }
-            echo 'Success 手动运行 计划任务，ID ' . $crontab_id . PHP_EOL;
-            return true;
         } else {
             echo 'Success 手动运行 计划任务（空的）' . PHP_EOL;
             return false;
@@ -275,7 +284,7 @@ class SchedulerProcess
     {
         $crontab_id = $model->crontab_id;
         if ($crontabRocket = static::getPoolByCrontabId($crontab_id)) {
-            $crontabRocket->getProcess()?->stop(3);
+            $crontabRocket->stopProcess();
             echo 'Success 手动停止 计划任务，ID ' . $crontab_id . PHP_EOL;
             return true;
         }

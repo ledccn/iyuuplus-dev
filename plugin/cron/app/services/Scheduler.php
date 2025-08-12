@@ -24,7 +24,7 @@ class Scheduler
     /**
      * 默认错误码
      */
-    const DEFAULT_ERROR_CODE = 250;
+    public const int DEFAULT_ERROR_CODE = 250;
 
     /**
      * 启动当前计划任务
@@ -81,7 +81,7 @@ class Scheduler
             $code = 0;
             $exception = '';
             try {
-                if ($rocket->getProcess()?->isRunning()) {
+                if ($rocket->getProcess() || $rocket->getProcess()->isRunning()) {
                     echo '当前任务运行中，本轮忽略！' . PHP_EOL;
                     PushNotify::info(sprintf('任务d%运行中，本轮忽略', $model->crontab_id));
                     return;
@@ -100,11 +100,13 @@ class Scheduler
                         $exception = $throwable->getMessage();
                         $isDelete = true;
                     } finally {
-                        if ($isDelete) {
+                        $endTime = microtime(true);
+                        $duration = $endTime - $startTime;
+                        // 删除定时器、停止进程
+                        if ($isDelete || Crontab::MAX_EXECUTION_TIME <= $duration) {
                             Timer::del($timer_id);
-                            $rocket->setProcess(null);
-                            $endTime = microtime(true);
-                            CrontabLog::createCrontabLog($rocket->model, $exception ?: '进程运行结束', $code, ($endTime - $startTime) * 1000);
+                            $rocket->stopProcess();
+                            CrontabLog::createCrontabLog($rocket->model, $exception ?: '进程运行结束', $code, $duration * 1000);
                         }
                     }
                 });

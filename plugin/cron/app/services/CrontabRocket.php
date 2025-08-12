@@ -2,6 +2,7 @@
 
 namespace plugin\cron\app\services;
 
+use LogicException;
 use plugin\cron\app\model\Crontab;
 use Symfony\Component\Process\Process;
 use Workerman\Crontab\Crontab as WorkermanCrontab;
@@ -16,12 +17,11 @@ class CrontabRocket
      * @var Process|null
      */
     private ?Process $process = null;
-
     /**
-     * 计划任务对象
-     * @var WorkermanCrontab
+     * workerman的Crontab对象任务id
+     * @var int
      */
-    private WorkermanCrontab $crontab;
+    private int $workermanCrontabId = 0;
 
     /**
      * 构造函数
@@ -37,7 +37,15 @@ class CrontabRocket
      */
     public function getCrontab(): WorkermanCrontab
     {
-        return $this->crontab;
+        if ($this->workermanCrontabId <= 0) {
+            throw new LogicException('调用时机错误，请联系开发者');
+        }
+
+        $crontab = WorkermanCrontab::getAll()[$this->workermanCrontabId] ?? null;
+        if (!$crontab) {
+            throw new LogicException('WorkermanCrontab对象不存在，请联系开发者');
+        }
+        return $crontab;
     }
 
     /**
@@ -47,7 +55,7 @@ class CrontabRocket
      */
     public function setCrontab(WorkermanCrontab $crontab): static
     {
-        $this->crontab = $crontab;
+        $this->workermanCrontabId = $crontab->getId();
         return $this;
     }
 
@@ -69,5 +77,15 @@ class CrontabRocket
     {
         $this->process = $process;
         return $this;
+    }
+
+    /**
+     * 停止进程
+     * @return void
+     */
+    public function stopProcess(): void
+    {
+        $this->process?->stop(2);
+        $this->process = null;
     }
 }

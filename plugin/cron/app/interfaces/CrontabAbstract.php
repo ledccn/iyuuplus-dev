@@ -2,9 +2,11 @@
 
 namespace plugin\cron\app\interfaces;
 
+use app\admin\services\transfer\TransferSelectEnums;
 use Error;
 use Exception;
 use Ledc\Element\GenerateInterface;
+use plugin\cron\app\model\Crontab;
 use plugin\cron\app\model\CrontabLog;
 use plugin\cron\app\services\CrontabRocket;
 use plugin\cron\app\services\Scheduler;
@@ -20,6 +22,19 @@ use Workerman\Timer;
 abstract class CrontabAbstract implements CrontabTaskTypeEnumsInterface, CrontabLayuiTemplateInterface, CrontabSchedulerInterface, GenerateInterface
 {
     /**
+     * 获取任务最大执行时间
+     * @param int $task_type
+     * @return int
+     */
+    protected static function getMaxExecutionTime(int $task_type): int
+    {
+        return match ($task_type) {
+            TransferSelectEnums::transfer->value => Crontab::MAX_EXECUTION_TIME * 3,
+            default => Crontab::MAX_EXECUTION_TIME
+        };
+    }
+
+    /**
      * @param int $value
      * @param string $tips
      * @param CrontabRocket $rocket
@@ -30,20 +45,21 @@ abstract class CrontabAbstract implements CrontabTaskTypeEnumsInterface, Crontab
         $model = $rocket->model;
         if ($value === (int)$model->task_type) {
             return new WorkermanCrontab($model->rule, function () use ($model, $rocket, $tips) {
+                $maxExecutionTime = self::getMaxExecutionTime((int)$model->task_type);
                 $startTime = microtime(true);
                 $time = time();
                 try {
-                    if ($rocket->getProcess()?->isRunning()) {
+                    if ($rocket->getProcess() || $rocket->getProcess()->isRunning()) {
                         echo '当前' . $tips . '运行中，本轮忽略！' . PHP_EOL;
                         PushNotify::info(sprintf('任务d%运行中，本轮忽略', $model->crontab_id));
                         return;
                     }
 
                     $command = [PHP_BINARY, base_path('webman'), $model->target, $model->crontab_id];
-                    $process = new Process($command, base_path());
+                    $process = new Process($command, base_path(), null, null, $maxExecutionTime + 300);
                     $process->start();
                     $rocket->setProcess($process);
-                    $timer_id = Timer::add(0.5, function () use ($rocket, $process, &$timer_id, $startTime) {
+                    $timer_id = Timer::add(0.5, function () use ($rocket, $process, &$timer_id, $startTime, $maxExecutionTime) {
                         $code = 0;
                         $exception = '';
                         try {
@@ -56,11 +72,13 @@ abstract class CrontabAbstract implements CrontabTaskTypeEnumsInterface, Crontab
                             $exception = $throwable->getMessage();
                             $isDelete = true;
                         } finally {
-                            if ($isDelete) {
+                            $endTime = microtime(true);
+                            $duration = $endTime - $startTime;
+                            // 删除定时器、停止进程
+                            if ($isDelete || $maxExecutionTime <= $duration) {
                                 Timer::del($timer_id);
-                                $rocket->setProcess(null);
-                                $endTime = microtime(true);
-                                CrontabLog::createCrontabLog($rocket->model, $exception ?: '进程运行结束', $code, ($endTime - $startTime) * 1000);
+                                $rocket->stopProcess();
+                                CrontabLog::createCrontabLog($rocket->model, $exception ?: '进程运行结束', $code, $duration * 1000);
                             }
                         }
                     });
