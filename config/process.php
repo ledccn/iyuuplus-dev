@@ -14,6 +14,7 @@ if (false === $listenPort || !is_numeric($listenPort)) {
 return [
     // File update detection and automatic reload
     'monitor' => [
+        'workerClass' => plugin\cron\app\Worker::class,
         'handler' => process\Monitor::class,
         'reloadable' => false,
         'constructor' => [
@@ -38,11 +39,13 @@ return [
     ],
     // IYUU辅助进程：辅种、RSS等
     'reseed' => [
+        'workerClass' => plugin\cron\app\Worker::class,
         'handler' => process\ReseedProcess::class,
         'constructor' => [],
     ],
     // 视听云
     'cloud' => [
+        'workerClass' => plugin\cron\app\Worker::class,
         'handler' => process\MovieProcess::class,
         'constructor' => [
             'token' => getenv('CLOUD_ACCESS_TOKEN') ?: '',

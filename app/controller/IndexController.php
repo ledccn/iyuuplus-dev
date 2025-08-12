@@ -4,6 +4,7 @@ namespace app\controller;
 
 use support\Request;
 use support\Response;
+use Workerman\Coroutine;
 
 /**
  * 默认控制器
@@ -33,6 +34,7 @@ class IndexController
                 'post' => $request->post(),
                 'header' => $request->header(),
                 'cookie' => $request->cookie(),
+                'is_coroutine' => Coroutine::isCoroutine(),
             ]
         ]);
     }
