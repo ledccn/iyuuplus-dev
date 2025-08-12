@@ -1,7 +1,7 @@
 # IYUUPlus开发版
 
 <a href="https://item.jd.com/100058776147.html" target="_blank">
-<img src="https://v.hilx.cn/app/admin/upload/img/20250812/689a969b0f93.jpg" width="1080">
+<img src="https://v.hilx.cn/app/admin/upload/img/20250812/689a969b0f93.jpg" width="1080" alt="极空间官方旗舰店">
 </a>
 
 # 介绍
@@ -59,10 +59,10 @@ extension=zip
 
 | 组件            | 版本     | 官网                                          |
 |---------------|--------|---------------------------------------------|
-| Workerman版本   | 4.1.15 | https://www.workerman.net/doc/workerman/    |
-| Webman版本      | 1.5.16 | https://www.workerman.net/doc/webman/       |
-| WebmanAdmin版本 | 0.6.20 | https://www.workerman.net/doc/webman-admin/ |
-| PHP版本         | 8.3.0  | https://www.php.net/                        |
+| Workerman版本   | 5.1.3  | https://www.workerman.net/doc/workerman/    |
+| Webman版本      | 1.6.14 | https://www.workerman.net/doc/webman/       |
+| WebmanAdmin版本 | 0.6.30 | https://www.workerman.net/doc/webman-admin/ |
+| PHP版本         | 8.3.7  | https://www.php.net/                        |
 | MYSQL版本       | 5.7.26 | https://www.mysql.com/                      |
 | Layui         | 2.8.12 | https://layui.dev/                          |
 | Vue           | 3.4.21 | https://vuejs.org/                          |
