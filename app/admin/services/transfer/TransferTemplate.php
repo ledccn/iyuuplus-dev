@@ -6,6 +6,7 @@ use app\command\TransferCommand;
 use app\model\enums\DownloaderMarkerEnums;
 use Ledc\Element\GenerateInterface;
 use plugin\cron\app\interfaces\CrontabAbstract;
+use plugin\cron\app\model\Crontab;
 use plugin\cron\app\services\CrontabRocket;
 use Workerman\Crontab\Crontab as WorkermanCrontab;
 
@@ -35,6 +36,16 @@ class TransferTemplate extends CrontabAbstract
             TransferSelectEnums::transfer->value => $this,
             default => null
         };
+    }
+
+    /**
+     * 获取任务最大执行时间
+     * @param int $task_type
+     * @return int
+     */
+    protected static function getMaxExecutionTime(int $task_type): int
+    {
+        return Crontab::MAX_EXECUTION_TIME * 3;
     }
 
     /**

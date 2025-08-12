@@ -2,7 +2,6 @@
 
 namespace plugin\cron\app\interfaces;
 
-use app\admin\services\transfer\TransferSelectEnums;
 use Error;
 use Exception;
 use Ledc\Element\GenerateInterface;
@@ -28,10 +27,7 @@ abstract class CrontabAbstract implements CrontabTaskTypeEnumsInterface, Crontab
      */
     protected static function getMaxExecutionTime(int $task_type): int
     {
-        return match ($task_type) {
-            TransferSelectEnums::transfer->value => Crontab::MAX_EXECUTION_TIME * 3,
-            default => Crontab::MAX_EXECUTION_TIME
-        };
+        return Crontab::MAX_EXECUTION_TIME;
     }
 
     /**
