@@ -119,24 +119,36 @@ class Crontab extends Base
                 $cron = sprintf(self::cron_format, $minute, $hour, '*', '*', '*');
                 break;
             case 'day_n':       //N天
+                if ($day <= 0) {
+                    throw new InvalidArgumentException('执行周期天day字段的值无效，必须大于0');
+                }
                 $cron = sprintf(self::cron_format, $minute, $hour, '*/' . $day, '*', '*');
                 break;
             case 'hour':        //每小时
                 $cron = sprintf(self::cron_format, $minute, '*', '*', '*', '*');
                 break;
             case 'hour_n':      //N小时
+                if ($hour <= 0) {
+                    throw new InvalidArgumentException('执行周期小时hour字段的值无效，必须大于0');
+                }
                 $cron = sprintf(self::cron_format, $minute, '*/' . $hour, '*', '*', '*');
                 break;
             case 'minute':      //每分钟
                 $cron = sprintf(self::cron_format, '*', '*', '*', '*', '*');
                 break;
             case 'minute_n':    //N分钟
+                if ($minute <= 0) {
+                    throw new InvalidArgumentException('执行周期分钟minute字段的值无效，必须大于0');
+                }
                 $cron = sprintf(self::cron_format, '*/' . $minute, '*', '*', '*', '*');
                 break;
             case 'second':      //每秒
                 $cron = sprintf(self::cron_format, '*', '*', '*', '*', '*', '*');
                 break;
             case 'second_n':    //N秒
+                if ($second <= 0) {
+                    throw new InvalidArgumentException('执行周期秒second字段的值无效，必须大于0');
+                }
                 $cron = sprintf(self::cron_format, '*/' . $second, '*', '*', '*', '*', '*');
                 break;
             case 'week':        //每周
