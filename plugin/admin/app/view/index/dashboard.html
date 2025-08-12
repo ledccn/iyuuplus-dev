@@ -196,35 +196,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="layui-col-xs12">
-					<!-- 数据表格 -->
-					<div class="layui-card" style="min-height:580px;">
-						<div class="layui-card-header">待办事项</div>
-						<div class="layui-card-body">
-							<!-- 查询表单 -->
-							<form class="layui-form top-search-from">
-
-								<div class="layui-form-item">
-									<label class="layui-form-label">完成状态</label>
-									<div class="layui-input-block">
-										<div name="completed" id="completed" value=""></div>
-									</div>
-								</div>
-
-								<div class="layui-form-item layui-inline">
-									<label class="layui-form-label"></label>
-									<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="table-query">
-										<i class="layui-icon layui-icon-search"></i>查询
-									</button>
-									<button type="reset" class="pear-btn pear-btn-md" lay-submit lay-filter="table-reset">
-										<i class="layui-icon layui-icon-refresh"></i>重置
-									</button>
-								</div>
-							</form>
-							<table id="data-table" lay-filter="data-table"></table>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 		<!--</div>-->
@@ -239,6 +210,15 @@
 						util = layui.util,
 						popup = layui.popup,
 						echarts = layui.echarts;
+				/**
+				 * 屏幕宽度小于指定值
+				 * @param px
+				 * @returns {boolean}
+				 */
+				function isWidthMin(px = 1500) {
+					console.info('屏幕宽度：', layui.$(window).width());
+					return layui.$(window).width() <= px;
+				}
 
 				util.on('lay-on', {
 					site_sync: function () {
@@ -471,154 +451,6 @@
 					echartsRecords.resize();
 				}
 
-			});
-
-			// 字段 已完成：0待办，1已完成 completed
-			layui.use(["jquery", "xmSelect"], function () {
-				let value = layui.$("#completed").attr("value");
-				let initValue = value ? value.split(",") : [];
-				layui.xmSelect.render({
-					el: "#completed",
-					name: "completed",
-					filterable: true,
-					initValue: initValue,
-					data: [{"value": "0", "name": "待办"}, {"value": "1", "name": "已完结"}],
-					model: {"icon": "hidden", "label": {"type": "text"}},
-					clickClose: true,
-					radio: true,
-				})
-			});
-
-			// 表格渲染
-			layui.use(["table", "form", "common", "popup", "util"], function () {
-				let table = layui.table;
-				let form = layui.form;
-				let $ = layui.$;
-				let common = layui.common;
-				let util = layui.util;
-
-				// 相关常量
-				const SELECT_API = "https://2025.iyuu.cn/reseed/todo/select";
-
-				/**
-				 * 屏幕宽度小于指定值
-				 * @param px
-				 * @returns {boolean}
-				 */
-				function isWidthMin(px = 1500) {
-					console.info('屏幕宽度：', layui.$(window).width());
-					return layui.$(window).width() <= px;
-				}
-
-				// 表头参数
-				let cols = [
-					{
-						title: "ID", align: "center",
-						field: "id",
-						width: 80,
-					}, {
-						title: "父ID", align: "center",
-						field: "parent_id",
-						hide: isWidthMin(),
-						width: 80,
-					}, {
-						title: "任务标题", align: "center",
-						field: "title",
-					}, {
-						title: "任务描述", align: "center",
-						field: "description",
-					}, {
-						title: "开始时间", align: "center",
-						field: "start_time",
-						hide: isWidthMin(),
-						width: 145,
-					}, {
-						title: "结束时间", align: "center",
-						field: "end_time",
-						hide: isWidthMin(),
-						width: 145,
-					}, {
-						title: "已完成", align: "center",
-						field: "completed",
-						sort: true,
-						width: 90,
-						templet: function (d) {
-							let field = "completed";
-							if (d[field]) {
-								return '<span class="layui-badge layui-bg-green">已完结</span>';
-							}
-							return '<span class="layui-badge layui-bg-gray">待办</span>';
-						}
-					}, {
-						title: "创建时间", align: "center",
-						field: "create_time",
-						sort: true,
-						width: 145,
-					}, {
-						title: "更新时间", align: "center",
-						field: "update_time",
-						sort: true,
-						width: 145,
-					}
-				];
-
-				// 渲染表格
-				table.render({
-					elem: "#data-table",
-					url: SELECT_API,
-					page: true,
-					limit: 10,
-					limits: [10, 20],
-					cols: [cols],
-					//skin: "line",
-					size: "sm",
-					autoSort: false,
-					defaultToolbar: [{
-						title: "刷新",
-						layEvent: "refresh",
-						icon: "layui-icon-refresh",
-					}, "filter", "print", "exports"],
-					done: function () {
-						layer.photos({photos: 'div[lay-id="data-table"]', anim: 5});
-					}
-				});
-
-				// 表格顶部搜索事件
-				form.on("submit(table-query)", function (data) {
-					table.reload("data-table", {
-						page: {
-							curr: 1
-						},
-						where: data.field
-					})
-					return false;
-				});
-
-				// 表格顶部搜索重置事件
-				form.on("submit(table-reset)", function (data) {
-					table.reload("data-table", {
-						where: []
-					})
-				});
-
-				// 表格排序事件
-				table.on("sort(data-table)", function (obj) {
-					table.reload("data-table", {
-						initSort: obj,
-						scrollPos: "fixed",
-						where: {
-							field: obj.field,
-							order: obj.type
-						}
-					});
-				});
-
-				// 刷新表格数据
-				window.refreshTable = function (param) {
-					table.reloadData("data-table", {
-						scrollPos: "fixed"
-					});
-				}
 			});
 		</script>
 	</body>
