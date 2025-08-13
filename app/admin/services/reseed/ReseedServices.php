@@ -19,7 +19,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\Clients;
 use Iyuu\ReseedClient\InternalServerErrorException;
-use plugin\admin\app\model\Option;
 use plugin\cron\app\model\Crontab;
 use support\Log;
 use Throwable;
@@ -182,8 +181,8 @@ class ReseedServices
                     $result = $reseedClient->reseed($torrentList['hash'], $torrentList['sha1'], $sid_sha1, iyuu_version());
                     $this->currentReseed($hashDict, $result);
                 } catch (InternalServerErrorException $throwable) {
-                    echo "匹配辅种异常：InternalServerErrorException" . PHP_EOL;
-                    throw $throwable;
+                    echo "匹配辅种异常：InternalServerErrorException" . $throwable->getMessage() . PHP_EOL;
+                    echo $throwable->getMessage() . PHP_EOL;
                 } catch (Throwable $throwable) {
                     echo "匹配辅种异常：Throwable" . PHP_EOL;
                     echo $throwable->getMessage() . PHP_EOL;

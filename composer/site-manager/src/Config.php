@@ -32,7 +32,7 @@ class Config implements ArrayAccess
     /**
      * 浏览器UA
      */
-    const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36';
+    public const string USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36';
 
     /**
      * 子类初始化
@@ -68,6 +68,18 @@ class Config implements ArrayAccess
             return $limit;
         }
 
+        return null;
+    }
+
+    /**
+     * 获取用户ID
+     * @return string|null
+     */
+    public function getUid(): ?string
+    {
+        if ($uid = $this->getOptions('uid')) {
+            return (string)$uid;
+        }
         return null;
     }
 

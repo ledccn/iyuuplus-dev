@@ -149,4 +149,21 @@ class Client extends AbstractCurl
         $curl = $this->getCurl()->get(self::BASE_API . '/reseed/users/profile');
         return $this->parseResponse($curl, '获取用户信息失败');
     }
+
+    /**
+     * 获取合作站点下载种子的签名
+     * - 支持情况，请查阅文档 https://doc.iyuu.cn/reference/site_signature
+     * @param string $user_id 用户在辅种站点的用户ID（纯数字）
+     * @param int $sid 站点ID
+     * @return array
+     * @throws InternalServerErrorException
+     */
+    public function signature(string $user_id, int $sid): array
+    {
+        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/sites/signature', [
+            'user_id' => $user_id,
+            'sid' => $sid,
+        ]);
+        return $this->parseResponse($curl, '获取合作站点下载种子的签名失败');
+    }
 }

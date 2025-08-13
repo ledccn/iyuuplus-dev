@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Iyuu\ReseedClient\Client;
 use Ledc\Container\App;
-use Ledc\Crypt\AesCrypt;
 use plugin\admin\app\controller\Crud;
 use support\Cache;
 use support\exception\BusinessException;

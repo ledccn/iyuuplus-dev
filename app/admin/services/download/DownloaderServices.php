@@ -45,7 +45,7 @@ class DownloaderServices
      * @param array $data
      * @return Torrent
      */
-    public function convert(array $data): Torrent
+    protected function convert(array $data): Torrent
     {
         $sid = $data['sid'] ?? 0;
         if ($siteModel = Site::uniqueSid($sid)) {

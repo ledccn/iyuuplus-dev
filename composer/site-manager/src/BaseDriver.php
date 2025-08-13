@@ -5,6 +5,9 @@ namespace Iyuu\SiteManager;
 use Error;
 use Exception;
 use InvalidArgumentException;
+use Iyuu\ReseedClient\Client;
+use Iyuu\ReseedClient\InternalServerErrorException;
+use Iyuu\SiteManager\Cache\UserSiteSignatureCache;
 use Iyuu\SiteManager\Contracts\DownloaderInterface;
 use Iyuu\SiteManager\Contracts\DownloaderLinkInterface;
 use Iyuu\SiteManager\Contracts\Processor;
@@ -24,6 +27,10 @@ use Webman\Event\Event;
 abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterface
 {
     /**
+     * 支持用户签名下载种子的推荐站点列表
+     */
+    public const array SUPPORT_SIGNATURE_RECOMMEND_SITES = ['hddolby', 'pthome', 'hdhome'];
+    /**
      * 当前站点配置
      * @var Config
      */
@@ -36,6 +43,15 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
     {
         $this->config = new Config($config);
         $this->initialize();
+    }
+
+    /**
+     * 获取用户签名缓存实例
+     * @return UserSiteSignatureCache
+     */
+    final public function getSiteUserSignatureCache(): UserSiteSignatureCache
+    {
+        return new UserSiteSignatureCache($this->getConfig()->site);
     }
 
     /**
@@ -102,6 +118,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
     public function downloadLink(Torrent $torrent): string
     {
         try {
+            $isCookieRequired = $this->isRssDownloadCookieRequired();
             $domain = $this->getConfig()->parseDomain();
             $uri = $this->getConfig()->parseUri();
             $url_replace = $this->parseReplace($torrent);
@@ -111,12 +128,51 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
                 $url_join = $delimiter . $url_join;
             }
             $uri = strtr($uri, $url_replace);
+            // 是否支持，获取下载站点种子的用户签名？
+            if (in_array($this->getConfig()->site, self::SUPPORT_SIGNATURE_RECOMMEND_SITES, true)) {
+                $signString = $this->getSiteUserSignature();
+                $url_join .= '&' . $signString;
+                $isCookieRequired = false;
+            }
 
-            $torrent->setDownload($domain . '/' . $uri . $url_join, $this->getConfig()->isCookieRequired());
+            $torrent->setDownload($domain . '/' . $uri . $url_join, $isCookieRequired);
             return $torrent->download;
         } catch (Error|Exception|Throwable $throwable) {
             throw new TorrentException($throwable->getMessage(), $throwable->getCode());
         }
+    }
+
+    /**
+     * 获取下载站点种子的用户签名
+     * @return string
+     * @throws InternalServerErrorException
+     */
+    protected function getSiteUserSignature(): string
+    {
+        $cache = $this->getSiteUserSignatureCache();
+        $signString = $cache->get();
+        if ($signString && is_string($signString)) {
+            return $signString;
+        }
+
+        $token = Utils::getIyuuToken();
+        $uid = $this->getConfig()->getUid();
+        if (empty($token)) {
+            throw new InvalidArgumentException('IYUU_TOKEN未设置');
+        }
+        if (empty($uid)) {
+            throw new InvalidArgumentException('uid未设置');
+        }
+
+        $reseedClient = new Client($token);
+        $result = $reseedClient->signature($uid, $this->getConfig()->sid);
+        $data = $result['data'] ?? [];
+        if (empty($data) || empty($data['signString'])) {
+            throw new InvalidArgumentException('获取下载站点种子的用户签名失败');
+        }
+        $cache->set($data['signString'], $data['expires_in'] ?? 1800);
+
+        return $data['signString'];
     }
 
     /**

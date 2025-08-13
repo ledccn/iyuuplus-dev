@@ -7,6 +7,7 @@
 use Iyuu\BittorrentClient\ClientDownloader;
 use Iyuu\ReseedClient\Client;
 use Iyuu\SiteManager\SiteManager;
+use Iyuu\SiteManager\Utils;
 use plugin\admin\app\model\Base;
 use plugin\admin\app\model\Option;
 use support\Log;
@@ -77,7 +78,7 @@ function iyuu_reseed_client(): Client
  */
 function iyuu_token(): string
 {
-    return getenv('IYUU_TOKEN') ?: '';
+    return Utils::getIyuuToken();
 }
 
 /**

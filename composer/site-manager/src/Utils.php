@@ -11,6 +11,15 @@ use RuntimeException;
 class Utils
 {
     /**
+     * 从环境变量中获取IYUU的TOKEN
+     * @return string
+     */
+    public static function getIyuuToken(): string
+    {
+        return getenv('IYUU_TOKEN') ?: '';
+    }
+
+    /**
      * 创建种子已存在异常
      * @return RuntimeException
      */
