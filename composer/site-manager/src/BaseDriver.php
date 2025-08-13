@@ -307,7 +307,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
         return [
             '{}' => $torrent->torrent_id,
             '{id}' => $torrent->torrent_id,
-            '{passkey}' => $this->getConfig()->get('options.passkey', '')
+            '{passkey}' => $this->getConfig()->getPasskey()
         ];
     }
 }

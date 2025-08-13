@@ -31,8 +31,9 @@ class DriverHddolby extends BaseDriver implements Processor, ProcessorXml
             '{}' => $torrent->torrent_id,
             '{id}' => $torrent->torrent_id,
             '{uid}' => $this->getConfig()->getUid(),
-            '{hash}' => '',
-            '{passkey}' => $this->getConfig()->get('options.passkey', '')
+            '{hash}' => $this->getConfig()->getDownHash(),
+            '{downhash}' => $this->getConfig()->getDownHash(),
+            '{passkey}' => $this->getConfig()->getPasskey()
         ];
     }
 }

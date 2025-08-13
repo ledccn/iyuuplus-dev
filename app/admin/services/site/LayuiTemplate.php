@@ -116,7 +116,7 @@ class LayuiTemplate
             'm-team' => Decorator::make([NexusPHP::class, OptionsXApiKey::class, OptionsLimit::class, OptionsUrlJoin::class, OptionsRssUrl::class], $default),
             'hdcity' => Decorator::make([NexusPHP::class, OptionsCuHashByHdcity::class], $default),
             'audiences' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsRsskey::class, OptionsLimit::class], $default),
-            'hdhome', 'pthome', 'hddolby' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsRssUrl::class], $default),
+            'hdhome', 'pthome', 'hddolby' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsDownHash::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'zhuque' => Decorator::make([Zhuque::class, OptionsUid::class, OptionsLimit::class], $default),
             'ourbits', 'chdbits', 'piggo', 'zmpt', 'agsvpt', 'hdfans', 'ptcafe', 'ptlgs', 'ptlover', 'hitpt', 'hspt', 'xingyunge', 'cspt', 'bilibili' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
             default => $default,

@@ -72,6 +72,24 @@ class Config implements ArrayAccess
     }
 
     /**
+     * 获取downhash
+     * @return string
+     */
+    public function getDownHash(): string
+    {
+        return $this->getOptions('downhash') ?: '';
+    }
+
+    /**
+     * 获取passkey
+     * @return string
+     */
+    public function getPasskey(): string
+    {
+        return $this->getOptions('passkey') ?: '';
+    }
+
+    /**
      * 获取用户ID
      * @return string|null
      */
