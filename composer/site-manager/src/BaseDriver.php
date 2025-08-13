@@ -118,7 +118,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
     public function downloadLink(Torrent $torrent): string
     {
         try {
-            $isCookieRequired = $this->isRssDownloadCookieRequired();
+            $isCookieRequired = $this->getConfig()->isCookieRequired();
             $domain = $this->getConfig()->parseDomain();
             $uri = $this->getConfig()->parseUri();
             $url_replace = $this->parseReplace($torrent);
