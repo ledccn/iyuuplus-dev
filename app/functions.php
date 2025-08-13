@@ -87,31 +87,12 @@ function iyuu_token(): string
 function iyuu_version(): string
 {
     clearstatcache();
-
     $version_file = base_path('.version');
-    $version = trim(file_get_contents($version_file));
-    $dir = base_path() . '/.git/refs';
-    if (!is_dir($dir)) {
-        return $version;
+    $version = trim(file_get_contents($version_file) ?: '0.0.0');
+    if (str_starts_with(strtolower($version), 'v')) {
+        $version = ltrim($version, 'vV');
     }
-
-    try {
-        $process = new Symfony\Component\Process\Process(['git', 'tag'], base_path(), null, null, 5);
-        $process->run();
-        $tags = explode("\n", $process->getOutput());
-        foreach ($tags as $tag) {
-            if (str_starts_with($tag, 'v')) {
-                $tag_version = trim(substr($tag, 1));
-                if (version_compare($tag_version, $version, '>=')) {
-                    $version = $tag_version;
-                }
-            }
-        }
-    } catch (Error|Exception|Throwable $throwable) {
-        echo '获取IYUU版本号异常：' . $throwable->getMessage() . PHP_EOL;
-    } finally {
-        return $version;
-    }
+    return $version;
 }
 
 /**
@@ -339,19 +320,4 @@ function update_env_value(string $key, string $value): string
     // 将更新后的内容写入 .env 文件
     file_put_contents($envFile, $newContents);
     return $value;
-}
-
-/**
- * 安全的调用匿名函数
- * @param Closure $fn
- * @return mixed
- */
-function safe_run(Closure $fn): mixed
-{
-    try {
-        return $fn();
-    } catch (Error|Exception|Throwable $throwable) {
-        Log::error('safe_run 异常：' . $throwable->getMessage());
-    }
-    return null;
 }
