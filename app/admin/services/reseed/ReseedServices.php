@@ -168,7 +168,7 @@ class ReseedServices
                         $this->currentReseed($hashDict, $result);
                     } catch (InternalServerErrorException $throwable) {
                         echo "匹配辅种异常：InternalServerErrorException" . PHP_EOL;
-                        throw $throwable;
+                        echo $throwable->getMessage() . PHP_EOL;
                     } catch (Throwable $throwable) {
                         echo "匹配辅种异常：Throwable" . PHP_EOL;
                         echo $throwable->getMessage() . PHP_EOL;
