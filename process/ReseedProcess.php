@@ -82,9 +82,7 @@ class ReseedProcess
         }
 
         // 自动更新 根据进程启动时间，设置一个随机10-20小时内的更新定时器
-        Timer::add(mt_rand(36000, 72000), function () {
-            SystemServices::checkRemoteUpdates();
-        });
+        //SystemServices::checkRemoteUpdates();
 
         // 每天执行
         new Crontab('10 10 * * *', function () {
