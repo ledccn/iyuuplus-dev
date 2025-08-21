@@ -5,11 +5,6 @@ echo "Current directory: $pwd_dir"
 
 cd "$pwd_dir"
 
-if [ -n "$(git status --porcelain)" ]; then
-    echo "Uncommitted changes detected. Discarding local changes."
-    git reset --hard
-fi
-
 git fetch --all
 git reset --hard origin/master
 
