@@ -109,6 +109,7 @@ class LayuiTemplate
             'longpt',
             'hdbao',
             '13city',
+            'duckboobee',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class, OptionsLimit::class], $default),
             'yemapt' => Decorator::make([OptionsRssUrl::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
