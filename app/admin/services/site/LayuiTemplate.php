@@ -107,6 +107,7 @@ class LayuiTemplate
             'gamegamept',
             'myptcc',
             'longpt',
+            'hdbao',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class, OptionsLimit::class], $default),
             'yemapt' => Decorator::make([OptionsRssUrl::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
@@ -120,7 +121,7 @@ class LayuiTemplate
             'hdhome', 'pthome', 'hddolby' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsDownHash::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'zhuque' => Decorator::make([Zhuque::class, OptionsUid::class, OptionsLimit::class], $default),
             'ourbits', 'chdbits', 'piggo', 'zmpt', 'agsvpt', 'hdfans', 'ptcafe', 'ptlgs', 'ptlover', 'hitpt', 'hspt', 'xingyunge', 'cspt', 'bilibili' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
-            default => $default,
+            default => new NexusPHP($default),
         };
     }
 }
