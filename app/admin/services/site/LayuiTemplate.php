@@ -108,6 +108,7 @@ class LayuiTemplate
             'myptcc',
             'longpt',
             'hdbao',
+            '13city',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class, OptionsLimit::class], $default),
             'yemapt' => Decorator::make([OptionsRssUrl::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
