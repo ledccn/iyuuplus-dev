@@ -62,7 +62,7 @@ extension=zip
 | Workerman版本   | 5.1.3  | https://www.workerman.net/doc/workerman/    |
 | Webman版本      | 1.6.14 | https://www.workerman.net/doc/webman/       |
 | WebmanAdmin版本 | 0.6.30 | https://www.workerman.net/doc/webman-admin/ |
-| PHP版本         | 8.3.7  | https://www.php.net/                        |
+| PHP版本         | 8.3.24 | https://www.php.net/                        |
 | MYSQL版本       | 5.7.26 | https://www.mysql.com/                      |
 | Layui         | 2.8.12 | https://layui.dev/                          |
 | Vue           | 3.4.21 | https://vuejs.org/                          |
