@@ -12,7 +12,6 @@ use app\common\HasValidate;
 use app\model\Site;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Iyuu\ReseedClient\Client;
 use Ledc\Container\App;
 use plugin\admin\app\controller\Crud;
 use support\Cache;
@@ -211,7 +210,7 @@ class SiteController extends Crud
         try {
             check_iyuu_token(iyuu_token());
 
-            $reseedClient = new Client(iyuu_token());
+            $reseedClient = iyuu_reseed_client();
             $recommend = $reseedClient->recommend();
 
             return $recommend ? $this->success('ok', $recommend['list']) : $this->fail('IYUU服务器无响应');
@@ -251,7 +250,7 @@ class SiteController extends Crud
 
                 $data['sid'] = $siteModel->sid;
                 Log::info('合作站绑定：', $data);
-                $reseedClient = new Client(iyuu_token());
+                $reseedClient = iyuu_reseed_client();
                 $reseedClient->bind($data);
                 return $this->success('绑定成功');
             } catch (Throwable $throwable) {

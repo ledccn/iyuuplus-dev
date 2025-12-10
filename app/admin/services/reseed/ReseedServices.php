@@ -120,7 +120,7 @@ class ReseedServices
      */
     public function run(): void
     {
-        $reseedClient = new \Iyuu\ReseedClient\Client(iyuu_token());
+        $reseedClient = iyuu_reseed_client();
         $sid_sha1 = $this->getSidSha1($reseedClient);
 
         // 第一层循环：辅种下载器

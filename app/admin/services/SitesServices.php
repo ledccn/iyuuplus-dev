@@ -3,7 +3,6 @@
 namespace app\admin\services;
 
 use app\model\Site;
-use Iyuu\ReseedClient\Client;
 use plugin\admin\app\common\Util;
 use plugin\admin\app\model\Option;
 use plugin\cron\app\support\PushNotify;
@@ -47,7 +46,7 @@ class SitesServices
                 return;
             }
 
-            $reseedClient = new Client(iyuu_token());
+            $reseedClient = iyuu_reseed_client();
             $list = $reseedClient->sites();
             file_put_contents(runtime_path('sync.json'), json_encode($list, JSON_UNESCAPED_UNICODE));
             foreach ($list as $site => $item) {

@@ -2,6 +2,7 @@
 
 namespace Iyuu\ReseedClient;
 
+use Iyuu\SiteManager\Cache\UserProfileCache;
 use Ledc\Curl\Curl;
 use RuntimeException;
 
@@ -14,6 +15,19 @@ class Client extends AbstractCurl
      * 主域名
      */
     public const string BASE_API = 'http://2025.iyuu.cn';
+    /**
+     * VIP专用域名
+     */
+    public const string VIP_BASE_API = 'http://vip.iyuu.cn';
+
+    /**
+     * 获取API域名
+     * @return string
+     */
+    public function getBaseApi(): string
+    {
+        return UserProfileCache::factory()->isVip() ? self::VIP_BASE_API : self::BASE_API;
+    }
 
     /**
      * 解析响应结果
@@ -45,7 +59,7 @@ class Client extends AbstractCurl
      */
     public function sites(): array
     {
-        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/sites/index');
+        $curl = $this->getCurl()->get($this->getBaseApi() . '/reseed/sites/index');
         $response = $this->parseResponse($curl, '获取站点列表失败');
 
         return array_column($response['data']['sites'], null, 'site');
@@ -58,7 +72,7 @@ class Client extends AbstractCurl
      */
     public function recommend(): array
     {
-        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/sites/recommend');
+        $curl = $this->getCurl()->get($this->getBaseApi() . '/reseed/sites/recommend');
         $response = $this->parseResponse($curl, '获取推荐站点列表');
 
         return $response['data'];
@@ -72,7 +86,7 @@ class Client extends AbstractCurl
      */
     public function reportExisting(array $data): string
     {
-        $curl = $this->getCurl()->post(self::BASE_API . '/reseed/sites/reportExisting', ['sid_list' => $data]);
+        $curl = $this->getCurl()->post($this->getBaseApi() . '/reseed/sites/reportExisting', ['sid_list' => $data]);
         $response = $this->parseResponse($curl, '汇报持有的站点失败');
         if (empty($response['data']['sid_sha1'])) {
             throw new RuntimeException('返回值缺少sid_sha1字段');
@@ -99,7 +113,7 @@ class Client extends AbstractCurl
             'timestamp' => time(),
             'version' => $version,
         ];
-        $curl = $this->getCurl()->post(self::BASE_API . '/reseed/index/index', $data);
+        $curl = $this->getCurl()->post($this->getBaseApi() . '/reseed/index/index', $data);
         $response = $this->parseResponse($curl, '获取可辅种数据失败');
         return $response['data'];
     }
@@ -122,7 +136,7 @@ class Client extends AbstractCurl
             'timestamp' => time(),
             'version' => $version,
         ];
-        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/index/single', $data);
+        $curl = $this->getCurl()->get($this->getBaseApi() . '/reseed/index/single', $data);
         $response = $this->parseResponse($curl, '获取可辅种数据失败');
         return $response['data'];
     }
@@ -135,7 +149,7 @@ class Client extends AbstractCurl
      */
     public function bind(array $data): array
     {
-        $curl = $this->getCurl()->post(self::BASE_API . '/reseed/users/bind', $data);
+        $curl = $this->getCurl()->post($this->getBaseApi() . '/reseed/users/bind', $data);
         return $this->parseResponse($curl, '绑定合作站点失败');
     }
 
@@ -160,7 +174,7 @@ class Client extends AbstractCurl
      */
     public function signature(string $user_id, int $sid): array
     {
-        $curl = $this->getCurl()->get(self::BASE_API . '/reseed/sites/signature', [
+        $curl = $this->getCurl()->get($this->getBaseApi() . '/reseed/sites/signature', [
             'user_id' => $user_id,
             'sid' => $sid,
         ]);

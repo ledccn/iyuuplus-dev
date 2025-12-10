@@ -18,7 +18,7 @@ abstract class AbstractCurl
      * 构造函数
      * @param string $token 辅种token
      */
-    final public function __construct(public readonly string $token)
+    final public function __construct(public readonly string $token, public readonly bool $isVip = false)
     {
         $this->curl = new Curl();
         $this->initCurl();
