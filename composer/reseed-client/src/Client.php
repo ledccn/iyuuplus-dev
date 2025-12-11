@@ -2,7 +2,6 @@
 
 namespace Iyuu\ReseedClient;
 
-use Iyuu\SiteManager\Cache\UserProfileCache;
 use Ledc\Curl\Curl;
 use RuntimeException;
 
@@ -26,7 +25,7 @@ class Client extends AbstractCurl
      */
     public function getBaseApi(): string
     {
-        return UserProfileCache::factory()->isVip() ? self::VIP_BASE_API : self::BASE_API;
+        return $this->isVip ? self::VIP_BASE_API : self::BASE_API;
     }
 
     /**

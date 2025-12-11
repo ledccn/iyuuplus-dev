@@ -7,6 +7,7 @@ use Exception;
 use InvalidArgumentException;
 use Iyuu\ReseedClient\Client;
 use Iyuu\ReseedClient\InternalServerErrorException;
+use Iyuu\SiteManager\Cache\UserProfileCache;
 use Iyuu\SiteManager\Cache\UserSiteSignatureCache;
 use Iyuu\SiteManager\Contracts\DownloaderInterface;
 use Iyuu\SiteManager\Contracts\DownloaderLinkInterface;
@@ -164,7 +165,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
             throw new InvalidArgumentException('uid未设置');
         }
 
-        $reseedClient = new Client($token);
+        $reseedClient = new Client($token, (bool)UserProfileCache::factory()->isVip());
         $result = $reseedClient->signature($uid, $this->getConfig()->sid);
         $data = $result['data'] ?? [];
         if (empty($data) || empty($data['signString'])) {

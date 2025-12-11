@@ -6,6 +6,7 @@
 
 use Iyuu\BittorrentClient\ClientDownloader;
 use Iyuu\ReseedClient\Client;
+use Iyuu\SiteManager\Cache\UserProfileCache;
 use Iyuu\SiteManager\SiteManager;
 use Iyuu\SiteManager\Utils;
 use plugin\admin\app\model\Base;
@@ -69,7 +70,7 @@ function clear_instance_cache(): void
  */
 function iyuu_reseed_client(): Client
 {
-    return new Client(iyuu_token());
+    return new Client(iyuu_token(), (bool)UserProfileCache::factory()->isVip());
 }
 
 /**
