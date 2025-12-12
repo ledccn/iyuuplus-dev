@@ -125,7 +125,7 @@ class ReseedServices
         $reseedClient = iyuu_reseed_client();
         $tooManyRequestsCache = new TooManyRequestsCache($this->token);
         if ($tooManyRequestsCache->has()) {
-            echo '缓存拦截，请求太频繁啦！' . $tooManyRequestsCache->get() . PHP_EOL;
+            echo '缓存拦截，请求太频繁啦！' . PHP_EOL . $tooManyRequestsCache->get() . PHP_EOL;
             return;
         }
 
@@ -169,7 +169,7 @@ class ReseedServices
                 $chunkHash = array_chunk($full, self::RESEED_GROUP_NUMBER);
                 foreach ($chunkHash as $info_hash) {
                     if ($tooManyRequestsCache->has()) {
-                        echo '缓存拦截，请求太频繁啦！' . $tooManyRequestsCache->get() . PHP_EOL;
+                        echo '缓存拦截，请求太频繁啦！' . PHP_EOL . $tooManyRequestsCache->get() . PHP_EOL;
                         break;
                     }
 
@@ -180,12 +180,15 @@ class ReseedServices
                         $result = $reseedClient->reseed($hash, sha1($hash), $sid_sha1, iyuu_version());
                         $this->currentReseed($hashDict, $result);
                     } catch (TooManyRequestsException $exception) {
-                        $tooManyRequestsCache->set($exception->getMessage(), $exception->getRetryAfter());
                         echo "匹配辅种异常：TooManyRequestsException" . PHP_EOL;
-                        echo $exception->getMessage() . PHP_EOL;
                         $limitReset = date('Y-m-d H:i:s', $exception->getXRateLimitReset());
-                        echo "限流重置时间：{$limitReset}" . PHP_EOL;
-                        echo "请在{$exception->getRetryAfter()}秒后重试 " . PHP_EOL;
+                        $error = implode(PHP_EOL, [
+                            $exception->getMessage(),
+                            "限流重置时间：{$limitReset}",
+                            "请在{$exception->getRetryAfter()}秒后重试" . PHP_EOL,
+                        ]);
+                        echo $error;
+                        $tooManyRequestsCache->set($error, $exception->getRetryAfter());
                     } catch (InternalServerErrorException $throwable) {
                         echo "匹配辅种异常：InternalServerErrorException" . PHP_EOL;
                         echo $throwable->getMessage() . PHP_EOL;
