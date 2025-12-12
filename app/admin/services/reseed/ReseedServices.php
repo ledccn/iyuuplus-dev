@@ -5,6 +5,7 @@ namespace app\admin\services\reseed;
 use app\admin\services\client\ClientServices;
 use app\admin\support\NotifyAdmin;
 use app\admin\support\NotifyHelper;
+use app\common\cache\TooManyRequestsCache;
 use app\enums\EventReseedEnums;
 use app\model\Client;
 use app\model\enums\DownloaderMarkerEnums;
@@ -19,6 +20,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Iyuu\BittorrentClient\Clients;
 use Iyuu\ReseedClient\InternalServerErrorException;
+use Iyuu\ReseedClient\TooManyRequestsException;
 use plugin\cron\app\model\Crontab;
 use support\Log;
 use Throwable;
@@ -121,6 +123,12 @@ class ReseedServices
     public function run(): void
     {
         $reseedClient = iyuu_reseed_client();
+        $tooManyRequestsCache = new TooManyRequestsCache($this->token);
+        if ($tooManyRequestsCache->has()) {
+            echo '缓存拦截，请求太频繁啦！' . $tooManyRequestsCache->get() . PHP_EOL;
+            return;
+        }
+
         $sid_sha1 = $this->getSidSha1($reseedClient);
 
         // 第一层循环：辅种下载器
@@ -160,12 +168,21 @@ class ReseedServices
                 $full = json_decode($torrentList['hash'], true);
                 $chunkHash = array_chunk($full, self::RESEED_GROUP_NUMBER);
                 foreach ($chunkHash as $info_hash) {
+                    if ($tooManyRequestsCache->has()) {
+                        echo '缓存拦截，请求太频繁啦！' . $tooManyRequestsCache->get() . PHP_EOL;
+                        break;
+                    }
+
                     sort($info_hash);
                     $hash = json_encode($info_hash, JSON_UNESCAPED_UNICODE);
                     try {
                         echo "正在请求IYUU服务器，匹配辅种{$this->clientModel->title} " . PHP_EOL;
                         $result = $reseedClient->reseed($hash, sha1($hash), $sid_sha1, iyuu_version());
                         $this->currentReseed($hashDict, $result);
+                    } catch (TooManyRequestsException $exception) {
+                        $tooManyRequestsCache->set($exception->getMessage(), $exception->getRetryAfter());
+                        echo "匹配辅种异常：TooManyRequestsException" . PHP_EOL;
+                        echo $exception->getMessage() . PHP_EOL;
                     } catch (InternalServerErrorException $throwable) {
                         echo "匹配辅种异常：InternalServerErrorException" . PHP_EOL;
                         echo $throwable->getMessage() . PHP_EOL;

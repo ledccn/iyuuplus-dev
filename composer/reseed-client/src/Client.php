@@ -33,7 +33,7 @@ class Client extends AbstractCurl
      * @param Curl $curl
      * @param string $defaultMessage
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     protected function parseResponse(Curl $curl, string $defaultMessage): array
     {
@@ -44,8 +44,15 @@ class Client extends AbstractCurl
         $response = json_decode($curl->response, true);
         $code = $response['code'] ?? 403;
         $msg = $response['msg'] ?? $defaultMessage . ' B服务器繁忙，请稍后再试。';
+        $data = $response['data'] ?? [];
         if ($code) {
-            throw new RuntimeException($msg, $code);
+            if (429 === $code) {
+                $e = new TooManyRequestsException($msg, 429);
+                $e->setData($data);
+                throw $e;
+            } else {
+                throw new RuntimeException($msg, $code);
+            }
         }
 
         return $response;
@@ -54,7 +61,7 @@ class Client extends AbstractCurl
     /**
      * 获取站点列表
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function sites(): array
     {
@@ -67,7 +74,7 @@ class Client extends AbstractCurl
     /**
      * 获取推荐站点列表
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function recommend(): array
     {
@@ -81,7 +88,7 @@ class Client extends AbstractCurl
      * 汇报持有的站点
      * @param array $data
      * @return string 站点哈希值（有效期7天，持有站点没变化时，不用重复获取）
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function reportExisting(array $data): string
     {
@@ -101,7 +108,7 @@ class Client extends AbstractCurl
      * @param string $sid_sha1 站点哈希值
      * @param string $version 版本号
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function reseed(string $hash, string $sha1, string $sid_sha1, string $version): array
     {
@@ -124,7 +131,7 @@ class Client extends AbstractCurl
      * @param string $sid_sha1
      * @param string $version
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function single(int $sid, int $torrent_id, string $sid_sha1, string $version): array
     {
@@ -144,7 +151,7 @@ class Client extends AbstractCurl
      * 绑定合作站点
      * @param array $data
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function bind(array $data): array
     {
@@ -155,7 +162,7 @@ class Client extends AbstractCurl
     /**
      * 获取用户信息
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function profile(): array
     {
@@ -169,7 +176,7 @@ class Client extends AbstractCurl
      * @param string $user_id 用户在辅种站点的用户ID（纯数字）
      * @param int $sid 站点ID
      * @return array
-     * @throws InternalServerErrorException
+     * @throws InternalServerErrorException|TooManyRequestsException
      */
     public function signature(string $user_id, int $sid): array
     {
