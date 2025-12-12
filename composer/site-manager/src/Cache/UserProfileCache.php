@@ -2,6 +2,7 @@
 
 namespace Iyuu\SiteManager\Cache;
 
+use Iyuu\ReseedClient\Client;
 use Throwable;
 
 /**
@@ -34,7 +35,8 @@ class UserProfileCache extends BaseCache
     {
         try {
             if (iyuu_token() && is_null($this->isVip())) {
-                $profile = iyuu_reseed_client()->profile()['data'];
+                // 这里禁止使用 iyuu_reseed_client()，循环引用会导致内存溢出
+                $profile = (new Client(iyuu_token()))->profile()['data'];
                 $is_ever_level = (bool)$profile['is_ever_level'];
                 $is_vip = $is_ever_level || time() < $profile['overdue_time'];
                 if ($is_vip) {
@@ -44,6 +46,7 @@ class UserProfileCache extends BaseCache
                 }
             }
         } catch (Throwable $throwable) {
+            echo $throwable->getMessage() . PHP_EOL;
         }
     }
 
