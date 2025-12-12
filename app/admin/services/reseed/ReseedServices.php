@@ -183,6 +183,9 @@ class ReseedServices
                         $tooManyRequestsCache->set($exception->getMessage(), $exception->getRetryAfter());
                         echo "匹配辅种异常：TooManyRequestsException" . PHP_EOL;
                         echo $exception->getMessage() . PHP_EOL;
+                        $limitReset = date('Y-m-d H:i:s', $exception->getXRateLimitReset());
+                        echo "限流重置时间：{$limitReset}" . PHP_EOL;
+                        echo "请在{$exception->getRetryAfter()}秒后重试 " . PHP_EOL;
                     } catch (InternalServerErrorException $throwable) {
                         echo "匹配辅种异常：InternalServerErrorException" . PHP_EOL;
                         echo $throwable->getMessage() . PHP_EOL;
