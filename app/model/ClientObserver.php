@@ -124,9 +124,6 @@ class ClientObserver
      */
     public function deleting(Client $model): void
     {
-        if ($model->is_default) {
-            throw new InvalidArgumentException('禁止删除默认下载器');
-        }
         Reseed::deleteByClientId($model->id);
         Transfer::deleteByFromClientId($model->id);
         Transfer::deleteByToClientId($model->id);
