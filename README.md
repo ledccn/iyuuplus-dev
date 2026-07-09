@@ -1,7 +1,7 @@
 # IYUUPlus开发版
 
 <a href="https://item.jd.com/100173566359.html" target="_blank">
-<img src="https://v.hilx.cn/app/admin/upload/files/20260604/6a20e5865830.jpg" width="1080" alt="极空间官方旗舰店">
+<img src="https://v.hilx.cn/app/admin/upload/files/20260709/6a4f617b865d.jpg" width="1080" alt="极空间官方旗舰店">
 </a>
 
 # 介绍
