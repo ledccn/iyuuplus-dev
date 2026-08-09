@@ -337,7 +337,7 @@ class Client extends Clients
 
         // Find authentication cookie and set in curl connection
         foreach ($curl->response_headers as $header) {
-            if (preg_match('/SID=(\S[^;]+)/', $header, $matches)) {
+            if (preg_match('/(?:QBT_)?SID(?:_\d+)?=(\S[^;]+)/', $header, $matches)) {
                 $this->session_id = $matches[0];
                 $qb415 = '; QB_' . $this->session_id;   // 兼容qBittorrent v4.1.5[小钢炮等]
                 $this->session_id = $this->session_id . $qb415;
