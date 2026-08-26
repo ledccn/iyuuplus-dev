@@ -337,7 +337,7 @@ class Client extends Clients
 
         // Find authentication cookie and set in curl connection
         foreach ($curl->response_headers as $header) {
-            if (!str_starts_with($header, 'Set-Cookie:')) {
+            if (!str_starts_with(strtolower($header), strtolower('Set-Cookie:'))) {
                 continue;
             }
 
