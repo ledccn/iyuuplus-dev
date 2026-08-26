@@ -355,8 +355,8 @@ class Client extends Clients
             }
 
             // qBittorrent v5.1.x 以上版本
-            if (preg_match('/QBT_SID_\d+=(\S[^;]+)/', $header, $matches)) {
-                $this->session_id = $matches[0];
+            if (preg_match('/QBT_SID_\d+=(\S[^;]+)/', $header, $matches_sid_d)) {
+                $this->session_id = $matches_sid_d[0];
                 $curl->setHeader('Cookie', $this->session_id);
                 return true;
             }
