@@ -337,10 +337,26 @@ class Client extends Clients
 
         // Find authentication cookie and set in curl connection
         foreach ($curl->response_headers as $header) {
+            if (!str_starts_with($header, 'Set-Cookie:')) {
+                continue;
+            }
+
+            // qBittorrent v5.1.x 以下版本
             if (preg_match('/SID=(\S[^;]+)/', $header, $matches)) {
+                if (preg_match('/QBT_SID=(\S[^;]+)/', $header, $matches_qbt)) {
+                    $this->session_id = $matches_qbt[0];
+                } else {
+                    $sid = $matches[0];
+                    $qb415 = '; QB_' . $sid;   // 兼容qBittorrent v4.1.5[小钢炮等]
+                    $this->session_id = $sid . $qb415;
+                }
+                $curl->setHeader('Cookie', $this->session_id);
+                return true;
+            }
+
+            // qBittorrent v5.1.x 以上版本
+            if (preg_match('/QBT_SID_\d+=(\S[^;]+)/', $header, $matches)) {
                 $this->session_id = $matches[0];
-                $qb415 = '; QB_' . $this->session_id;   // 兼容qBittorrent v4.1.5[小钢炮等]
-                $this->session_id = $this->session_id . $qb415;
                 $curl->setHeader('Cookie', $this->session_id);
                 return true;
             }
