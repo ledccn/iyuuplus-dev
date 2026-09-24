@@ -92,7 +92,7 @@ class ReseedDownloadServices
     private static function handleLimited(Site $site, int $limitCount, int $limitSleep): void
     {
         // 24小时内辅种数
-        $total24h = Reseed::where('sid', '=', $site->id)
+        $total24h = Reseed::where('sid', '=', $site->sid)
             ->where('dispatch_time', '>', time() - 86400)
             ->whereIn('status', [ReseedStatusEnums::Success->value, ReseedStatusEnums::Fail->value])
             ->count();
