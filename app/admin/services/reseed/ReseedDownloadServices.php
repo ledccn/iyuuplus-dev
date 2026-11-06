@@ -202,7 +202,11 @@ class ReseedDownloadServices
                 break;
             case ClientEnums::qBittorrent;
                 $contractsTorrent->parameters['autoTMM'] = 'false'; // 关闭自动种子管理
-                $contractsTorrent->parameters['paused'] = 'true';   // 添加任务校验后是否暂停
+                $contractsTorrent->parameters['paused'] = 'true';   // 添加任务校验后是否暂停（旧版本字段）
+                // qBittorrent 5.x 起 WebAPI 以 stopped 表示暂停状态，paused 会被服务端忽略，
+                // 导致任务添加后并未暂停、未校验时直接开始下载。新旧字段同时下发，
+                // 由服务端按自身版本读取（与 MoviePilot 适配层做法一致）。
+                $contractsTorrent->parameters['stopped'] = 'true';
                 if (DownloaderMarkerEnums::Category === $markerEnum) {
                     $contractsTorrent->parameters['category'] = 'IYUU' . ReseedSubtypeEnums::text($reseed->getSubtypeEnums());   // 添加分类标签
                 }
@@ -226,7 +230,9 @@ class ReseedDownloadServices
             $markerEnum = $reseedPayload->getMarkerEnum();
             switch ($clientModel->getClientEnums()) {
                 case ClientEnums::qBittorrent:
-                    if (is_string($result) && str_contains(strtolower($result), 'ok')) {
+                    // qBittorrent 添加成功时返回 HTTP 200 且响应体为空字符串，失败时返回错误文本或抛出异常。
+                    // 仅判断响应包含 "ok" 会使新版 qB 上打标签与自动校验永远不执行，空响应同样视为成功。
+                    if (null === $result || '' === $result || (is_string($result) && str_contains(strtolower($result), 'ok'))) {
                         $retry = 5;
                         do {
                             try {
