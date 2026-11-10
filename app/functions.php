@@ -98,6 +98,15 @@ function iyuu_version(): string
 }
 
 /**
+ * HTTP User-Agent
+ * @return string
+ */
+function iyuu_user_agent(): string
+{
+    return 'IYUUPlus /' . iyuu_version();
+}
+
+/**
  * 是否为IYUU的token格式
  * @param string $token
  * @return bool

@@ -32,7 +32,20 @@ class Config implements ArrayAccess
     /**
      * 浏览器UA
      */
-    public const string USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36';
+    public const string USER_AGENT = 'IYUUPlus';
+
+    /**
+     * 默认 User-Agent：IYUUPlus /版本号
+     * @return string
+     */
+    public static function userAgent(): string
+    {
+        if (function_exists('iyuu_user_agent')) {
+            return iyuu_user_agent();
+        }
+        $version = function_exists('iyuu_version') ? iyuu_version() : '0.0.0';
+        return 'IYUUPlus /' . $version;
+    }
 
     /**
      * 子类初始化
@@ -117,6 +130,9 @@ class Config implements ArrayAccess
      */
     public function isCookieRequired(): bool
     {
+        if ($this->get('site') === 'piggo') {
+            return false;
+        }
         return (bool)$this->get('cookie_required', false);
     }
 
@@ -170,7 +186,7 @@ class Config implements ArrayAccess
      */
     public function setCurlOptions(Curl $curl): void
     {
-        $curl->setUserAgent($this->get('user_agent', Config::USER_AGENT))
+        $curl->setUserAgent($this->get('user_agent') ?: self::userAgent())
             ->setTimeout(30, 120)
             ->setSslVerify();
 

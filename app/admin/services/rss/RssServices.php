@@ -25,10 +25,6 @@ use Throwable;
 class RssServices
 {
     /**
-     * 浏览器UA
-     */
-    protected const string USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36';
-    /**
      * 计划任务：数据模型
      * @var Crontab
      */
@@ -183,7 +179,7 @@ class RssServices
     protected function createCurl(): Curl
     {
         $curl = new Curl();
-        $curl->setUserAgent(static::USER_AGENT)
+        $curl->setUserAgent(iyuu_user_agent())
             ->setSslVerify()
             ->setTimeout(30, 30)
             ->setFollowLocation(1);

@@ -52,7 +52,7 @@ abstract class Clients implements ClientsInterface
         $curl = new Curl();
         $curl->setTimeout(60, 600);
         $curl->setSslVerify(false, false);
-        $curl->setUserAgent(Curl::USER_AGENT);
+        $curl->setUserAgent(function_exists('iyuu_user_agent') ? iyuu_user_agent() : 'IYUUPlus /0.0.0');
         $curl->setHeader('Origin', $this->getConfig()->getHostname());
         $curl->setHeader('Referer', $this->getConfig()->getClientUrl());
 

@@ -29,6 +29,9 @@ if (empty(Worker::$eventLoopClass)) {
 }
 
 set_error_handler(function ($level, $message, $file = '', $line = 0) {
+    if ($level === E_DEPRECATED || $level === E_USER_DEPRECATED) {
+        return true;
+    }
     if (error_reporting() & $level) {
         throw new ErrorException($message, 0, $level, $file, $line);
     }
