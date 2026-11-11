@@ -66,6 +66,14 @@ enum RouteEnum: string
      * 种子列表页：海豹种子列表页
      */
     case N14 = 'torrents.php?page={page}';
+    /**
+     * 种子RSS页面【FluxTorrent架构】
+     */
+    case N15 = 'api/v1/rss/{rsskey}?showrows=50&linktype=dl';
+    /**
+     * 种子下载页【FluxTorrent架构】NexusPhp形状兼容层
+     */
+    case N16 = 'api/v1/compat/nexusphp/download.php?id={id}&token={token}';
 
     /**
      * 检查枚举名字
