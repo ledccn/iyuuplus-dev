@@ -115,7 +115,6 @@ class LayuiTemplate
             'playletpt',
             'novahd',
             'lajidui',
-            'hxpt',
             'dubhe',
             'tangpt',
             'muxuege',
@@ -135,6 +134,7 @@ class LayuiTemplate
             'audiences' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsRsskey::class, OptionsLimit::class], $default),
             'hdhome', 'pthome', 'hddolby' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsDownHash::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'zhuque' => Decorator::make([Zhuque::class, OptionsUid::class, OptionsLimit::class], $default),
+            'hxpt' => Decorator::make([FluxTorrent::class, OptionsLimit::class], $default),
             'ourbits', 'chdbits', 'piggo', 'zmpt', 'agsvpt', 'hdfans', 'ptcafe', 'ptlgs', 'ptlover', 'hitpt', 'hspt', 'xingyunge', 'cspt', 'bilibili' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
             default => new NexusPHP($default),
         };
