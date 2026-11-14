@@ -137,6 +137,8 @@ class LayuiTemplate
             'zhuque' => Decorator::make([Zhuque::class, OptionsUid::class, OptionsLimit::class], $default),
             'piggo' => Decorator::make([Piggo::class, OptionsLimit::class], $default),
             'ourbits', 'chdbits', 'zmpt', 'agsvpt', 'hdfans', 'ptcafe', 'ptlgs', 'ptlover', 'hitpt', 'hspt', 'xingyunge', 'cspt', 'bilibili' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
+            // YzYY 站（Discuz + dz_seed 插件）：下载只需 passkey，爬列表页需要 cookie
+            'yzyy' => Decorator::make([NexusPHP::class, OptionsLimit::class], $default),
             default => new NexusPHP($default),
         };
     }
