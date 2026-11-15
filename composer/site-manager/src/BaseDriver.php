@@ -308,9 +308,7 @@ abstract class BaseDriver implements DownloaderInterface, DownloaderLinkInterfac
         return [
             '{}' => $torrent->torrent_id,
             '{id}' => $torrent->torrent_id,
-            '{passkey}' => $this->getConfig()->getPasskey(),
-            // 少数站点（如 YzYY）按 info_hash 下载种子，而不是按种子id
-            '{info_hash}' => (string)$torrent->get('info_hash', ''),
+            '{passkey}' => $this->getConfig()->getPasskey()
         ];
     }
 }

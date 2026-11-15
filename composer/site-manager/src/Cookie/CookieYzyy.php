@@ -88,9 +88,6 @@ class CookieYzyy extends BaseCookie
     {
         $trId = (string)$row->attr('id');
         $id = (int)substr($trId, 4);
-        if ($id <= 0) {
-            return [];
-        }
 
         $nfo = $row->filterXPath(".//td[contains(concat(' ', normalize-space(@class), ' '), ' nfo ')]");
         if (0 === $nfo->count()) {
@@ -105,6 +102,14 @@ class CookieYzyy extends BaseCookie
         $h1 = trim((string)($titleNode->attr('title') ?: $titleNode->text('')));
         $details = trim((string)$titleNode->attr('href'));
 
+        // 行 id 缺失时，从详情页 tid 兜底（IYUU 用 torrent_id 拼下载地址，必须是 tid）
+        if ($id <= 0 && preg_match('/[?&]tid=(\d+)/', $details, $m)) {
+            $id = (int)$m[1];
+        }
+        if ($id <= 0) {
+            return [];
+        }
+
         // 副标题（可能不存在）
         $title = '';
         $subNode = $nfo->filterXPath(".//div[contains(concat(' ', normalize-space(@class), ' '), ' sb ')]")->first();
@@ -112,14 +117,26 @@ class CookieYzyy extends BaseCookie
             $title = $this->normalizeWhitespace($subNode->text(''));
         }
 
-        // 下载链接（列表行内 <a title="下载种子" href="...info_hash=...">）
+        // 下载链接（列表行内 <a href="...info_hash=...">，也可能是 plugin.php?action=download）
         $download = '';
         $dlNode = $row->filterXPath(".//a[contains(@href,'info_hash=')]")->first();
+        if (0 === $dlNode->count()) {
+            $dlNode = $row->filterXPath(".//a[contains(@href,'action=download')]")->first();
+        }
         if ($dlNode->count()) {
             $download = str_replace('&amp;', '&', trim((string)$dlNode->attr('href')));
         }
         if ('' === $h1 || '' === $download) {
             return [];
+        }
+
+        // 统一成绝对地址（框架里其他站点也都是绝对地址）
+        $domain = $this->getConfig()->parseDomain();
+        if (!preg_match('#^https?://#i', $details)) {
+            $details = $domain . '/' . ltrim($details, '/');
+        }
+        if (!preg_match('#^https?://#i', $download)) {
+            $download = $domain . '/' . ltrim($download, '/');
         }
 
         // 促销类型：<span class="pp fr">Free</span> / <span class="pp x2">2*Free</span> 视为免费
