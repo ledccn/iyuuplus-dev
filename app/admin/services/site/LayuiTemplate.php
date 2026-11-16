@@ -124,7 +124,7 @@ class LayuiTemplate
             'siqi',
             'cangbaoge',
             'keepfrds' => Decorator::make([NexusPHP::class, OptionsUrlJoin::class, OptionsLimit::class], $default),
-            'yemapt' => Decorator::make([OptionsRssUrl::class], $default),
+            'yemapt' => Decorator::make([Yemapt::class, OptionsRssUrl::class], $default),
             'ttg' => Decorator::make([NexusPHP::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'redleaves', 'pter', 'pt', 'hdsky', 'ssd', 'lemonhd' => Decorator::make([NexusPHP::class, OptionsLimit::class], $default),
             'hdpost', 'monikadesign' => Decorator::make([NexusPHP::class, OptionsRsskey::class, OptionsRssUrl::class], $default),

@@ -28,10 +28,18 @@ abstract class BaseCookie implements Processor, PaginationUriBuilder
      */
     final public function __construct(public readonly BaseDriver $baseDriver)
     {
+        $this->validateConfig();
+        $this->initialize();
+    }
+
+    /**
+     * 校验页面处理器所需的站点凭据
+     */
+    protected function validateConfig(): void
+    {
         if (empty($this->baseDriver->getConfig()->cookie)) {
             throw new InvalidArgumentException('cookie为空，无法解析HTML页面');
         }
-        $this->initialize();
     }
 
     /**
