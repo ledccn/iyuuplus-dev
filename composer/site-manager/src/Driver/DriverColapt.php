@@ -37,6 +37,24 @@ class DriverColapt extends BaseDriver implements ProcessorXml
     }
 
     /**
+     * 默认 RSS 路由：**不带 passkey**
+     *
+     * 站点侧同时收到 URL 里的 passkey 和请求头里的 X-API-Key 时会按「凭据歧义」返回 400
+     * （`请求同时带了令牌和 API Key，请只保留其中一种认证方式`），所以默认路由只保留
+     * rows/linktype，凭据一律走请求头。
+     *
+     * @return string
+     */
+    protected function getRssDefaultRoute(): string
+    {
+        if ($rss_url = $this->getConfig()->get('options.rss_url')) {
+            return $rss_url;
+        }
+
+        return 'torrentrss.php?rows=50&linktype=dl';
+    }
+
+    /**
      * RSS 请求带上令牌
      * @param Curl $curl
      * @return void
