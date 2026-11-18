@@ -131,6 +131,8 @@ class LayuiTemplate
             'dicmusic',
             'greatposterwall' => Decorator::make([DicMusic::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'm-team' => Decorator::make([NexusPHP::class, OptionsXApiKey::class, OptionsLimit::class, OptionsUrlJoin::class, OptionsRssUrl::class], $default),
+            // 可乐PT：凭据走 x-api-key（同 m-team 的做法），RSS 与下载两条路都带这个头
+            'colapt' => Decorator::make([NexusPHP::class, OptionsXApiKey::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'hdcity' => Decorator::make([NexusPHP::class, OptionsCuHashByHdcity::class], $default),
             'audiences' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsRsskey::class, OptionsLimit::class], $default),
             'hdhome', 'pthome', 'hddolby' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsDownHash::class, OptionsLimit::class, OptionsRssUrl::class], $default),
