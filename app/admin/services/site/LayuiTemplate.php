@@ -27,7 +27,7 @@ class LayuiTemplate
             throw new BusinessException('站点不存在：' . $site);
         }
         // 下载种子必须cookie
-        if ($model->cookie_required && $site !== 'piggo') {
+        if ($model->cookie_required && !in_array($site, ['piggo', 'colapt'], true)) {
             $default = new CookieRequired($default);
         }
 
@@ -136,6 +136,7 @@ class LayuiTemplate
             'hdhome', 'pthome', 'hddolby' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsDownHash::class, OptionsLimit::class, OptionsRssUrl::class], $default),
             'zhuque' => Decorator::make([Zhuque::class, OptionsUid::class, OptionsLimit::class], $default),
             'piggo' => Decorator::make([Piggo::class, OptionsLimit::class], $default),
+            'colapt' => Decorator::make([Colapt::class, OptionsLimit::class], $default),
             'ourbits', 'chdbits', 'zmpt', 'agsvpt', 'hdfans', 'ptcafe', 'ptlgs', 'ptlover', 'hitpt', 'hspt', 'xingyunge', 'cspt', 'bilibili' => Decorator::make([NexusPHP::class, OptionsUid::class, OptionsLimit::class, OptionsUrlJoin::class], $default),
             default => new NexusPHP($default),
         };
